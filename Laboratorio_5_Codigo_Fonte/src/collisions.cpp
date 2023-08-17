@@ -1,0 +1,1 @@
+// Arquivo separado para os testes de colisao
