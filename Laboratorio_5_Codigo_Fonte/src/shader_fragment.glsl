@@ -85,8 +85,19 @@ void main()
 
         vec4 bbox_center = (bbox_min + bbox_max) / 2.0;
 
-        U = 0.0;
-        V = 0.0;
+        // p'= c + raio * p-c/||p-c||
+        vec4 p_linha = bbox_center + (position_model - bbox_center)/length(position_model-bbox_center);
+        // vetor p (entre p e p') = p'- c
+        vec4 = p_v = p_linha - bbox_center;
+        // angulo theta = arcotangente(px,pz)
+        float theta = atan(p_v.x,p_v.z);
+        // angulo phi = inverso do seno de py/raio
+        float phi = asin(p_v.y);
+
+        // pu = (theta + pi)/2pi
+        U = (theta + M_PI)/(2*M_PI);
+        // pv = (phi + pi/2)/pi
+        V = (phi + M_PI_2)/M_PI;
     }
     else if ( object_id == BUNNY )
     {
