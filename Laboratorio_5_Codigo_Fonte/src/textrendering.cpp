@@ -1,17 +1,8 @@
 // Based on http://hamelot.io/visualization/opengl-text-without-any-external-libraries/
 //   and on https://github.com/rougier/freetype-gl
-#include <string>
-
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-
-#include <glm/mat4x4.hpp>
-#include <glm/vec4.hpp>
-
+#include "textrendering.h"
 #include "utils.h"
 #include "dejavufont.h"
-
-GLuint CreateGpuProgram(GLuint vertex_shader_id, GLuint fragment_shader_id); // Função definida em main.cpp
 
 const GLchar* const textvertexshader_source = ""
 "#version 330\n"
@@ -144,7 +135,7 @@ void TextRendering_Init()
 
 float textscale = 1.5f;
 
-void TextRendering_PrintString(GLFWwindow* window, const std::string &str, float x, float y, float scale = 1.0f)
+void TextRendering_PrintString(GLFWwindow* window, const std::string &str, float x, float y, float scale)
 {
     scale *= textscale;
     int width, height;
@@ -225,7 +216,7 @@ float TextRendering_CharWidth(GLFWwindow* window)
     return dejavufont.glyphs[32].advance_x / width * textscale;
 }
 
-void TextRendering_PrintMatrix(GLFWwindow* window, glm::mat4 M, float x, float y, float scale = 1.0f)
+void TextRendering_PrintMatrix(GLFWwindow* window, glm::mat4 M, float x, float y, float scale)
 {
     char buffer[40];
     float lineheight = TextRendering_LineHeight(window) * scale;
@@ -240,7 +231,7 @@ void TextRendering_PrintMatrix(GLFWwindow* window, glm::mat4 M, float x, float y
     TextRendering_PrintString(window, buffer, x, y - 3*lineheight, scale);
 }
 
-void TextRendering_PrintVector(GLFWwindow* window, glm::vec4 v, float x, float y, float scale = 1.0f)
+void TextRendering_PrintVector(GLFWwindow* window, glm::vec4 v, float x, float y, float scale)
 {
     char buffer[10];
     float lineheight = TextRendering_LineHeight(window) * scale;
@@ -255,7 +246,7 @@ void TextRendering_PrintVector(GLFWwindow* window, glm::vec4 v, float x, float y
     TextRendering_PrintString(window, buffer, x, y - 3*lineheight, scale);
 }
 
-void TextRendering_PrintMatrixVectorProduct(GLFWwindow* window, glm::mat4 M, glm::vec4 v, float x, float y, float scale = 1.0f)
+void TextRendering_PrintMatrixVectorProduct(GLFWwindow* window, glm::mat4 M, glm::vec4 v, float x, float y, float scale)
 {
     char buffer[70];
     float lineheight = TextRendering_LineHeight(window) * scale;
@@ -271,7 +262,7 @@ void TextRendering_PrintMatrixVectorProduct(GLFWwindow* window, glm::mat4 M, glm
     TextRendering_PrintString(window, buffer, x, y - 3*lineheight, scale);
 }
 
-void TextRendering_PrintMatrixVectorProductMoreDigits(GLFWwindow* window, glm::mat4 M, glm::vec4 v, float x, float y, float scale = 1.0f)
+void TextRendering_PrintMatrixVectorProductMoreDigits(GLFWwindow* window, glm::mat4 M, glm::vec4 v, float x, float y, float scale)
 {
     char buffer[70];
     float lineheight = TextRendering_LineHeight(window) * scale;
@@ -287,7 +278,7 @@ void TextRendering_PrintMatrixVectorProductMoreDigits(GLFWwindow* window, glm::m
     TextRendering_PrintString(window, buffer, x, y - 3*lineheight, scale);
 }
 
-void TextRendering_PrintMatrixVectorProductDivW(GLFWwindow* window, glm::mat4 M, glm::vec4 v, float x, float y, float scale = 1.0f)
+void TextRendering_PrintMatrixVectorProductDivW(GLFWwindow* window, glm::mat4 M, glm::vec4 v, float x, float y, float scale)
 {
     auto r = M*v;
     auto w = r[3];
@@ -303,4 +294,123 @@ void TextRendering_PrintMatrixVectorProductDivW(GLFWwindow* window, glm::mat4 M,
     TextRendering_PrintString(window, buffer, x, y - 2*lineheight, scale);
     snprintf(buffer, 90, "[%+0.2f %+0.2f %+0.2f %+0.2f][%+0.2f]     [%+0.2f]        [%+0.2f]\n", M[0][3], M[1][3], M[2][3], M[3][3], v[3], r[3], r[3]/w);
     TextRendering_PrintString(window, buffer, x, y - 3*lineheight, scale);
+}
+
+
+// Escrevemos na tela os ângulos de Euler definidos nas variáveis globais
+// g_AngleX, g_AngleY, e g_AngleZ.
+void TextRendering_ShowEulerAngles(GLFWwindow* window)
+{
+    if ( !g_ShowInfoText )
+        return;
+
+    float pad = TextRendering_LineHeight(window);
+
+    char buffer[80];
+    snprintf(buffer, 80, "Euler Angles rotation matrix = Z(%.2f)*Y(%.2f)*X(%.2f)\n", g_AngleZ, g_AngleY, g_AngleX);
+
+    TextRendering_PrintString(window, buffer, -1.0f+pad/10, -1.0f+2*pad/10, 1.0f);
+}
+
+// Escrevemos na tela qual matriz de projeção está sendo utilizada.
+void TextRendering_ShowProjection(GLFWwindow* window)
+{
+    if ( !g_ShowInfoText )
+        return;
+
+    float lineheight = TextRendering_LineHeight(window);
+    float charwidth = TextRendering_CharWidth(window);
+
+    if ( g_UsePerspectiveProjection )
+        TextRendering_PrintString(window, "Perspective", 1.0f-13*charwidth, -1.0f+2*lineheight/10, 1.0f);
+    else
+        TextRendering_PrintString(window, "Orthographic", 1.0f-13*charwidth, -1.0f+2*lineheight/10, 1.0f);
+}
+
+// Escrevemos na tela o número de quadros renderizados por segundo (frames per
+// second).
+void TextRendering_ShowFramesPerSecond(GLFWwindow* window)
+{
+    if ( !g_ShowInfoText )
+        return;
+
+    // Variáveis estáticas (static) mantém seus valores entre chamadas
+    // subsequentes da função!
+    static float old_seconds = (float)glfwGetTime();
+    static int   ellapsed_frames = 0;
+    static char  buffer[20] = "?? fps";
+    static int   numchars = 7;
+
+    ellapsed_frames += 1;
+
+    // Recuperamos o número de segundos que passou desde a execução do programa
+    float seconds = (float)glfwGetTime();
+
+    // Número de segundos desde o último cálculo do fps
+    float ellapsed_seconds = seconds - old_seconds;
+
+    if ( ellapsed_seconds > 1.0f )
+    {
+        numchars = snprintf(buffer, 20, "%.2f fps", ellapsed_frames / ellapsed_seconds);
+    
+        old_seconds = seconds;
+        ellapsed_frames = 0;
+    }
+
+    float lineheight = TextRendering_LineHeight(window);
+    float charwidth = TextRendering_CharWidth(window);
+
+    TextRendering_PrintString(window, buffer, 1.0f-(numchars + 1)*charwidth, 1.0f-lineheight, 1.0f);
+}
+
+
+// Esta função cria um programa de GPU, o qual contém obrigatoriamente um
+// Vertex Shader e um Fragment Shader.
+GLuint CreateGpuProgram(GLuint vertex_shader_id, GLuint fragment_shader_id)
+{
+    // Criamos um identificador (ID) para este programa de GPU
+    GLuint program_id = glCreateProgram();
+
+    // Definição dos dois shaders GLSL que devem ser executados pelo programa
+    glAttachShader(program_id, vertex_shader_id);
+    glAttachShader(program_id, fragment_shader_id);
+
+    // Linkagem dos shaders acima ao programa
+    glLinkProgram(program_id);
+
+    // Verificamos se ocorreu algum erro durante a linkagem
+    GLint linked_ok = GL_FALSE;
+    glGetProgramiv(program_id, GL_LINK_STATUS, &linked_ok);
+
+    // Imprime no terminal qualquer erro de linkagem
+    if ( linked_ok == GL_FALSE )
+    {
+        GLint log_length = 0;
+        glGetProgramiv(program_id, GL_INFO_LOG_LENGTH, &log_length);
+
+        // Alocamos memória para guardar o log de compilação.
+        // A chamada "new" em C++ é equivalente ao "malloc()" do C.
+        GLchar* log = new GLchar[log_length];
+
+        glGetProgramInfoLog(program_id, log_length, &log_length, log);
+
+        std::string output;
+
+        output += "ERROR: OpenGL linking of program failed.\n";
+        output += "== Start of link log\n";
+        output += log;
+        output += "\n== End of link log\n";
+
+        // A chamada "delete" em C++ é equivalente ao "free()" do C
+        delete [] log;
+
+        fprintf(stderr, "%s", output.c_str());
+    }
+
+    // Os "Shader Objects" podem ser marcados para deleção após serem linkados 
+    glDeleteShader(vertex_shader_id);
+    glDeleteShader(fragment_shader_id);
+
+    // Retornamos o ID gerado acima
+    return program_id;
 }
