@@ -27,4 +27,5 @@ extern GLint g_object_id_uniform;
 extern GLint g_bbox_min_uniform;
 extern GLint g_bbox_max_uniform;
 extern GLuint g_NumLoadedTextures;
+extern GLint render_as_black_uniform;
 extern int selectedObject;
