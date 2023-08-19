@@ -375,8 +375,8 @@
 		<Unit filename="src/Callbacks.h" />
 		<Unit filename="src/ObjModel.cpp" />
 		<Unit filename="src/ObjModel.h" />
-		<Unit filename="src/ProjectInfoRendering.cpp" />
-		<Unit filename="src/ProjectInfoRendering.h" />
+		<Unit filename="src/SceneObject.cpp" />
+		<Unit filename="src/SceneObject.h" />
 		<Unit filename="src/glad.c">
 			<Option compilerVar="CC" />
 		</Unit>
