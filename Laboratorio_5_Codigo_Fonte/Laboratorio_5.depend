@@ -43,7 +43,7 @@
 	<intrin.h>
 	<arm_neon.h>
 
-1692415234 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\textrendering.cpp
+1692452987 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\textrendering.cpp
 	"textrendering.h"
 	"utils.h"
 	"dejavufont.h"
@@ -652,10 +652,10 @@
 	<array>
 	"mapbox/earcut.hpp"
 
-1692408294 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\boundingbox.cpp
+1692452987 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\boundingbox.cpp
 	"BoundingBox.h"
 
-1692408295 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\boundingbox.h
+1692452987 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\boundingbox.h
 	<vector>
 	<limits>
 	<tiny_obj_loader.h>
@@ -743,7 +743,7 @@
 
 1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\simd\integer.h
 
-1692421425 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\main.cpp
+1692453216 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\main.cpp
 	<cmath>
 	<cstdio>
 	<cstdlib>
@@ -757,6 +757,7 @@
 	<stdexcept>
 	<algorithm>
 	<glad/glad.h>
+	<GLFW/glfw3.h>
 	<glm/mat4x4.hpp>
 	<glm/vec4.hpp>
 	<glm/gtc/type_ptr.hpp>
@@ -1023,11 +1024,11 @@
 	<glm/vec4.hpp>
 	<glm/gtc/matrix_transform.hpp>
 
-1692418286 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\objmodel.h
+1692452987 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\objmodel.h
 	<vector>
 	<tiny_obj_loader.h>
 
-1692418277 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\objmodel.cpp
+1692452987 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\objmodel.cpp
 	"ObjModel.h"
 	<stdexcept>
 	<string>
@@ -1038,7 +1039,7 @@
 
 1692413683 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\projectinforendering.cpp
 
-1692415225 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\textrendering.h
+1692452987 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\textrendering.h
 	<string>
 	<glad/glad.h>
 	<GLFW/glfw3.h>
@@ -1046,33 +1047,33 @@
 	<glm/vec4.hpp>
 	"globals.h"
 
-1692416547 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\globals.cpp
+1692452987 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\globals.cpp
 	"globals.h"
 
-1692416656 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\globals.h
+1692452987 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\globals.h
 	<map>
 	<stack>
 	<string>
 	<GLFW/glfw3.h>
 	<glm/mat4x4.hpp>
 
-1692415339 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\callbacks.h
+1692452987 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\callbacks.h
 	<GLFW/glfw3.h>
 	<limits>
 	<cstdio>
 	"globals.h"
 
-1692415081 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\callbacks.cpp
+1692452987 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\callbacks.cpp
 	"Callbacks.h"
 
 1692417644 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\geometryfunctions.h
 
-1692418899 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\sceneobject.h
+1692452987 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\sceneobject.h
 	<string>
 	<map>
 	<GLFW/glfw3.h>
 	<glm/glm.hpp>
 
-1692418089 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\sceneobject.cpp
+1692452987 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\sceneobject.cpp
 	"SceneObject.h"
 
