@@ -72,6 +72,7 @@ void PopMatrix(glm::mat4& M);
 // Declaração de várias funções utilizadas em main().  Essas estão definidas
 // logo após a definição de main() neste arquivo.
 void BuildTrianglesAndAddToVirtualScene(ObjModel*); // Constrói representação de um ObjModel como malha de triângulos para renderização
+GLuint BuildTriangles(); // Constrói triângulos para renderização
 void ComputeNormals(ObjModel* model); // Computa normais de um ObjModel, caso não existam.
 void LoadShadersFromFiles(); // Carrega os shaders de vértice e fragmento, criando um programa de GPU
 void LoadTextureImage(const char* filename); // Função que carrega imagens de textura

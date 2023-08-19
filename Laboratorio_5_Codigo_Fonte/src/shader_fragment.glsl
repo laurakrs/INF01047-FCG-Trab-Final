@@ -13,12 +13,6 @@ in vec4 position_model;
 // Coordenadas de textura obtidas do arquivo OBJ (se existirem!)
 in vec2 texcoords;
 
-// Atributos de fragmentos recebidos como entrada ("in") pelo Fragment Shader.
-// Neste exemplo, este atributo foi gerado pelo rasterizador como a
-// interpolação da cor de cada vértice, definidas em "shader_vertex.glsl" e
-// "main.cpp" (array color_coefficients).
-in vec4 cor_interpolada_pelo_rasterizador;
-
 // Matrizes computadas no código C++ e enviadas para a GPU
 uniform mat4 model;
 uniform mat4 view;
@@ -124,10 +118,7 @@ void main()
         V = texcoords.y;
     }
 
-    // para os cubos
-    // Definimos a cor final de cada fragmento utilizando a cor interpolada
-    // pelo rasterizador.
-    color = cor_interpolada_pelo_rasterizador;
+
 
     // Obtemos a refletância difusa a partir da leitura da imagem TextureImage0
     vec3 Kd0 = texture(TextureImage0, vec2(U,V)).rgb;

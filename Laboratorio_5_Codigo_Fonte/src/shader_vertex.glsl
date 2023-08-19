@@ -6,19 +6,10 @@ layout (location = 0) in vec4 model_coefficients;
 layout (location = 1) in vec4 normal_coefficients;
 layout (location = 2) in vec2 texture_coefficients;
 
-// Atributos de vértice que serão gerados como saída ("out") pelo Vertex Shader.
-// ** Estes serão interpolados pelo rasterizador! ** gerando, assim, valores
-// para cada fragmento, os quais serão recebidos como entrada pelo Fragment
-// Shader. Veja o arquivo "shader_fragment.glsl".
-out vec4 cor_interpolada_pelo_rasterizador;
-
 // Matrizes computadas no código C++ e enviadas para a GPU
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
-
-// Variável booleana no código C++ também enviada para a GPU
-uniform bool render_as_black;
 
 // Atributos de vértice que serão gerados como saída ("out") pelo Vertex Shader.
 // ** Estes serão interpolados pelo rasterizador! ** gerando, assim, valores
@@ -56,20 +47,6 @@ void main()
     //     gl_Position.w = model_coefficients.w;
     //
 
-    if ( render_as_black )
-    {
-        // Ignoramos o atributo cor dos vértices, colocando a cor final como
-        // preta. Utilizamos isto para renderizar as arestas pretas dos cubos.
-        cor_interpolada_pelo_rasterizador = vec4(0.0f,0.0f,0.0f,1.0f);
-    }
-    else
-    {
-        // Copiamos o atributo cor (de entrada) de cada vértice para a variável
-        // "cor_interpolada_pelo_rasterizador". Esta variável será interpolada pelo
-        // rasterizador, gerando valores interpolados para cada fragmento!  Veja o
-        // arquivo "shader_fragment.glsl".
-        cor_interpolada_pelo_rasterizador = color_coefficients;
-    }
 
     // Agora definimos outros atributos dos vértices que serão interpolados pelo
     // rasterizador para gerar atributos únicos para cada fragmento gerado.
