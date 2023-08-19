@@ -89,6 +89,14 @@ void TextRendering_ShowModelViewProjection(GLFWwindow* window, glm::mat4 project
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode);
 
 
+	
+// Variáveis para movimentação da câmera
+bool tecla_W_pressionada = false;
+bool tecla_A_pressionada = false;
+bool tecla_S_pressionada = false;
+bool tecla_D_pressionada = false;
+
+
 // CÓDIGO PRINCIPAL ===========================
 int main(int argc, char* argv[])
 {
@@ -197,15 +205,17 @@ int main(int argc, char* argv[])
     glCullFace(GL_BACK);
     glFrontFace(GL_CCW);
 
-     // VARIAVEIS ESPECIFICAS DA FREE CAMERA
-    // Pontos de partida da camera:
-    float r_start = g_CameraDistance;
-    float y_start = r_start*sin(g_CameraPhi);
-    float z_start = r_start*cos(g_CameraPhi)*cos(g_CameraTheta);
-    float x_start = r_start*cos(g_CameraPhi)*sin(g_CameraTheta);
-    // FAQ: velocidade e tempo
-    float speed = 0.5f; // Velocidade da câmera
+    //  // VARIAVEIS ESPECIFICAS DA FREE CAMERA
+    // Definição de propriedades da câmera
+    float speed = 2.0f; // Velocidade da câmera
     float prev_time = (float)glfwGetTime();
+
+    // Inicialização das coordenadas da free camera:
+    float fixed_r = g_CameraDistance;
+    float fixed_x = fixed_r*cos(g_CameraPhi)*sin(g_CameraTheta);
+    float fixed_y = fixed_r*sin(g_CameraPhi);
+    float fixed_z = fixed_r*cos(g_CameraPhi)*cos(g_CameraTheta);
+    glm::vec4 camera_movement = glm::vec4(0.0f,0.0f,0.0f,0.0f);;
 
     // Ficamos em um loop infinito, renderizando, até que o usuário feche a janela
     while (!glfwWindowShouldClose(window))
@@ -237,57 +247,29 @@ int main(int argc, char* argv[])
         float z = r*cos(g_CameraPhi)*cos(g_CameraTheta);
         float x = r*cos(g_CameraPhi)*sin(g_CameraTheta);
 
-        // Abaixo definimos as varáveis que efetivamente definem a câmera virtual.
-        // Veja slides 195-227 e 229-234 do documento Aula_08_Sistemas_de_Coordenadas.pdf.
-        glm::vec4 camera_movement; // para a Free Camera
-        glm::vec4 camera_position_c  = glm::vec4(x,y,z,1.0f); // Ponto "c", centro da câmera
-        glm::vec4 camera_lookat_l    = glm::vec4(0.0f,0.0f,0.0f,1.0f); // Ponto "l", para onde a câmera (look-at) estará sempre olhando
-        glm::vec4 camera_view_vector = camera_lookat_l - camera_position_c; // Vetor "view", sentido para onde a câmera está virada
-        glm::vec4 camera_up_vector   = glm::vec4(0.0f,1.0f,0.0f,0.0f); // Vetor "up" fixado para apontar para o "céu" (eito Y global)
+        bool isMovementKeyPressed = tecla_W_pressionada || tecla_A_pressionada || tecla_S_pressionada || tecla_D_pressionada;
+        glm::vec4 camera_view_vector;
+        glm::vec4 camera_position_c;
 
+        if (isMovementKeyPressed) 
+        {
+            // Modo free camera	
+            camera_position_c  = glm::vec4(fixed_x,fixed_y,fixed_z,1.0f) + camera_movement;	
+            camera_view_vector = glm::vec4(-x,-y,-z,0.0f); // Vetor "view", sentido para onde a câmera está virada
+        } else {
+            // Modo câmera lookat
+            camera_position_c  = glm::vec4(x,y,z,1.0f); // Ponto "c", centro da câmera
+            glm::vec4 camera_lookat_l    = glm::vec4(0.0f,0.0f,0.0f,1.0f); // Ponto "l", para onde a câmera (look-at) estará sempre olhando
+            camera_view_vector = camera_lookat_l - camera_position_c; // Vetor "view", sentido para onde a câmera está virada
+        }
 
         // FREE CAMERA
         // Definicoes da Free Camera
+        glm::vec4 camera_up_vector   = glm::vec4(0.0f,1.0f,0.0f,0.0f); // Vetor "up" fixado para apontar para o "céu" (eito Y global)
         glm::vec4 vetor_w = -camera_view_vector;
         glm::vec4 vetor_u = crossproduct(camera_up_vector, vetor_w);
         vetor_w = vetor_w / norm(vetor_w);
         vetor_u = vetor_u / norm(vetor_u);
-
-        // FAQ: O cálculo do delta vai dentro do laço principal de rendering, 
-        // pois o delta deve ser calculado pra cada iteração de rendering (cada frame). 
-        // Dentro do laço, idealmente devemos calcular o delta imediatamente antes deste ser utilizado 
-        // para atualizar a posição dos objetos, e também o mais próximo possível de fazer o "refresh" da tela 
-        // (feito pela função glfwSwapBuffers(...)). 
-        
-        // Atualiza delta de tempo
-        float current_time = (float)glfwGetTime();
-        float delta_t = current_time - prev_time;
-        prev_time = current_time;
-
-       
-        // FAQ: : A atualização da posição da câmera 
-        // deve ser colocada dentro do laço principal de rendering, logo após o cálculo do delta de tempo Δt
-
-        // MOVER PARA FRENTE
-        if(w_pressed){      // Tecla W
-            camera_movement += -vetor_w * speed * delta_t;
-        }
-
-        // MOVER PARA TRAS
-        if(s_pressed){      // Tecla S
-            camera_movement += vetor_w * speed * delta_t;
-        }
-
-        // MOVER PARA DIREITA
-        if(d_pressed){      // Tecla D
-            camera_movement += vetor_u * speed * delta_t;
-        }
-
-        // MOVER PARA ESQUERDA
-        if(a_pressed){      // Tecla A
-            camera_movement += -vetor_u * speed * delta_t;
-        }
-
 
         // Computamos a matriz "View" utilizando os parâmetros da câmera para
         // definir o sistema de coordenadas da câmera.  Veja slides 2-14, 184-190 e 236-242 do documento Aula_08_Sistemas_de_Coordenadas.pdf.
@@ -366,6 +348,26 @@ int main(int argc, char* argv[])
         // Imprimimos na tela informação sobre o número de quadros renderizados
         // por segundo (frames per second).
         TextRendering_ShowFramesPerSecond(window);
+
+        // Cálculo de delta logo antes do glfwSwapBuffers para tentar minimizar o atraso da geração de imagens
+        // Atualiza delta de tempo
+        float current_time = (float)glfwGetTime();
+        float delta_t = current_time - prev_time;
+        prev_time = current_time;
+
+        // Realiza movimentação de objetos
+        if (tecla_W_pressionada)
+            // Movimenta câmera para frente
+            camera_movement += -vetor_w * speed * delta_t;
+        if (tecla_A_pressionada)
+            // Movimenta câmera para esquerda
+            camera_movement += -vetor_u * speed * delta_t;
+        if (tecla_S_pressionada)
+            // Movimenta câmera para trás
+            camera_movement += vetor_w * speed * delta_t;
+        if (tecla_D_pressionada)
+            // Movimenta câmera para direita
+            camera_movement += vetor_u * speed * delta_t;
 
         // O framebuffer onde OpenGL executa as operações de renderização não
         // é o mesmo que está sendo mostrado para o usuário, caso contrário
@@ -934,54 +936,59 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
     // A tecla 'D' deve movimentar a câmera para DIREITA (em relação ao sistema de coordenadas da câmera);
     // A tecla 'A' deve movimentar a câmera para ESQUERDA (em relação ao sistema de coordenadas da câmera);
 
-    // TECLA W
-    if(key == GLFW_KEY_W){
+    if (key == GLFW_KEY_W)
+    {
         if (action == GLFW_PRESS)
-            w_pressed = true;
+            // Usuário apertou a tecla W, então atualizamos o estado para pressionada
+            tecla_W_pressionada = true;
         else if (action == GLFW_RELEASE)
-            w_pressed = false;
+            // Usuário largou a tecla W, então atualizamos o estado para NÃO pressionada
+            tecla_W_pressionada = false;
         else if (action == GLFW_REPEAT)
-            // Usuário está segurando a tecla D e o sistema operacional está
+            // Usuário está segurando a tecla W e o sistema operacional está
             // disparando eventos de repetição. Neste caso, não precisamos
             // atualizar o estado da tecla, pois antes de um evento REPEAT
             // necessariamente deve ter ocorrido um evento PRESS.
             ;
     }
-
-    // TECLA S
-    if(key == GLFW_KEY_S){
-         if (action == GLFW_PRESS)
-            s_pressed = true;
-        else if (action == GLFW_RELEASE)
-            s_pressed = false;
-        else if (action == GLFW_REPEAT)
-            // Usuário está segurando a tecla D e o sistema operacional está
-            // disparando eventos de repetição. Neste caso, não precisamos
-            // atualizar o estado da tecla, pois antes de um evento REPEAT
-            // necessariamente deve ter ocorrido um evento PRESS.
-            ;
-    }
-
-    // TECLA D
-    if(key == GLFW_KEY_D){
+    if (key == GLFW_KEY_A)
+    {
         if (action == GLFW_PRESS)
-            d_pressed = true;
+            // Usuário apertou a tecla A, então atualizamos o estado para pressionada
+            tecla_A_pressionada = true;
         else if (action == GLFW_RELEASE)
-            d_pressed = false;
+            // Usuário largou a tecla A, então atualizamos o estado para NÃO pressionada
+            tecla_A_pressionada = false;
         else if (action == GLFW_REPEAT)
-            // Usuário está segurando a tecla D e o sistema operacional está
+            // Usuário está segurando a tecla A e o sistema operacional está
             // disparando eventos de repetição. Neste caso, não precisamos
             // atualizar o estado da tecla, pois antes de um evento REPEAT
             // necessariamente deve ter ocorrido um evento PRESS.
             ;
     }
-    
-    // TECLA A
-    if(key == GLFW_KEY_A){
+    if (key == GLFW_KEY_S)
+    {
         if (action == GLFW_PRESS)
-            a_pressed = true;
+            // Usuário apertou a tecla S, então atualizamos o estado para pressionada
+            tecla_S_pressionada = true;
         else if (action == GLFW_RELEASE)
-            a_pressed = false;
+            // Usuário largou a tecla S, então atualizamos o estado para NÃO pressionada
+            tecla_S_pressionada = false;
+        else if (action == GLFW_REPEAT)
+            // Usuário está segurando a tecla S e o sistema operacional está
+            // disparando eventos de repetição. Neste caso, não precisamos
+            // atualizar o estado da tecla, pois antes de um evento REPEAT
+            // necessariamente deve ter ocorrido um evento PRESS.
+            ;
+    }
+    if (key == GLFW_KEY_D)
+    {
+        if (action == GLFW_PRESS)
+            // Usuário apertou a tecla D, então atualizamos o estado para pressionada
+            tecla_D_pressionada = true;
+        else if (action == GLFW_RELEASE)
+            // Usuário largou a tecla D, então atualizamos o estado para NÃO pressionada
+            tecla_D_pressionada = false;
         else if (action == GLFW_REPEAT)
             // Usuário está segurando a tecla D e o sistema operacional está
             // disparando eventos de repetição. Neste caso, não precisamos
@@ -989,7 +996,6 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
             // necessariamente deve ter ocorrido um evento PRESS.
             ;
     }
-    
 }
 
 // Esta função recebe um vértice com coordenadas de modelo p_model e passa o
