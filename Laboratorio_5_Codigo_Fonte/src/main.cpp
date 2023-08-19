@@ -32,7 +32,7 @@
 
 // Headers das bibliotecas OpenGL
 #include <glad/glad.h>   // Criação de contexto OpenGL 3.3
-// #include <GLFW/glfw3.h>  // Criação de janelas do sistema operacional
+#include <GLFW/glfw3.h>  // Criação de janelas do sistema operacional
 
 // Headers da biblioteca GLM: criação de matrizes e vetores.
 #include <glm/mat4x4.hpp>
@@ -216,6 +216,7 @@ int main(int argc, char* argv[])
     float fixed_y = fixed_r*sin(g_CameraPhi);
     float fixed_z = fixed_r*cos(g_CameraPhi)*cos(g_CameraTheta);
     glm::vec4 camera_movement = glm::vec4(0.0f,0.0f,0.0f,0.0f);;
+    glm::vec4 camera_lookat_l_movement = glm::vec4(0.0f,0.0f,0.0f,0.0f);;
 
     // Ficamos em um loop infinito, renderizando, até que o usuário feche a janela
     while (!glfwWindowShouldClose(window))
@@ -253,15 +254,24 @@ int main(int argc, char* argv[])
 
         if (isMovementKeyPressed) 
         {
-            // Modo free camera	
-            camera_position_c  = glm::vec4(fixed_x,fixed_y,fixed_z,1.0f) + camera_movement;	
-            camera_view_vector = glm::vec4(-x,-y,-z,0.0f); // Vetor "view", sentido para onde a câmera está virada
-        } else {
+            // Modo free camera
+            camera_position_c  = glm::vec4(x,y,z,1.0f) + camera_movement;	
+            // camera_position_c  = glm::vec4(fixed_x,fixed_y,fixed_z,1.0f) + camera_movement;	
+            // camera_view_vector = glm::vec4(-x,-y,-z,0.0f); // Vetor "view", sentido para onde a câmera está virada
+            camera_lookat_l_movement += camera_movement; // Move the lookat point with the camera
+        } 
+        else 
+        {
+            camera_movement = glm::vec4(0.0f,0.0f,0.0f,0.0f);
+            camera_lookat_l_movement = glm::vec4(0.0f,0.0f,0.0f,0.0f); // Reset the lookat movement
             // Modo câmera lookat
             camera_position_c  = glm::vec4(x,y,z,1.0f); // Ponto "c", centro da câmera
-            glm::vec4 camera_lookat_l    = glm::vec4(0.0f,0.0f,0.0f,1.0f); // Ponto "l", para onde a câmera (look-at) estará sempre olhando
+            glm::vec4 camera_lookat_l = glm::vec4(0.0f,0.0f,0.0f,1.0f); // Ponto "l", para onde a câmera (look-at) estará sempre olhando
             camera_view_vector = camera_lookat_l - camera_position_c; // Vetor "view", sentido para onde a câmera está virada
         }
+
+        // glm::vec4 camera_lookat_l = glm::vec4(0.0f,0.0f,0.0f,1.0f); // Ponto "l", para onde a câmera (look-at) estará sempre olhando
+        // camera_view_vector = camera_lookat_l - camera_position_c; // Vetor "view", sentido para onde a câmera está virada
 
         // FREE CAMERA
         // Definicoes da Free Camera
