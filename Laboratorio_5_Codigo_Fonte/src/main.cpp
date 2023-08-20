@@ -65,6 +65,8 @@ AABB planeAABB;
 AABB bunnyAABB;
 AABB sphereAABB;
 AABB cowAABB;
+AABB cubeAABB;
+AABB rectangle;
 
 
 // Declaração de funções utilizadas para pilha de matrizes de modelagem.
@@ -194,6 +196,14 @@ int main(int argc, char* argv[])
     ObjModel cowmodel("../../data/cow.obj");
     ComputeNormals(&cowmodel);
     BuildTrianglesAndAddToVirtualScene(&cowmodel);
+
+    ObjModel cubemodel("../../data/cube.obj");
+    ComputeNormals(&cubemodel);
+    BuildTrianglesAndAddToVirtualScene(&cubemodel);
+
+    ObjModel rectanglemodel("../../data/rectangle.obj");
+    ComputeNormals(&rectanglemodel);
+    BuildTrianglesAndAddToVirtualScene(&rectanglemodel);
 
 
     if ( argc > 1 )
@@ -386,6 +396,18 @@ int main(int argc, char* argv[])
         glUniform1i(g_object_id_uniform, COW);
         DrawVirtualObject("the_cow");
 
+        // Desenhamos o modelo do cubo
+        model = Matrix_Translate(-0.9f,-0.9f,-0.9f);
+        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+        glUniform1i(g_object_id_uniform, COW);
+        DrawVirtualObject("the_cube");
+
+        // Desenhamos o modelo do retangulo
+        model = Matrix_Translate(-0.7f,-0.7f,-0.7f);
+        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+        glUniform1i(g_object_id_uniform, COW);
+        DrawVirtualObject("the_rectangle");
+
 
         // Imprimimos na tela os ângulos de Euler que controlam a rotação do
         // terceiro cubo.
@@ -574,6 +596,8 @@ void LoadShadersFromFiles()
     glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage1"), 1);
     glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage2"), 2);
     glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage3"), 3);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage4"), 4);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage5"), 5);
     glUseProgram(0);
 }
 
