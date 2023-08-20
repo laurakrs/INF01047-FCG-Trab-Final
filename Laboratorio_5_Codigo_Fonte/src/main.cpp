@@ -54,6 +54,7 @@
 #include "Callbacks.h"
 #include "textrendering.h"
 #include "SceneObject.h"
+#include "ObjectInstance.h"
 
 
 struct AABB {
@@ -216,7 +217,6 @@ int main(int argc, char* argv[])
     float fixed_y = fixed_r*sin(g_CameraPhi);
     float fixed_z = fixed_r*cos(g_CameraPhi)*cos(g_CameraTheta);
     glm::vec4 camera_movement = glm::vec4(0.0f,0.0f,0.0f,0.0f);;
-    glm::vec4 camera_lookat_l_movement = glm::vec4(0.0f,0.0f,0.0f,0.0f);;
     glm::vec4 camera_lookat_l = glm::vec4(0.0f,0.0f,0.0f,1.0f);;
     glm::vec4 origin = glm::vec4(0.0f,0.0f,0.0f,1.0f);;
 
@@ -1011,6 +1011,22 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
             // necessariamente deve ter ocorrido um evento PRESS.
             ;
     }
+
+    if (key == GLFW_KEY_0)
+    {
+        if (action == GLFW_PRESS)
+            // Usuário apertou a tecla D, então atualizamos o estado para pressionada
+            tecla_D_pressionada = true;
+        else if (action == GLFW_RELEASE)
+            // Usuário largou a tecla D, então atualizamos o estado para NÃO pressionada
+            tecla_D_pressionada = false;
+        else if (action == GLFW_REPEAT)
+            // Usuário está segurando a tecla D e o sistema operacional está
+            // disparando eventos de repetição. Neste caso, não precisamos
+            // atualizar o estado da tecla, pois antes de um evento REPEAT
+            // necessariamente deve ter ocorrido um evento PRESS.
+            ;
+    }
 }
 
 // Esta função recebe um vértice com coordenadas de modelo p_model e passa o
@@ -1082,22 +1098,22 @@ void TextRendering_ShowModelViewProjection(
 
 // FUNÇÕES NOVAS ======================================================================================================
 
-// glm::vec3 ComputeRayFromMouse(float mouseX, float mouseY, const glm::mat4& projMatrix, const glm::mat4& viewMatrix, int windowWidth, int windowHeight)
-// {
-//     // Convert to normalized device coordinates
-//     float x = (2.0f * mouseX) / windowWidth - 1.0f;
-//     float y = 1.0f - (2.0f * mouseY) / windowHeight;
+glm::vec3 ComputeRayFromMouse(float mouseX, float mouseY, const glm::mat4& projMatrix, const glm::mat4& viewMatrix, int windowWidth, int windowHeight)
+{
+    // Convert to normalized device coordinates
+    float x = (2.0f * mouseX) / windowWidth - 1.0f;
+    float y = 1.0f - (2.0f * mouseY) / windowHeight;
 
-//     glm::vec4 rayClip = glm::vec4(x, y, -1.0f, 1.0f);
+    glm::vec4 rayClip = glm::vec4(x, y, -1.0f, 1.0f);
 
-//     glm::vec4 rayEye = glm::inverse(projMatrix) * rayClip;
-//     rayEye = glm::vec4(rayEye.x, rayEye.y, -1.0f, 0.0f);
+    glm::vec4 rayEye = glm::inverse(projMatrix) * rayClip;
+    rayEye = glm::vec4(rayEye.x, rayEye.y, -1.0f, 0.0f);
 
-//     glm::vec4 rayWorld = glm::inverse(viewMatrix) * rayEye;
-//     glm::vec3 rayDir = glm::normalize(glm::vec3(rayWorld));
+    glm::vec4 rayWorld = glm::inverse(viewMatrix) * rayEye;
+    glm::vec3 rayDir = glm::normalize(glm::vec3(rayWorld));
 
-//     return rayDir;
-// }
+    return rayDir;
+}
 
 // AABB ComputeAABB(const ObjModel& model) {
 //     AABB aabb;
@@ -1121,31 +1137,55 @@ void TextRendering_ShowModelViewProjection(
 //     return aabb;
 // }
 
-// bool RayAABBIntersection(const glm::vec3& rayOrigin, const glm::vec3& rayDir, const AABB& box) {
-//     float tmin = (box.min.x - rayOrigin.x) / rayDir.x;
-//     float tmax = (box.max.x - rayOrigin.x) / rayDir.x;
+bool RayAABBIntersection(const glm::vec3& rayOrigin, const glm::vec3& rayDir, const AABB& box) {
+    float tmin = (box.min.x - rayOrigin.x) / rayDir.x;
+    float tmax = (box.max.x - rayOrigin.x) / rayDir.x;
 
-//     if (tmin > tmax) std::swap(tmin, tmax);
+    if (tmin > tmax) std::swap(tmin, tmax);
 
-//     float tymin = (box.min.y - rayOrigin.y) / rayDir.y;
-//     float tymax = (box.max.y - rayOrigin.y) / rayDir.y;
+    float tymin = (box.min.y - rayOrigin.y) / rayDir.y;
+    float tymax = (box.max.y - rayOrigin.y) / rayDir.y;
 
-//     if (tymin > tymax) std::swap(tymin, tymax);
+    if (tymin > tymax) std::swap(tymin, tymax);
 
-//     if ((tmin > tymax) || (tymin > tmax)) return false;
+    if ((tmin > tymax) || (tymin > tmax)) return false;
 
-//     if (tymin > tmin) tmin = tymin;
-//     if (tymax < tmax) tmax = tymax;
+    if (tymin > tmin) tmin = tymin;
+    if (tymax < tmax) tmax = tymax;
 
-//     float tzmin = (box.min.z - rayOrigin.z) / rayDir.z;
-//     float tzmax = (box.max.z - rayOrigin.z) / rayDir.z;
+    float tzmin = (box.min.z - rayOrigin.z) / rayDir.z;
+    float tzmax = (box.max.z - rayOrigin.z) / rayDir.z;
 
-//     if (tzmin > tzmax) std::swap(tzmin, tzmax);
+    if (tzmin > tzmax) std::swap(tzmin, tzmax);
 
-//     if ((tmin > tzmax) || (tzmin > tmax)) return false;
+    if ((tmin > tzmax) || (tzmin > tmax)) return false;
 
-//     return true;
-// }
+    return true;
+}
+
+bool RayIntersectsSphere(glm::vec3 rayOrigin, glm::vec3 rayDirection, glm::vec3 sphereCenter, float sphereRadius, float& intersectionDistance)
+{
+    glm::vec3 toSphere = sphereCenter - rayOrigin;
+    float t = glm::dot(toSphere, rayDirection);
+    glm::vec3 closestPoint = rayOrigin + rayDirection * t;
+
+    float distSquared = glm::dot(toSphere, toSphere) - t * t;
+    float radiusSquared = sphereRadius * sphereRadius;
+
+    if (distSquared > radiusSquared)
+        return false; // No intersection
+
+    float dt = sqrt(radiusSquared - distSquared);
+    float t1 = t - dt;
+    float t2 = t + dt;
+
+    if (t2 < 0)
+        return false; // Object is behind the camera
+
+    intersectionDistance = (t1 < 0) ? t2 : t1; // Get the nearest intersection point in front of the camera
+    return true;
+}
+
 
 // std::vector<BoundingBox> computeAllBoundingBoxes(const ObjModel& model) {
 //     std::vector<BoundingBox> bboxes;
