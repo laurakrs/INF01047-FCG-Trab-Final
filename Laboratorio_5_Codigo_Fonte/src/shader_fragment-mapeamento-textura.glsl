@@ -132,6 +132,15 @@ void main()
     {
         // as coordenadas de textura da vaca
         // IGUAL AO COELHO POR ENQUANTO
+         // PREENCHA AQUI as coordenadas de textura do coelho, computadas com
+        // projeção planar XY em COORDENADAS DO MODELO. Utilize como referência
+        // o slides 99-104 do documento Aula_20_Mapeamento_de_Texturas.pdf,
+        // e também use as variáveis min*/max* definidas abaixo para normalizar
+        // as coordenadas de textura U e V dentro do intervalo [0,1]. Para
+        // tanto, veja por exemplo o mapeamento da variável 'p_v' utilizando
+        // 'h' no slides 158-160 do documento Aula_20_Mapeamento_de_Texturas.pdf.
+        // Veja também a Questão 4 do Questionário 4 no Moodle.
+
         float minx = bbox_min.x;
         float maxx = bbox_max.x;
 
@@ -141,8 +150,14 @@ void main()
         float minz = bbox_min.z;
         float maxz = bbox_max.z;
 
-        U = 0.0;
-        V = 0.0;
+        float x_range = (maxx - minx);
+        float y_range = (maxy - miny);
+
+        float relative_x_position = (position_model.x - minx);
+        float relative_y_position = (position_model.y - miny);
+
+        U = relative_x_position / x_range;
+        V = relative_y_position / y_range;
     }
     else if( object_id == CUBE )
     {
