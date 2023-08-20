@@ -98,6 +98,9 @@ void main()
 
         U = (theta + M_PI) / (2 * M_PI);    // Range: [0,1)
         V = (phi + M_PI / 2) / M_PI;        // Range: [0, 1)
+
+        // Obtemos a refletância difusa a partir da leitura da imagem TextureImage0
+        vec3 Kd0 = texture(TextureImage0, vec2(U,V)).rgb;
     }
     else if ( object_id == BUNNY )
     {
@@ -127,6 +130,8 @@ void main()
 
         U = relative_x_position / x_range;
         V = relative_y_position / y_range;
+
+        vec3 Kd0 = texture(TextureImage0, vec2(U,V)).rgb;
     }
     else if( object_id == COW )
     {
@@ -143,6 +148,8 @@ void main()
 
         U = 0.0;
         V = 0.0;
+
+        vec3 Kd0 = texture(TextureImage3, vec2(U,V)).rgb;
     }
     else if( object_id == CUBE )
     {
@@ -159,6 +166,8 @@ void main()
 
         U = 0.0;
         V = 0.0;
+
+        vec3 Kd0 = texture(TextureImage4, vec2(U,V)).rgb;
     }
     else if( object_id == RECTANGLE )
     {
@@ -175,17 +184,21 @@ void main()
 
         U = 0.0;
         V = 0.0;
+
+        vec3 Kd0 = texture(TextureImage3, vec2(U,V)).rgb;
     }
     else if ( object_id == PLANE )
     {
         // Coordenadas de textura do plano, obtidas do arquivo OBJ.
         U = texcoords.x;
         V = texcoords.y;
+
+        vec3 Kd0 = texture(TextureImage0, vec2(U,V)).rgb;
     }
 
 
     // Obtemos a refletância difusa a partir da leitura da imagem TextureImage0
-    vec3 Kd0 = texture(TextureImage0, vec2(U,V)).rgb;
+    //vec3 Kd0 = texture(TextureImage0, vec2(U,V)).rgb;
 
     // Equação de Iluminação
     float lambert = max(0,dot(n,l));
