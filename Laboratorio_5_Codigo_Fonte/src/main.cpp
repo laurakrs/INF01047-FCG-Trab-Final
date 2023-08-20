@@ -94,7 +94,7 @@ void TextRendering_ShowModelViewProjection(GLFWwindow* window, glm::mat4 project
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode);
 
 
-	
+
 // Variáveis para movimentação da câmera
 bool tecla_W_pressionada = false;
 bool tecla_A_pressionada = false;
@@ -133,7 +133,7 @@ int main(int argc, char* argv[])
     // de pixels, e com título "INF01047 ...".
     GLFWwindow* window;
     window = glfwCreateWindow(800, 600, "INF01047 - Trabalho Final - Laura Keidann e Matheus Sabadin", NULL, NULL);
-    if (!window) 
+    if (!window)
     {
         glfwTerminate();
         fprintf(stderr, "ERROR: glfwCreateWindow() failed.\n");
@@ -273,7 +273,7 @@ int main(int argc, char* argv[])
         glm::vec4 camera_view_vector;
         glm::vec4 camera_position_c;
 
-        if (isMovementKeyPressed) 
+        if (isMovementKeyPressed)
         {
             // Modo free camera
             camera_position_c  = glm::vec4(x,y,z,1.0f) + camera_movement;
@@ -281,8 +281,8 @@ int main(int argc, char* argv[])
             x = camera_position_c.x;
             y = camera_position_c.y;
             z = camera_position_c.z;
-        } 
-        else 
+        }
+        else
         {
             // Modo lookat camera
             camera_position_c  = glm::vec4(x,y,z,1.0f) + camera_movement; // Ponto "c", centro da câmera
@@ -345,15 +345,15 @@ int main(int argc, char* argv[])
         #define CUBE   4
         #define RECTANGLE 5
 
-        
+
         //Esfera que indica a posição da camera lookat
-        model = Matrix_Translate(camera_lookat_l.x,camera_lookat_l.y,camera_lookat_l.z) 
+        model = Matrix_Translate(camera_lookat_l.x,camera_lookat_l.y,camera_lookat_l.z)
                 * Matrix_Scale(0.1f,0.1f,0.1f);
         glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, SPHERE);
         DrawVirtualObject("the_sphere");
 
-        // Desenhamos o modelo da esfera
+        //Desenhamos o modelo da esfera
         model = Matrix_Translate(-0.4f,0.0f,0.5f)
               * Matrix_Scale(0.2f,0.2f,0.2f)
               * Matrix_Rotate_Z(0.6f)
@@ -373,7 +373,8 @@ int main(int argc, char* argv[])
 
         // Desenhamos o modelo do coelho
         model = Matrix_Translate(1.0f,0.0f,0.0f)
-              * Matrix_Rotate_X(g_AngleX + (float)glfwGetTime() * 0.1f);
+            * Matrix_Scale(0.3f,0.3f,0.3f)
+            * Matrix_Rotate_X(g_AngleX + (float)glfwGetTime() * 0.1f);
         glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, BUNNY);
         DrawVirtualObject("the_bunny");
@@ -1215,6 +1216,4 @@ void TextRendering_ShowModelViewProjection(
 //     }
 //     return bboxes;
 // }
-
-
 
