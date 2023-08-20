@@ -399,13 +399,13 @@ int main(int argc, char* argv[])
         DrawVirtualObject("the_cow");
 
         // Desenhamos o modelo do cubo
-        model = Matrix_Translate(-0.9f,-0.9f,-0.9f);
+        model = Matrix_Translate(2.0f,0.0f,-0.7f);
         glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, CUBE);
         DrawVirtualObject("the_cube");
 
         // Desenhamos o modelo do retangulo
-        model = Matrix_Translate(-0.7f,-0.7f,-0.7f);
+        model = Matrix_Translate(-3.0f,0.0f,0.7f);
         glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, RECTANGLE);
         DrawVirtualObject("the_rectangle");

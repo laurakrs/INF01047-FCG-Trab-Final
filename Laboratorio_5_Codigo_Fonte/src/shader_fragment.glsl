@@ -65,10 +65,19 @@ void main()
     vec4 n = normalize(normal);
 
     // Vetor que define o sentido da fonte de luz em relação ao ponto atual.
-    vec4 l = normalize(vec4(1.0,1.0,0.0,0.0));
+    vec4 l = normalize(vec4(1.0,1.0,0.5,0.0)); // nao sei por que 0.5 (antes = 0.0)
 
     // Vetor que define o sentido da câmera em relação ao ponto atual.
     vec4 v = normalize(camera_position - p);
+
+    // Vetor que define o sentido da reflexão especular ideal.
+    vec4 r = -l + 2 * n * dot(n, l);    // Slide 115 das Aulas 17 e 18 - Modelos de Iluminação
+
+    // Parâmetros que definem as propriedades espectrais da superfície
+    vec3 Kd; // Refletância difusa
+    vec3 Ks; // Refletância especular
+    vec3 Ka; // Refletância ambiente
+    float q; // Expoente especular para o modelo de iluminação de Phong
 
     // Coordenadas de textura U e V
     float U = 0.0;
@@ -93,6 +102,12 @@ void main()
 
         U = 0.0;
         V = 0.0;
+
+        // Propriedades espectrais da esfera
+        Kd = vec3(0.8,0.4,0.08);        // Refletância no modelo RGB = (0.8, 0.4, 0.08)
+        Ks = vec3(0.0,0.0,0.0);         // Superfície 100% difusa
+        Ka = Kd / 2;                    // Refletância ambiente no modelo RGB = metade da refletância difusa
+        q = 1.0;                        // Expoente especular de Phong não especificado
     }
     else if ( object_id == BUNNY )
     {
@@ -116,6 +131,12 @@ void main()
 
         U = 0.0;
         V = 0.0;
+
+        // Propriedades espectrais do coelho
+        Kd = vec3(0.08,0.4,0.8);         // Refletância difusa no modelo RGB = (0.08, 0.4, 0.8)
+        Ks = vec3(0.8,0.8,0.8);          // Refletância especular no modelo RGB = (0.8, 0.8, 0.8)
+        Ka = Kd / 2;                     // Refletância ambiente no modelo RGB = metade da refletância difusa
+        q = 32.0;                        // Expoente especular de Phong = 32.0
     }
     else if( object_id == COW )
     {
@@ -132,6 +153,12 @@ void main()
 
         U = 0.0;
         V = 0.0;
+
+        // Propriedades espectrais da vaca
+        Kd = vec3(0.08,0.4,0.8);         // Refletância difusa no modelo RGB = (0.08, 0.4, 0.8)
+        Ks = vec3(0.8,0.8,0.8);          // Refletância especular no modelo RGB = (0.8, 0.8, 0.8)
+        Ka = Kd / 2;                     // Refletância ambiente no modelo RGB = metade da refletância difusa
+        q = 32.0;                        // Expoente especular de Phong = 32.0
     }
     else if( object_id == CUBE )
     {
@@ -148,6 +175,12 @@ void main()
 
         U = 0.0;
         V = 0.0;
+
+        // Propriedades espectrais do cubo
+        Kd = vec3(0.8,0.4,0.08);        // Refletância no modelo RGB = (0.8, 0.4, 0.08)
+        Ks = vec3(0.0,0.0,0.0);         // Superfície 100% difusa
+        Ka = Kd / 2;                    // Refletância ambiente no modelo RGB = metade da refletância difusa
+        q = 1.0;                        // Expoente especular de Phong não especificado
     }
     else if( object_id == RECTANGLE )
     {
@@ -164,15 +197,51 @@ void main()
 
         U = 0.0;
         V = 0.0;
+
+        // Propriedades espectrais do retangulo
+        Kd = vec3(0.8,0.4,0.08);        // Refletância no modelo RGB = (0.8, 0.4, 0.08)
+        Ks = vec3(0.0,0.0,0.0);         // Superfície 100% difusa
+        Ka = Kd / 2;                    // Refletância ambiente no modelo RGB = metade da refletância difusa
+        q = 1.0;                        // Expoente especular de Phong não especificado
     }
     else if ( object_id == PLANE )
     {
         // Coordenadas de textura do plano, obtidas do arquivo OBJ.
         U = texcoords.x;
         V = texcoords.y;
+
+        // Propriedades espectrais do plano
+        Kd = vec3(0.2,0.2,0.2);         // Refletância difusa no modelo RGB = (0.2, 0.2, 0.2)
+        Ks = vec3(0.3,0.3,0.3);         // Refletância especular no modelo RGB = (0.3, 0.3, 0.3)
+        Ka = vec3(0.0,0.0,0.0);         // Refletância ambiente no modelo RGB = zero.
+        q = 20.0;                       // Expoente especular de Phong = 20.0
+    }
+    else // Objeto desconhecido = preto
+    {
+        Kd = vec3(0.0,0.0,0.0);
+        Ks = vec3(0.0,0.0,0.0);
+        Ka = vec3(0.0,0.0,0.0);
+        q = 1.0;
     }
 
+    // Espectro da fonte de iluminação
+    vec3 I = vec3(1.0,1.0,1.0);     // Fonte de luz com espectro no modelo RGB = (1.0, 1.0, 1.0)
 
+    // Espectro da luz ambiente
+    vec3 Ia = vec3(0.2,0.2,0.2);    // Fonte de luz ambiente com espectro no modelo RGB = (0.2, 0.2, 0.2)
+
+    // Termo difuso utilizando a lei dos cossenos de Lambert
+    float clamping_lambert_diffuse = max(0, dot(n,l));                      // Slide 102 das Aulas 17 e 18 - Modelos de Iluminação
+    vec3 lambert_diffuse_term = Kd * I * clamping_lambert_diffuse;          // Slide 102 das Aulas 17 e 18 - Modelos de Iluminação
+
+    // Termo ambiente
+    vec3 ambient_term = Ka * Ia;                                            // Slide 104 das Aulas 17 e 18 - Modelos de Iluminação
+
+    // Termo especular utilizando o modelo de iluminação de Phong
+    float clamping_phong_specular = max(0, dot(r,v));                       // Slide 129 das Aulas 17 e 18 - Modelos de Iluminação
+    vec3 phong_specular_term  = Ks * I * pow(clamping_phong_specular, q);   // Slide 129 das Aulas 17 e 18 - Modelos de Iluminação
+
+    // OU:
 
     // Obtemos a refletância difusa a partir da leitura da imagem TextureImage0
     vec3 Kd0 = texture(TextureImage0, vec2(U,V)).rgb;
@@ -180,7 +249,12 @@ void main()
     // Equação de Iluminação
     float lambert = max(0,dot(n,l));
 
-    color.rgb = Kd0 * (lambert + 0.01);
+    //color.rgb = Kd0 * (lambert + 0.01); // COMENTEI PARA TESTAR A OUTRA
+    // TALVEZ JUNTAR AMBAS
+
+    // Cor final do fragmento calculada com uma combinação dos termos difuso,
+    // especular, e ambiente. Veja slide 129 do documento Aula_17_e_18_Modelos_de_Iluminacao.pdf.
+    color.rgb = lambert_diffuse_term + ambient_term + phong_specular_term;
 
     // NOTE: Se você quiser fazer o rendering de objetos transparentes, é
     // necessário:
