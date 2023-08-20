@@ -351,17 +351,8 @@ int main(int argc, char* argv[])
         DrawVirtualObject("the_sphere");
 
         // Desenhamos outra instancia da esfera
-        model = Matrix_Translate(-0.7f,0.0f,0.0f)
-                * Matrix_Rotate_Z(0.6f)
-                * Matrix_Rotate_X(0.2f)
-                * Matrix_Rotate_Y(g_AngleY + (float)glfwGetTime() * 0.1f);
-        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
-        glUniform1i(g_object_id_uniform, SPHERE);
-        DrawVirtualObject("the_sphere");
-
-        // Desenhamos outra instancia da esfera
-        model = Matrix_Translate(-0.9f,0.0f,0.0f)
-                * Matrix_Scale(0.2f,0.2f,0.2f);
+        model = Matrix_Translate(0.0f,0.0f,0.0f)
+                * Matrix_Scale(0.8f,0.8f,0.8f);
         glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, SPHERE);
         DrawVirtualObject("the_sphere");
