@@ -78,8 +78,7 @@ void main()
     float U = 0.0;
     float V = 0.0;
 
-    // if ( object_id == SPHERE || CENTRAL_SPHERE || SPHERE2 )
-    if ( object_id == SPHERE)
+    if ( object_id == SPHERE || object_id == CENTRAL_SPHERE || object_id == SPHERE2 )
     {
         // PREENCHA AQUI as coordenadas de textura da esfera, computadas com
         // projeção esférica EM COORDENADAS DO MODELO. Utilize como referência
@@ -99,8 +98,7 @@ void main()
         U = 0.0;
         V = 0.0;
     }
-    else if ( object_id == BUNNY)
-    // else if ( object_id == BUNNY || BUNNY2 )
+    else if ( object_id == BUNNY || object_id ==  BUNNY2 )
     {
         // PREENCHA AQUI as coordenadas de textura do coelho, computadas com
         // projeção planar XY em COORDENADAS DO MODELO. Utilize como referência
