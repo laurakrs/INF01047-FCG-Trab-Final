@@ -342,7 +342,8 @@ int main(int argc, char* argv[])
         DrawVirtualObject("the_sphere");
 
         // Desenhamos o modelo da esfera
-        model = Matrix_Translate(-1.0f,0.0f,0.0f)
+        model = Matrix_Translate(-0.4f,0.0f,0.5f)
+              * Matrix_Scale(0.2f,0.2f,0.2f)
               * Matrix_Rotate_Z(0.6f)
               * Matrix_Rotate_X(0.2f)
               * Matrix_Rotate_Y(g_AngleY + (float)glfwGetTime() * 0.1f);
@@ -351,8 +352,8 @@ int main(int argc, char* argv[])
         DrawVirtualObject("the_sphere");
 
         // Desenhamos outra instancia da esfera
-        model = Matrix_Translate(0.0f,0.0f,0.0f)
-                * Matrix_Scale(0.8f,0.8f,0.8f);
+        model = Matrix_Translate(-0.9f,0.3f,0.8f)
+              * Matrix_Scale(0.4f,0.4f,0.4f);
         glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, SPHERE);
         DrawVirtualObject("the_sphere");
@@ -365,6 +366,14 @@ int main(int argc, char* argv[])
         glUniform1i(g_object_id_uniform, BUNNY);
         DrawVirtualObject("the_bunny");
 
+         // Desenhamos outra instancia do coelho
+        model = Matrix_Translate(0.8f,-0.5f,0.5f)
+              * Matrix_Scale(0.2f,0.2f,0.2f)
+              * Matrix_Rotate_X(g_AngleX + (float)glfwGetTime() * 0.1f);
+        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+        glUniform1i(g_object_id_uniform, BUNNY);
+        DrawVirtualObject("the_bunny");
+
         // Desenhamos o plano do chão
         model = Matrix_Translate(0.0f,-1.1f,0.0f);
         glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
@@ -372,11 +381,11 @@ int main(int argc, char* argv[])
         DrawVirtualObject("the_plane");
 
         // Desenhamos o modelo da vaca
-        model = Matrix_Translate(0.2f,-0.5f,0.0f)
-              * Matrix_Rotate_X(g_AngleX + (float)glfwGetTime() * 0.1f);
+        model = Matrix_Translate(-0.4f,-0.5f,-0.6f);
         glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, COW);
         DrawVirtualObject("the_cow");
+
 
         // Imprimimos na tela os ângulos de Euler que controlam a rotação do
         // terceiro cubo.
