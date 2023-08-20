@@ -87,8 +87,8 @@ void main()
     float q_linha; // Expoente especular para o modelo de iluminação de Blinn-Phong
 
     // Coordenadas de textura U e V
-    float U = 0.0;
-    float V = 0.0;
+    //float U = 0.0;
+    //float V = 0.0;
 
     if ( object_id == SPHERE )
     {
@@ -111,11 +111,12 @@ void main()
         //V = 0.0;
 
         // ILUMINACAO DIFUSA
-        // Propriedades espectrais da esfera 
+        // Propriedades espectrais da esfera
         Kd = vec3(0.8,0.4,0.08);        // Refletância no modelo RGB = (0.8, 0.4, 0.08)
         Ks = vec3(0.0,0.0,0.0);         // Superfície 100% difusa
         Ka = Kd / 2;                    // Refletância ambiente no modelo RGB = metade da refletância difusa
         q = 1.0;                        // Expoente especular de Phong não especificado
+        q_linha = 1.0;
     }
     else if ( object_id == BUNNY )
     {
@@ -144,7 +145,7 @@ void main()
         Kd = vec3(0.08,0.4,0.8);         // Refletância difusa no modelo RGB = (0.08, 0.4, 0.8)
         Ks = vec3(0.8,0.8,0.8);          // Refletância especular no modelo RGB = (0.8, 0.8, 0.8)
         Ka = Kd / 2;                     // Refletância ambiente no modelo RGB = metade da refletância difusa
-        q = 32.0;                        // Expoente especular de Phong = 32.0
+        q_linha = 80.0;                      // Expoente especular de Phong = 32.0
     }
     else if( object_id == COW )
     {
@@ -167,6 +168,8 @@ void main()
         Ks = vec3(0.8,0.8,0.8);          // Refletância especular no modelo RGB = (0.8, 0.8, 0.8)
         Ka = Kd / 2;                     // Refletância ambiente no modelo RGB = metade da refletância difusa
         q = 32.0;                        // Expoente especular de Phong = 32.0
+        q_linha = 80.0;
+
     }
     else if( object_id == CUBE )
     {
@@ -189,7 +192,8 @@ void main()
         Ks = vec3(0.0,0.0,0.0);         // Superfície 100% difusa
         Ka = Kd / 2;                    // Refletância ambiente no modelo RGB = metade da refletância difusa
         q = 1.0;                        // Expoente especular de Phong não especificado
-        
+        q_linha = 1.0;
+
     }
     else if( object_id == RECTANGLE )
     {
@@ -212,6 +216,7 @@ void main()
         Ks = vec3(0.0,0.0,0.0);         // Superfície 100% difusa
         Ka = Kd / 2;                    // Refletância ambiente no modelo RGB = metade da refletância difusa
         q = 1.0;                        // Expoente especular de Phong não especificado
+        q_linha = 1.0;
     }
     else if ( object_id == PLANE )
     {
@@ -224,6 +229,7 @@ void main()
         Ks = vec3(0.3,0.3,0.3);         // Refletância especular no modelo RGB = (0.3, 0.3, 0.3)
         Ka = vec3(0.0,0.0,0.0);         // Refletância ambiente no modelo RGB = zero.
         q = 20.0;                       // Expoente especular de Phong = 20.0
+        q_linha = 20.00;
     }
     else // Objeto desconhecido = preto
     {
@@ -231,6 +237,7 @@ void main()
         Ks = vec3(0.0,0.0,0.0);
         Ka = vec3(0.0,0.0,0.0);
         q = 1.0;
+        q_linha = 1.0;
     }
 
 
@@ -255,9 +262,9 @@ void main()
     // MODELO DE BLINN-PHONG - DIFERENTE:
     // Termo especular utilizando o modelo de iluminacao de Blinn-Phong:
     // Slide 150
-    vec3 blinn_phong_specular_term  = Ks*I*pow(dot(n,h),q_linha); 
+    vec3 blinn_phong_specular_term  = Ks*I*pow(dot(n,h),q_linha);
 
-    
+
     // ANTES - NO ARQUIVO ORIGINAL DO LAB 5
     // Obtemos a refletância difusa a partir da leitura da imagem TextureImage0
     // vec3 Kd0 = texture(TextureImage0, vec2(U,V)).rgb;
@@ -283,17 +290,20 @@ void main()
 
     // Cor final do fragmento calculada com uma combinação dos termos difuso,
     // especular, e ambiente. Veja slide 129 do documento Aula_17_e_18_Modelos_de_Iluminacao.pdf.
-    color.rgb = lambert_diffuse_term + ambient_term + phong_specular_term;
+    //color.rgb = lambert_diffuse_term + ambient_term + phong_specular_term;
 
     // OU - PARA BLINN-PHONG:
-    //color.rgb = lambert_diffuse_term + ambient_term + blinn_phong_specular_term;
+    color.rgb = lambert_diffuse_term + ambient_term + blinn_phong_specular_term;
 
 
 
     // Cor final com correção gamma, considerando monitor sRGB.
     // Veja https://en.wikipedia.org/w/index.php?title=Gamma_correction&oldid=751281772#Windows.2C_Mac.2C_sRGB_and_TV.2Fvideo_standard_gammas
     color.rgb = pow(color.rgb, vec3(1.0,1.0,1.0)/2.2);
-} 
+}
+
+
+
 
 
 
