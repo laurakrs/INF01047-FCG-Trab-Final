@@ -64,6 +64,10 @@ struct AABB {
 AABB planeAABB;
 AABB bunnyAABB;
 AABB sphereAABB;
+AABB cowAABB;
+AABB cubeAABB;
+AABB rectangleAABB;
+
 
 // Declaração de funções utilizadas para pilha de matrizes de modelagem.
 void PushMatrix(glm::mat4 M);
@@ -72,6 +76,7 @@ void PopMatrix(glm::mat4& M);
 // Declaração de várias funções utilizadas em main().  Essas estão definidas
 // logo após a definição de main() neste arquivo.
 void BuildTrianglesAndAddToVirtualScene(ObjModel*); // Constrói representação de um ObjModel como malha de triângulos para renderização
+GLuint BuildTriangles(); // Constrói triângulos para renderização
 void ComputeNormals(ObjModel* model); // Computa normais de um ObjModel, caso não existam.
 void LoadShadersFromFiles(); // Carrega os shaders de vértice e fragmento, criando um programa de GPU
 void LoadTextureImage(const char* filename); // Função que carrega imagens de textura
@@ -89,7 +94,7 @@ void TextRendering_ShowModelViewProjection(GLFWwindow* window, glm::mat4 project
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode);
 
 
-	
+
 // Variáveis para movimentação da câmera
 bool tecla_W_pressionada = false;
 bool tecla_A_pressionada = false;
@@ -128,7 +133,7 @@ int main(int argc, char* argv[])
     // de pixels, e com título "INF01047 ...".
     GLFWwindow* window;
     window = glfwCreateWindow(800, 600, "INF01047 - Trabalho Final - Laura Keidann e Matheus Sabadin", NULL, NULL);
-    if (!window) 
+    if (!window)
     {
         glfwTerminate();
         fprintf(stderr, "ERROR: glfwCreateWindow() failed.\n");
@@ -188,6 +193,19 @@ int main(int argc, char* argv[])
     ComputeNormals(&planemodel);
     BuildTrianglesAndAddToVirtualScene(&planemodel);
 
+    ObjModel cowmodel("../../data/cow.obj");
+    ComputeNormals(&cowmodel);
+    BuildTrianglesAndAddToVirtualScene(&cowmodel);
+
+    ObjModel cubemodel("../../data/cube.obj");
+    ComputeNormals(&cubemodel);
+    BuildTrianglesAndAddToVirtualScene(&cubemodel);
+
+    ObjModel rectanglemodel("../../data/rectangle.obj");
+    ComputeNormals(&rectanglemodel);
+    BuildTrianglesAndAddToVirtualScene(&rectanglemodel);
+
+
     if ( argc > 1 )
     {
         ObjModel model(argv[1]);
@@ -204,6 +222,7 @@ int main(int argc, char* argv[])
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     glFrontFace(GL_CCW);
+
 
     //  // VARIAVEIS ESPECIFICAS DA FREE CAMERA
     // Definição de propriedades da câmera
@@ -254,7 +273,7 @@ int main(int argc, char* argv[])
         glm::vec4 camera_view_vector;
         glm::vec4 camera_position_c;
 
-        if (isMovementKeyPressed) 
+        if (isMovementKeyPressed)
         {
             // Modo free camera
             camera_position_c  = glm::vec4(x,y,z,1.0f) + camera_movement;
@@ -262,8 +281,8 @@ int main(int argc, char* argv[])
             x = camera_position_c.x;
             y = camera_position_c.y;
             z = camera_position_c.z;
-        } 
-        else 
+        }
+        else
         {
             // Modo lookat camera
             camera_position_c  = glm::vec4(x,y,z,1.0f) + camera_movement; // Ponto "c", centro da câmera
@@ -322,17 +341,21 @@ int main(int argc, char* argv[])
         #define SPHERE 0
         #define BUNNY  1
         #define PLANE  2
+        #define COW    3
+        #define CUBE   4
+        #define RECTANGLE 5
 
-        
+
         //Esfera que indica a posição da camera lookat
-        model = Matrix_Translate(camera_lookat_l.x,camera_lookat_l.y,camera_lookat_l.z) 
+        model = Matrix_Translate(camera_lookat_l.x,camera_lookat_l.y,camera_lookat_l.z)
                 * Matrix_Scale(0.1f,0.1f,0.1f);
         glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, SPHERE);
         DrawVirtualObject("the_sphere");
 
-        // Desenhamos o modelo da esfera
-        model = Matrix_Translate(-1.0f,0.0f,0.0f)
+        //Desenhamos o modelo da esfera
+        model = Matrix_Translate(-0.4f,0.0f,0.5f)
+              * Matrix_Scale(0.2f,0.2f,0.2f)
               * Matrix_Rotate_Z(0.6f)
               * Matrix_Rotate_X(0.2f)
               * Matrix_Rotate_Y(g_AngleY + (float)glfwGetTime() * 0.1f);
@@ -340,8 +363,25 @@ int main(int argc, char* argv[])
         glUniform1i(g_object_id_uniform, SPHERE);
         DrawVirtualObject("the_sphere");
 
+        // Desenhamos outra instancia da esfera
+        model = Matrix_Translate(-0.9f,0.3f,0.8f)
+              * Matrix_Scale(0.4f,0.4f,0.4f);
+        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+        glUniform1i(g_object_id_uniform, SPHERE);
+        DrawVirtualObject("the_sphere");
+
+
         // Desenhamos o modelo do coelho
         model = Matrix_Translate(1.0f,0.0f,0.0f)
+            * Matrix_Scale(0.3f,0.3f,0.3f)
+            * Matrix_Rotate_X(g_AngleX + (float)glfwGetTime() * 0.1f);
+        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+        glUniform1i(g_object_id_uniform, BUNNY);
+        DrawVirtualObject("the_bunny");
+
+         // Desenhamos outra instancia do coelho
+        model = Matrix_Translate(0.8f,-0.5f,0.5f)
+              * Matrix_Scale(0.2f,0.2f,0.2f)
               * Matrix_Rotate_X(g_AngleX + (float)glfwGetTime() * 0.1f);
         glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, BUNNY);
@@ -352,6 +392,25 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, PLANE);
         DrawVirtualObject("the_plane");
+
+        // Desenhamos o modelo da vaca
+        model = Matrix_Translate(-0.4f,-0.5f,-0.6f);
+        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+        glUniform1i(g_object_id_uniform, COW);
+        DrawVirtualObject("the_cow");
+
+        // Desenhamos o modelo do cubo
+        model = Matrix_Translate(2.0f,0.0f,-0.7f);
+        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+        glUniform1i(g_object_id_uniform, CUBE);
+        DrawVirtualObject("the_cube");
+
+        // Desenhamos o modelo do retangulo
+        model = Matrix_Translate(-3.0f,0.0f,0.7f);
+        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+        glUniform1i(g_object_id_uniform, RECTANGLE);
+        DrawVirtualObject("the_rectangle");
+
 
         // Imprimimos na tela os ângulos de Euler que controlam a rotação do
         // terceiro cubo.
@@ -539,6 +598,9 @@ void LoadShadersFromFiles()
     glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage0"), 0);
     glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage1"), 1);
     glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage2"), 2);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage3"), 3);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage4"), 4);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage5"), 5);
     glUseProgram(0);
 }
 
