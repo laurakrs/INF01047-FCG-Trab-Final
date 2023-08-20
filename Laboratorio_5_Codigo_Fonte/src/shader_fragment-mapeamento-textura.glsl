@@ -91,8 +91,13 @@ void main()
 
         vec4 bbox_center = (bbox_min + bbox_max) / 2.0;
 
-        U = 0.0;
-        V = 0.0;
+        // Slide 150 da Aula 20 - Mapeamento de Texturas
+        vec4 p = position_model - bbox_center;
+        float theta = atan(p.x, p.z);       // Range: [-PI, PI)
+        float phi = asin(p.y / length(p));  // Range: [-PI/2, PI/2)
+
+        U = (theta + M_PI) / (2 * M_PI);    // Range: [0,1)
+        V = (phi + M_PI / 2) / M_PI;        // Range: [0, 1)
     }
     else if ( object_id == BUNNY )
     {
@@ -114,8 +119,14 @@ void main()
         float minz = bbox_min.z;
         float maxz = bbox_max.z;
 
-        U = 0.0;
-        V = 0.0;
+        float x_range = (maxx - minx);
+        float y_range = (maxy - miny);
+
+        float relative_x_position = (position_model.x - minx);
+        float relative_y_position = (position_model.y - miny);
+
+        U = relative_x_position / x_range;
+        V = relative_y_position / y_range;
     }
     else if( object_id == COW )
     {
@@ -171,7 +182,6 @@ void main()
         U = texcoords.x;
         V = texcoords.y;
     }
-
 
 
     // Obtemos a refletância difusa a partir da leitura da imagem TextureImage0

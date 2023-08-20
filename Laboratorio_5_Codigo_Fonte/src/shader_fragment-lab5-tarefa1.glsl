@@ -84,19 +84,14 @@ void main()
         //   variável position_model
 
         vec4 bbox_center = (bbox_min + bbox_max) / 2.0;
-        // p'= c + raio * p-c/||p-c||
-        vec4 p_linha = bbox_center + (position_model - bbox_center)/length(position_model-bbox_center);
-        // vetor p (entre p e p') = p'- c
-        vec4 p_v = p_linha - bbox_center;
-        // angulo theta = arcotangente(px,pz)
-        float theta = atan(p_v.x,p_v.z);
-        // angulo phi = inverso do seno de py/raio
-        float phi = asin(p_v.y);
 
-        // pu = (theta + pi)/2pi
-        U = (theta + M_PI)/(2*M_PI);
-        // pv = (phi + pi/2)/pi
-        V = (phi + M_PI_2)/M_PI;
+        // Slide 150 da Aula 20 - Mapeamento de Texturas
+        vec4 p = position_model - bbox_center;
+        float theta = atan(p.x, p.z);       // Range: [-PI, PI)
+        float phi = asin(p.y / length(p));  // Range: [-PI/2, PI/2)
+
+        U = (theta + M_PI) / (2 * M_PI);    // Range: [0,1)
+        V = (phi + M_PI / 2) / M_PI;        // Range: [0, 1)
     }
     else if ( object_id == BUNNY )
     {
@@ -118,11 +113,14 @@ void main()
         float minz = bbox_min.z;
         float maxz = bbox_max.z;
 
-        // projecao planar XY = (u,v) = (x,y)
-        // ((px-rx/qx-rx),(py-ry)/(qy-ry))
+        float x_range = (maxx - minx);
+        float y_range = (maxy - miny);
 
-        U = (position_model.x - minx)/(maxx - minx);
-        V = (position_model.y - miny)/(maxy - miny);
+        float relative_x_position = (position_model.x - minx);
+        float relative_y_position = (position_model.y - miny);
+
+        U = relative_x_position / x_range;
+        V = relative_y_position / y_range;
     }
     else if ( object_id == PLANE )
     {
@@ -156,5 +154,4 @@ void main()
     // Cor final com correção gamma, considerando monitor sRGB.
     // Veja https://en.wikipedia.org/w/index.php?title=Gamma_correction&oldid=751281772#Windows.2C_Mac.2C_sRGB_and_TV.2Fvideo_standard_gammas
     color.rgb = pow(color.rgb, vec3(1.0,1.0,1.0)/2.2);
-} 
-
+}
