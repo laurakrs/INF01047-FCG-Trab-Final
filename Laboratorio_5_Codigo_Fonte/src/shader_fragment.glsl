@@ -114,12 +114,19 @@ void main()
     }
     else if( object_id == COW )
     {
-        // PREENCHA AQUI
-        // Propriedades espectrais da vaca
-        Kd = vec3(0.08,0.4,0.8);
-        Ks = vec3(0.8,0.8,0.8);
-        Ka = Kd/2;
-        q = 32.0;
+        // as coordenadas de textura da vaca
+        // IGUAL AO COELHO POR ENQUANTO
+        float minx = bbox_min.x;
+        float maxx = bbox_max.x;
+
+        float miny = bbox_min.y;
+        float maxy = bbox_max.y;
+
+        float minz = bbox_min.z;
+        float maxz = bbox_max.z;
+
+        U = 0.0;
+        V = 0.0;
     }
     else if ( object_id == PLANE )
     {
