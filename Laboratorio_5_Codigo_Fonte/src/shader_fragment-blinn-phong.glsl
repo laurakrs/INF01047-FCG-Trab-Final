@@ -84,7 +84,7 @@ void main()
     vec3 Ks; // Refletância especular
     vec3 Ka; // Refletância ambiente
     float q; // Expoente especular para o modelo de iluminação de Phong
-    float q'; // Expoente especular para o modelo de iluminação de Blinn-Phong
+    float q_linha; // Expoente especular para o modelo de iluminação de Blinn-Phong
 
     // Coordenadas de textura U e V
     float U = 0.0;
@@ -107,8 +107,8 @@ void main()
 
         vec4 bbox_center = (bbox_min + bbox_max) / 2.0;
 
-        U = 0.0;
-        V = 0.0;
+        //U = 0.0;
+        //V = 0.0;
 
         // ILUMINACAO DIFUSA
         // Propriedades espectrais da esfera 
@@ -137,8 +137,8 @@ void main()
         float minz = bbox_min.z;
         float maxz = bbox_max.z;
 
-        U = 0.0;
-        V = 0.0;
+        //U = 0.0;
+        //V = 0.0;
 
         // Propriedades espectrais do coelho
         Kd = vec3(0.08,0.4,0.8);         // Refletância difusa no modelo RGB = (0.08, 0.4, 0.8)
@@ -159,8 +159,8 @@ void main()
         float minz = bbox_min.z;
         float maxz = bbox_max.z;
 
-        U = 0.0;
-        V = 0.0;
+        //U = 0.0;
+        //V = 0.0;
 
         // Propriedades espectrais da vaca
         Kd = vec3(0.08,0.4,0.8);         // Refletância difusa no modelo RGB = (0.08, 0.4, 0.8)
@@ -181,8 +181,8 @@ void main()
         float minz = bbox_min.z;
         float maxz = bbox_max.z;
 
-        U = 0.0;
-        V = 0.0;
+        //U = 0.0;
+        //V = 0.0;
 
         // Propriedades espectrais do cubo
         Kd = vec3(0.8,0.4,0.08);        // Refletância no modelo RGB = (0.8, 0.4, 0.08)
@@ -204,8 +204,8 @@ void main()
         float minz = bbox_min.z;
         float maxz = bbox_max.z;
 
-        U = 0.0;
-        V = 0.0;
+        //U = 0.0;
+        //V = 0.0;
 
         // Propriedades espectrais do retangulo
         Kd = vec3(0.8,0.4,0.08);        // Refletância no modelo RGB = (0.8, 0.4, 0.08)
@@ -216,8 +216,8 @@ void main()
     else if ( object_id == PLANE )
     {
         // Coordenadas de textura do plano, obtidas do arquivo OBJ.
-        U = texcoords.x;
-        V = texcoords.y;
+        //U = texcoords.x;
+        //V = texcoords.y;
 
         // Propriedades espectrais do plano
         Kd = vec3(0.2,0.2,0.2);         // Refletância difusa no modelo RGB = (0.2, 0.2, 0.2)
@@ -255,7 +255,7 @@ void main()
     // MODELO DE BLINN-PHONG - DIFERENTE:
     // Termo especular utilizando o modelo de iluminacao de Blinn-Phong:
     // Slide 150
-    vec3 blinn_phong_specular_term  = Ks*I*pow(dot(n,h),q'); 
+    vec3 blinn_phong_specular_term  = Ks*I*pow(dot(n,h),q_linha); 
 
     
     // ANTES - NO ARQUIVO ORIGINAL DO LAB 5
