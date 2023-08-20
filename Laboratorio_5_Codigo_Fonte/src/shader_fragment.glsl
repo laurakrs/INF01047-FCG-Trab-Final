@@ -19,12 +19,16 @@ uniform mat4 view;
 uniform mat4 projection;
 
 // Identificador que define qual objeto está sendo desenhado no momento
-#define SPHERE 0
-#define BUNNY  1
-#define PLANE  2
-#define COW    3
-#define CUBE   4
-#define RECTANGLE 5
+#define CENTRAL_SPHERE 0
+#define SPHERE 1
+#define SPHERE2 2
+#define BUNNY  3
+#define BUNNY2 4
+#define PLANE  5
+#define COW    6
+#define CUBE   7
+#define RECTANGLE 8
+
 uniform int object_id;
 
 // Parâmetros da axis-aligned bounding box (AABB) do modelo
@@ -74,7 +78,8 @@ void main()
     float U = 0.0;
     float V = 0.0;
 
-    if ( object_id == SPHERE )
+    // if ( object_id == SPHERE || CENTRAL_SPHERE || SPHERE2 )
+    if ( object_id == SPHERE)
     {
         // PREENCHA AQUI as coordenadas de textura da esfera, computadas com
         // projeção esférica EM COORDENADAS DO MODELO. Utilize como referência
@@ -94,7 +99,8 @@ void main()
         U = 0.0;
         V = 0.0;
     }
-    else if ( object_id == BUNNY )
+    else if ( object_id == BUNNY)
+    // else if ( object_id == BUNNY || BUNNY2 )
     {
         // PREENCHA AQUI as coordenadas de textura do coelho, computadas com
         // projeção planar XY em COORDENADAS DO MODELO. Utilize como referência

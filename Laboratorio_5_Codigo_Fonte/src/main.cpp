@@ -55,6 +55,7 @@
 #include "textrendering.h"
 #include "SceneObject.h"
 #include "ObjectInstance.h"
+#include <vector>
 
 
 struct AABB {
@@ -239,6 +240,66 @@ int main(int argc, char* argv[])
     glm::vec4 camera_lookat_l = glm::vec4(0.0f,0.0f,0.0f,1.0f);;
     glm::vec4 origin = glm::vec4(0.0f,0.0f,0.0f,1.0f);;
 
+    // Inicialização dos instâncias dos objetos
+    #define CENTRAL_SPHERE 0
+    #define SPHERE 1
+    #define SPHERE2 2
+    #define BUNNY  3
+    #define BUNNY2 4
+    #define PLANE  5
+    #define COW    6
+    #define CUBE   7
+    #define RECTANGLE 8
+
+    // Inicialização de um objeto
+    glm::mat4 model = Matrix_Identity(); // Transformação identidade de modelagem
+
+    // For the first sphere:
+    model = Matrix_Translate(camera_lookat_l.x,camera_lookat_l.y,camera_lookat_l.z)
+            * Matrix_Scale(0.05f,0.05f,0.05f);
+    ObjectInstance("the_sphere", model, CENTRAL_SPHERE);
+
+    //Desenhamos o modelo da esfera
+    model = Matrix_Translate(-0.4f,0.0f,0.5f)
+            * Matrix_Scale(0.2f,0.2f,0.2f)
+            * Matrix_Rotate_Z(0.6f)
+            * Matrix_Rotate_X(0.2f)
+            * Matrix_Rotate_Y(g_AngleY + (float)glfwGetTime() * 0.1f);
+    ObjectInstance("the_sphere", model, SPHERE);
+
+    // Desenhamos outra instancia da esfera
+    model = Matrix_Translate(-0.9f,0.3f,0.8f)
+            * Matrix_Scale(0.4f,0.4f,0.4f);
+    ObjectInstance("the_sphere", model, SPHERE2);
+
+    // Desenhamos o modelo do coelho
+    model = Matrix_Translate(1.0f,0.0f,0.0f)
+        * Matrix_Scale(0.3f,0.3f,0.3f)
+        * Matrix_Rotate_X(g_AngleX + (float)glfwGetTime() * 0.1f);
+    ObjectInstance("the_bunny", model, BUNNY);
+    
+    // Desenhamos outra instancia do coelho
+    model = Matrix_Translate(0.8f,-0.5f,0.5f)
+            * Matrix_Scale(0.2f,0.2f,0.2f)
+            * Matrix_Rotate_X(g_AngleX + (float)glfwGetTime() * 0.1f);
+    ObjectInstance("the_bunny", model, BUNNY2);
+
+    // Desenhamos o plano do chão
+    model = Matrix_Translate(0.0f,-1.1f,0.0f);
+    ObjectInstance("the_plane", model, PLANE);
+
+    // Desenhamos o modelo da vaca
+    model = Matrix_Translate(-0.4f,-0.5f,-0.6f);
+    ObjectInstance("the_cow", model, COW);
+
+    // Desenhamos o modelo do cubo
+    model = Matrix_Translate(2.0f,0.0f,-0.7f);
+    ObjectInstance("the_cube", model, CUBE);
+
+    // Desenhamos o modelo do retangulo
+    model = Matrix_Translate(-3.0f,0.0f,0.7f);
+    ObjectInstance("the_rectangle", model, RECTANGLE);
+
     // Ficamos em um loop infinito, renderizando, até que o usuário feche a janela
     while (!glfwWindowShouldClose(window))
     {
@@ -338,79 +399,24 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(g_view_uniform       , 1 , GL_FALSE , glm::value_ptr(view));
         glUniformMatrix4fv(g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));
 
-        #define SPHERE 0
-        #define BUNNY  1
-        #define PLANE  2
-        #define COW    3
-        #define CUBE   4
-        #define RECTANGLE 5
 
 
-        //Esfera que indica a posição da camera lookat
-        model = Matrix_Translate(camera_lookat_l.x,camera_lookat_l.y,camera_lookat_l.z)
-                * Matrix_Scale(0.05f,0.05f,0.05f);
-        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
-        glUniform1i(g_object_id_uniform, SPHERE);
-        DrawVirtualObject("the_sphere");
+        for (const auto& pair : g_ObjectInstances) 
+        {
+            int key = pair.first;
+            ObjectInstance instance = pair.second;
 
-        //Desenhamos o modelo da esfera
-        model = Matrix_Translate(-0.4f,0.0f,0.5f)
-              * Matrix_Scale(0.2f,0.2f,0.2f)
-              * Matrix_Rotate_Z(0.6f)
-              * Matrix_Rotate_X(0.2f)
-              * Matrix_Rotate_Y(g_AngleY + (float)glfwGetTime() * 0.1f);
-        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
-        glUniform1i(g_object_id_uniform, SPHERE);
-        DrawVirtualObject("the_sphere");
-
-        // Desenhamos outra instancia da esfera
-        model = Matrix_Translate(-0.9f,0.3f,0.8f)
-              * Matrix_Scale(0.4f,0.4f,0.4f);
-        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
-        glUniform1i(g_object_id_uniform, SPHERE);
-        DrawVirtualObject("the_sphere");
-
-
-        // Desenhamos o modelo do coelho
-        model = Matrix_Translate(1.0f,0.0f,0.0f)
-            * Matrix_Scale(0.3f,0.3f,0.3f)
-            * Matrix_Rotate_X(g_AngleX + (float)glfwGetTime() * 0.1f);
-        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
-        glUniform1i(g_object_id_uniform, BUNNY);
-        DrawVirtualObject("the_bunny");
-
-         // Desenhamos outra instancia do coelho
-        model = Matrix_Translate(0.8f,-0.5f,0.5f)
-              * Matrix_Scale(0.2f,0.2f,0.2f)
-              * Matrix_Rotate_X(g_AngleX + (float)glfwGetTime() * 0.1f);
-        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
-        glUniform1i(g_object_id_uniform, BUNNY);
-        DrawVirtualObject("the_bunny");
-
-        // Desenhamos o plano do chão
-        model = Matrix_Translate(0.0f,-1.1f,0.0f);
-        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
-        glUniform1i(g_object_id_uniform, PLANE);
-        DrawVirtualObject("the_plane");
-
-        // Desenhamos o modelo da vaca
-        model = Matrix_Translate(-0.4f,-0.5f,-0.6f);
-        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
-        glUniform1i(g_object_id_uniform, COW);
-        DrawVirtualObject("the_cow");
-
-        // Desenhamos o modelo do cubo
-        model = Matrix_Translate(2.0f,0.0f,-0.7f);
-        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
-        glUniform1i(g_object_id_uniform, CUBE);
-        DrawVirtualObject("the_cube");
-
-        // Desenhamos o modelo do retangulo
-        model = Matrix_Translate(-3.0f,0.0f,0.7f);
-        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
-        glUniform1i(g_object_id_uniform, RECTANGLE);
-        DrawVirtualObject("the_rectangle");
-
+            // Modificação da posição da esfera
+            if (key == CENTRAL_SPHERE)
+            {
+                instance.model_matrix = Matrix_Translate(camera_lookat_l.x,camera_lookat_l.y,camera_lookat_l.z)
+                    * Matrix_Scale(0.05f,0.05f,0.05f);
+            }
+            
+            glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(instance.model_matrix));
+            glUniform1i(g_object_id_uniform, key);
+            DrawVirtualObject(instance.object_name.c_str());
+        }
 
         // Imprimimos na tela os ângulos de Euler que controlam a rotação do
         // terceiro cubo.
