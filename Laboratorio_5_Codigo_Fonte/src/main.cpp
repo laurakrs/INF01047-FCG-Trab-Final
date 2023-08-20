@@ -348,7 +348,7 @@ int main(int argc, char* argv[])
 
         //Esfera que indica a posição da camera lookat
         model = Matrix_Translate(camera_lookat_l.x,camera_lookat_l.y,camera_lookat_l.z)
-                * Matrix_Scale(0.1f,0.1f,0.1f);
+                * Matrix_Scale(0.05f,0.05f,0.05f);
         glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, SPHERE);
         DrawVirtualObject("the_sphere");
