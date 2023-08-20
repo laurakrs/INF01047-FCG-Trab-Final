@@ -225,6 +225,8 @@ int main(int argc, char* argv[])
     float fixed_z = fixed_r*cos(g_CameraPhi)*cos(g_CameraTheta);
     glm::vec4 camera_movement = glm::vec4(0.0f,0.0f,0.0f,0.0f);;
     glm::vec4 camera_lookat_l_movement = glm::vec4(0.0f,0.0f,0.0f,0.0f);;
+    glm::vec4 camera_lookat_l = glm::vec4(0.0f,0.0f,0.0f,1.0f);;
+    glm::vec4 origin = glm::vec4(0.0f,0.0f,0.0f,1.0f);;
 
     // Ficamos em um loop infinito, renderizando, até que o usuário feche a janela
     while (!glfwWindowShouldClose(window))
@@ -263,23 +265,18 @@ int main(int argc, char* argv[])
         if (isMovementKeyPressed) 
         {
             // Modo free camera
-            camera_position_c  = glm::vec4(x,y,z,1.0f) + camera_movement;	
-            // camera_position_c  = glm::vec4(fixed_x,fixed_y,fixed_z,1.0f) + camera_movement;	
-            // camera_view_vector = glm::vec4(-x,-y,-z,0.0f); // Vetor "view", sentido para onde a câmera está virada
-            camera_lookat_l_movement += camera_movement; // Move the lookat point with the camera
+            camera_position_c  = glm::vec4(x,y,z,1.0f) + camera_movement;
+            camera_lookat_l = origin + camera_movement;  // Move the lookat point in tandem with the camera.
+            x = camera_position_c.x;
+            y = camera_position_c.y;
+            z = camera_position_c.z;
         } 
         else 
         {
-            camera_movement = glm::vec4(0.0f,0.0f,0.0f,0.0f);
-            camera_lookat_l_movement = glm::vec4(0.0f,0.0f,0.0f,0.0f); // Reset the lookat movement
-            // Modo câmera lookat
-            camera_position_c  = glm::vec4(x,y,z,1.0f); // Ponto "c", centro da câmera
-            glm::vec4 camera_lookat_l = glm::vec4(0.0f,0.0f,0.0f,1.0f); // Ponto "l", para onde a câmera (look-at) estará sempre olhando
+            // Modo lookat camera
+            camera_position_c  = glm::vec4(x,y,z,1.0f) + camera_movement; // Ponto "c", centro da câmera
             camera_view_vector = camera_lookat_l - camera_position_c; // Vetor "view", sentido para onde a câmera está virada
         }
-
-        // glm::vec4 camera_lookat_l = glm::vec4(0.0f,0.0f,0.0f,1.0f); // Ponto "l", para onde a câmera (look-at) estará sempre olhando
-        // camera_view_vector = camera_lookat_l - camera_position_c; // Vetor "view", sentido para onde a câmera está virada
 
         // FREE CAMERA
         // Definicoes da Free Camera
@@ -334,6 +331,14 @@ int main(int argc, char* argv[])
         #define BUNNY  1
         #define PLANE  2
 
+        
+        //Esfera que indica a posição da camera lookat
+        model = Matrix_Translate(camera_lookat_l.x,camera_lookat_l.y,camera_lookat_l.z) 
+                * Matrix_Scale(0.1f,0.1f,0.1f);
+        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+        glUniform1i(g_object_id_uniform, SPHERE);
+        DrawVirtualObject("the_sphere");
+
         // Desenhamos o modelo da esfera
         model = Matrix_Translate(-1.0f,0.0f,0.0f)
               * Matrix_Rotate_Z(0.6f)
@@ -342,14 +347,6 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, SPHERE);
         DrawVirtualObject("the_sphere");
-
-        // model = Matrix_Translate(-8.0f,0.0f,0.0f)
-        //       * Matrix_Rotate_Z(0.6f)
-        //       * Matrix_Rotate_X(0.2f)
-        //       * Matrix_Rotate_Y(g_AngleY + (float)glfwGetTime() * 0.1f);
-        // glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
-        // glUniform1i(g_object_id_uniform, SPHERE);
-        // DrawVirtualObject("the_sphere");
 
         // Desenhamos o modelo do coelho
         model = Matrix_Translate(1.0f,0.0f,0.0f)
