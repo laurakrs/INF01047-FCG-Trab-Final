@@ -66,7 +66,7 @@ AABB bunnyAABB;
 AABB sphereAABB;
 AABB cowAABB;
 AABB cubeAABB;
-AABB rectangle;
+AABB rectangleAABB;
 
 
 // Declaração de funções utilizadas para pilha de matrizes de modelagem.
@@ -342,6 +342,8 @@ int main(int argc, char* argv[])
         #define BUNNY  1
         #define PLANE  2
         #define COW    3
+        #define CUBE   4
+        #define RECTANGLE 5
 
         
         //Esfera que indica a posição da camera lookat
@@ -399,13 +401,13 @@ int main(int argc, char* argv[])
         // Desenhamos o modelo do cubo
         model = Matrix_Translate(-0.9f,-0.9f,-0.9f);
         glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
-        glUniform1i(g_object_id_uniform, COW);
+        glUniform1i(g_object_id_uniform, CUBE);
         DrawVirtualObject("the_cube");
 
         // Desenhamos o modelo do retangulo
         model = Matrix_Translate(-0.7f,-0.7f,-0.7f);
         glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
-        glUniform1i(g_object_id_uniform, COW);
+        glUniform1i(g_object_id_uniform, RECTANGLE);
         DrawVirtualObject("the_rectangle");
 
 
