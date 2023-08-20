@@ -184,12 +184,7 @@ void main()
     // Equação de Iluminação
     float lambert = max(0,dot(n,l));
 
-    //color.rgb = Kd0 * (lambert + 0.01); // COMENTEI PARA TESTAR A OUTRA
-    // TALVEZ JUNTAR AMBAS
-
-    // Cor final do fragmento calculada com uma combinação dos termos difuso,
-    // especular, e ambiente. Veja slide 129 do documento Aula_17_e_18_Modelos_de_Iluminacao.pdf.
-    color.rgb = lambert_diffuse_term + ambient_term + phong_specular_term;
+    color.rgb = Kd0 * (lambert + 0.01);
 
     // NOTE: Se você quiser fazer o rendering de objetos transparentes, é
     // necessário:
