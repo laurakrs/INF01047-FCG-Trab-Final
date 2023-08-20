@@ -22,6 +22,7 @@ uniform mat4 projection;
 #define SPHERE 0
 #define BUNNY  1
 #define PLANE  2
+#define COW    3
 uniform int object_id;
 
 // Parâmetros da axis-aligned bounding box (AABB) do modelo
@@ -110,6 +111,15 @@ void main()
 
         U = 0.0;
         V = 0.0;
+    }
+    else if( object_id == COW )
+    {
+        // PREENCHA AQUI
+        // Propriedades espectrais da vaca
+        Kd = vec3(0.08,0.4,0.8);
+        Ks = vec3(0.8,0.8,0.8);
+        Ka = Kd/2;
+        q = 32.0;
     }
     else if ( object_id == PLANE )
     {
