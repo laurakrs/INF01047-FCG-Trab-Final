@@ -179,8 +179,8 @@ int main(int argc, char* argv[])
     // Carregamos duas imagens para serem utilizadas como textura
     LoadTextureImage("../../data/tc-earth_daymap_surface.jpg");      // TextureImage0
     LoadTextureImage("../../data/tc-earth_nightmap_citylights.gif"); // TextureImage1
-    LoadTextureImage("../data/brick_wall_02_diff_4k.jpg"); // TextureImage3
-    LoadTextureImage("../data/wood_table_001_diff_4k.jpg"); // TextureImage4
+    LoadTextureImage("../../data/brick_wall_02_diff_4k.jpg"); // TextureImage3
+    LoadTextureImage("../../data/wood_table_001_diff_4k.jpg"); // TextureImage4
 
     // Construímos a representação de objetos geométricos através de malhas de triângulos
     ObjModel spheremodel("../../data/sphere.obj");
@@ -1218,6 +1218,4 @@ void TextRendering_ShowModelViewProjection(
 //     }
 //     return bboxes;
 // }
-
-
 
