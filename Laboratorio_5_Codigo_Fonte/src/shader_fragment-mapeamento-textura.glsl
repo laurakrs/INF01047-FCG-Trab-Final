@@ -70,9 +70,14 @@ void main()
     // Vetor que define o sentido da câmera em relação ao ponto atual.
     vec4 v = normalize(camera_position - p);
 
+
     // Coordenadas de textura U e V
     float U = 0.0;
     float V = 0.0;
+
+
+    vec3 Kd0 = texture(TextureImage0, vec2(U,V)).rgb;
+
 
     if ( object_id == SPHERE )
     {
@@ -99,8 +104,8 @@ void main()
         U = (theta + M_PI) / (2 * M_PI);    // Range: [0,1)
         V = (phi + M_PI / 2) / M_PI;        // Range: [0, 1)
 
-        // Obtemos a refletância difusa a partir da leitura da imagem TextureImage0
-        vec3 Kd0 = texture(TextureImage0, vec2(U,V)).rgb;
+        Kd0 = texture(TextureImage0, vec2(U,V)).rgb;
+
     }
     else if ( object_id == BUNNY )
     {
@@ -131,7 +136,7 @@ void main()
         U = relative_x_position / x_range;
         V = relative_y_position / y_range;
 
-        vec3 Kd0 = texture(TextureImage0, vec2(U,V)).rgb;
+        Kd0 = texture(TextureImage0, vec2(U,V)).rgb;
     }
     else if( object_id == COW )
     {
@@ -163,6 +168,8 @@ void main()
 
         U = relative_x_position / x_range;
         V = relative_y_position / y_range;
+
+        Kd0 = texture(TextureImage3, vec2(U,V)).rgb;
     }
     else if( object_id == CUBE )
     {
@@ -186,7 +193,7 @@ void main()
         U = relative_x_position / x_range;
         V = relative_y_position / y_range;
 
-        vec3 Kd0 = texture(TextureImage4, vec2(U,V)).rgb;
+        Kd0 = texture(TextureImage2, vec2(U,V)).rgb;
     }
     else if( object_id == RECTANGLE )
     {
@@ -210,7 +217,7 @@ void main()
         U = relative_x_position / x_range;
         V = relative_y_position / y_range;
 
-        vec3 Kd0 = texture(TextureImage3, vec2(U,V)).rgb;
+        Kd0 = texture(TextureImage3, vec2(U,V)).rgb;
     }
     else if ( object_id == PLANE )
     {
@@ -218,9 +225,8 @@ void main()
         U = texcoords.x;
         V = texcoords.y;
 
-        vec3 Kd0 = texture(TextureImage0, vec2(U,V)).rgb;
+        Kd0 = texture(TextureImage0, vec2(U,V)).rgb;
     }
-
 
     // Obtemos a refletância difusa a partir da leitura da imagem TextureImage0
     //vec3 Kd0 = texture(TextureImage0, vec2(U,V)).rgb;
@@ -247,5 +253,4 @@ void main()
     // Cor final com correção gamma, considerando monitor sRGB.
     // Veja https://en.wikipedia.org/w/index.php?title=Gamma_correction&oldid=751281772#Windows.2C_Mac.2C_sRGB_and_TV.2Fvideo_standard_gammas
     color.rgb = pow(color.rgb, vec3(1.0,1.0,1.0)/2.2);
-} 
-
+}

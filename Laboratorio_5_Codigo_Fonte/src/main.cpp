@@ -1219,5 +1219,3 @@ void TextRendering_ShowModelViewProjection(
 //     return bboxes;
 // }
 
-
-
