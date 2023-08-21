@@ -1076,9 +1076,12 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
     if (key == GLFW_KEY_0 || key == GLFW_KEY_1 || key == GLFW_KEY_2 || key == GLFW_KEY_3 || key == GLFW_KEY_4 || 
         key == GLFW_KEY_5 || key == GLFW_KEY_6 || key == GLFW_KEY_7 || key == GLFW_KEY_8 || key == GLFW_KEY_9)
     {
+        float scale = 1.25f;
+        float descale = 1.00f/scale;
+
         if (g_selectedObject != -1)
         {
-            g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Scale(1.00/1.5f,1.00/1.5f,1.00/1.5f);
+            g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Scale(descale,descale,descale);
         }
         
         switch (key)
@@ -1114,7 +1117,7 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
             break;
         }
 
-        g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Scale(1.5f,1.5f,1.5f);
+        g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Scale(scale,scale,scale);
     }
 
 
