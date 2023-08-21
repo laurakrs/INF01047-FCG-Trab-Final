@@ -1071,20 +1071,57 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
             ;
     }
 
-    if (key == GLFW_KEY_0)
+    if (key == GLFW_KEY_DOWN)
     {
         if (action == GLFW_PRESS)
-            // Usuário apertou a tecla D, então atualizamos o estado para pressionada
-            tecla_D_pressionada = true;
+        {
+            g_ObjectInstances[BUNNY].model_matrix = g_ObjectInstances[BUNNY].model_matrix * Matrix_Translate(0.0f,0.0f,1.1f);
+        }
         else if (action == GLFW_RELEASE)
-            // Usuário largou a tecla D, então atualizamos o estado para NÃO pressionada
-            tecla_D_pressionada = false;
-        else if (action == GLFW_REPEAT)
-            // Usuário está segurando a tecla D e o sistema operacional está
-            // disparando eventos de repetição. Neste caso, não precisamos
-            // atualizar o estado da tecla, pois antes de um evento REPEAT
-            // necessariamente deve ter ocorrido um evento PRESS.
             ;
+        else if (action == GLFW_REPEAT)
+        {
+            g_ObjectInstances[BUNNY].model_matrix = g_ObjectInstances[BUNNY].model_matrix * Matrix_Translate(0.0f,0.0f,1.1f);
+        }   
+    }
+    if (key == GLFW_KEY_UP)
+    {
+        if (action == GLFW_PRESS)
+        {
+            g_ObjectInstances[BUNNY].model_matrix = g_ObjectInstances[BUNNY].model_matrix * Matrix_Translate(0.0f,0.0f,-1.1f);
+        }
+        else if (action == GLFW_RELEASE)
+            ;
+        else if (action == GLFW_REPEAT)
+        {
+            g_ObjectInstances[BUNNY].model_matrix = g_ObjectInstances[BUNNY].model_matrix * Matrix_Translate(0.0f,0.0f,-1.1f);
+        }   
+    }
+    if (key == GLFW_KEY_RIGHT)
+    {
+        if (action == GLFW_PRESS)
+        {
+            g_ObjectInstances[BUNNY].model_matrix = g_ObjectInstances[BUNNY].model_matrix * Matrix_Translate(1.1f,0.0f,0.0f);
+        }
+        else if (action == GLFW_RELEASE)
+            ;
+        else if (action == GLFW_REPEAT)
+        {
+            g_ObjectInstances[BUNNY].model_matrix = g_ObjectInstances[BUNNY].model_matrix * Matrix_Translate(1.1f,0.0f,0.0f);
+        }   
+    }
+    if (key == GLFW_KEY_LEFT)
+    {
+        if (action == GLFW_PRESS)
+        {
+            g_ObjectInstances[BUNNY].model_matrix = g_ObjectInstances[BUNNY].model_matrix * Matrix_Translate(-1.1f,0.0f,0.0f);
+        }
+        else if (action == GLFW_RELEASE)
+        ;
+        else if (action == GLFW_REPEAT)
+        {
+            g_ObjectInstances[BUNNY].model_matrix = g_ObjectInstances[BUNNY].model_matrix * Matrix_Translate(-1.1f,0.0f,0.0f);
+        }   
     }
 }
 
