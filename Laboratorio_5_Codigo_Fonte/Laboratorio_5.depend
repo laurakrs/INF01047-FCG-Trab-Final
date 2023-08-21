@@ -743,7 +743,7 @@
 
 1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\simd\integer.h
 
-1692465194 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\main.cpp
+1692573650 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\main.cpp
 	<cmath>
 	<cstdio>
 	<cstdlib>
@@ -770,6 +770,8 @@
 	"Callbacks.h"
 	"textrendering.h"
 	"SceneObject.h"
+	"ObjectInstance.h"
+	<vector>
 
 1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\gtc\type_ptr.hpp
 	"../gtc/quaternion.hpp"
@@ -1047,7 +1049,7 @@
 	<glm/vec4.hpp>
 	"globals.h"
 
-1692452987 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\globals.cpp
+1692566464 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\globals.cpp
 	"globals.h"
 
 1692452987 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\globals.h
@@ -3220,4 +3222,12 @@
 
 1692546165 source:d:\eugenio\desktop\inf01047-fcg-trab-final-laura\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\tiny_obj_loader.cpp
 	"tiny_obj_loader.h"
+
+1692569807 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\objectinstance.h
+	<string>
+	<map>
+	<glm/glm.hpp>
+
+1692569264 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\objectinstance.cpp
+	"ObjectInstance.h"
 
