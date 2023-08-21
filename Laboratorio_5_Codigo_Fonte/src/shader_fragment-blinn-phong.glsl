@@ -19,12 +19,16 @@ uniform mat4 view;
 uniform mat4 projection;
 
 // Identificador que define qual objeto está sendo desenhado no momento
-#define SPHERE 0
-#define BUNNY  1
-#define PLANE  2
-#define COW    3
-#define CUBE   4
-#define RECTANGLE 5
+#define CENTRAL_SPHERE 0
+#define SPHERE 1
+#define SPHERE2 2
+#define BUNNY  3
+#define BUNNY2 4
+#define PLANE  5
+#define COW    6
+#define CUBE   7
+#define RECTANGLE 8
+
 uniform int object_id;
 
 // Parâmetros da axis-aligned bounding box (AABB) do modelo
