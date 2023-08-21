@@ -96,14 +96,6 @@ void TextRendering_ShowModelViewProjection(GLFWwindow* window, glm::mat4 project
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode);
 
 
-
-// Variáveis para movimentação da câmera
-bool tecla_W_pressionada = false;
-bool tecla_A_pressionada = false;
-bool tecla_S_pressionada = false;
-bool tecla_D_pressionada = false;
-
-
 // CÓDIGO PRINCIPAL ===========================
 int main(int argc, char* argv[])
 {
@@ -401,8 +393,7 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(g_view_uniform       , 1 , GL_FALSE , glm::value_ptr(view));
         glUniformMatrix4fv(g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));
 
-
-
+        // Gera as imagens dos objetos
         for (const auto& pair : g_ObjectInstances) 
         {
             int key = pair.first;
@@ -1082,20 +1073,85 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
             ;
     }
 
-    if (key == GLFW_KEY_0)
+    if (key == GLFW_KEY_0 || key == GLFW_KEY_1 || key == GLFW_KEY_2 || key == GLFW_KEY_3 || key == GLFW_KEY_4 || 
+        key == GLFW_KEY_5 || key == GLFW_KEY_6 || key == GLFW_KEY_7 || key == GLFW_KEY_8 || key == GLFW_KEY_9)
     {
+        if (g_selectedObject != -1)
+        {
+            g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Scale(1.00/1.5f,1.00/1.5f,1.00/1.5f);
+        }
+        
+        switch (key)
+        {
+        case GLFW_KEY_0:
+            g_selectedObject = 0;
+            break;
+        case GLFW_KEY_1:
+            g_selectedObject = 1;
+            break;
+        case GLFW_KEY_2:
+            g_selectedObject = 2;
+            break;
+        case GLFW_KEY_3:
+            g_selectedObject = 3;
+            break;
+        case GLFW_KEY_4:
+            g_selectedObject = 4;
+            break;
+        case GLFW_KEY_5:
+            g_selectedObject = 5;
+            break;
+        case GLFW_KEY_6:
+            g_selectedObject = 6;
+            break;
+        case GLFW_KEY_7:
+            g_selectedObject = 7;
+            break;
+        case GLFW_KEY_8:
+            g_selectedObject = 8;
+            break;
+        default:
+            break;
+        }
+
+        g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Scale(1.5f,1.5f,1.5f);
+    }
+
+
+    if (g_selectedObject != -1)
+    {
+        float translation_x = 0.0f;
+        float translation_y = 0.0f;
+        float translation_z = 0.0f;
+
+        switch (key)
+        {
+        case GLFW_KEY_DOWN:
+            translation_z = 1.1f;
+            break;
+        case GLFW_KEY_UP:
+            translation_z = -1.1f;
+            break;
+        case GLFW_KEY_RIGHT:
+            translation_x = 1.1f;
+            break;
+        case GLFW_KEY_LEFT:
+            translation_x = -1.1f;
+            break;
+        default:
+            break;
+        }
+        
         if (action == GLFW_PRESS)
-            // Usuário apertou a tecla D, então atualizamos o estado para pressionada
-            tecla_D_pressionada = true;
+        {
+            g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Translate(translation_x,translation_y,translation_z);
+        }
         else if (action == GLFW_RELEASE)
-            // Usuário largou a tecla D, então atualizamos o estado para NÃO pressionada
-            tecla_D_pressionada = false;
-        else if (action == GLFW_REPEAT)
-            // Usuário está segurando a tecla D e o sistema operacional está
-            // disparando eventos de repetição. Neste caso, não precisamos
-            // atualizar o estado da tecla, pois antes de um evento REPEAT
-            // necessariamente deve ter ocorrido um evento PRESS.
             ;
+        else if (action == GLFW_REPEAT)
+        {
+            g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Translate(translation_x,translation_y,translation_z);
+        }   
     }
 }
 
