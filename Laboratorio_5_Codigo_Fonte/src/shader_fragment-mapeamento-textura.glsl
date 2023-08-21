@@ -83,7 +83,7 @@ void main()
     vec3 Kd0 = texture(TextureImage0, vec2(U,V)).rgb;
 
 
-    if ( object_id == SPHERE object_id == CENTRAL_SPHERE || object_id == SPHERE2 )
+    if ( object_id == SPHERE || object_id == CENTRAL_SPHERE || object_id == SPHERE2 )
     {
         // PREENCHA AQUI as coordenadas de textura da esfera, computadas com
         // projeção esférica EM COORDENADAS DO MODELO. Utilize como referência
