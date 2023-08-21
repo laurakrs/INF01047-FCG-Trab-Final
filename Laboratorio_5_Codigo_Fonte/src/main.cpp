@@ -1071,56 +1071,75 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
             ;
     }
 
+    if (key == GLFW_KEY_0)
+        g_selectedObject = 0;
+    if (key == GLFW_KEY_1)
+        g_selectedObject = 1;
+    if (key == GLFW_KEY_2)
+        g_selectedObject = 2;
+    if (key == GLFW_KEY_3)
+        g_selectedObject = 3;
+    if (key == GLFW_KEY_4)
+        g_selectedObject = 4;
+    if (key == GLFW_KEY_5)
+        g_selectedObject = 5;
+    if (key == GLFW_KEY_6)
+        g_selectedObject = 6;
+    if (key == GLFW_KEY_7)
+        g_selectedObject = 7;
+    if (key == GLFW_KEY_8)
+        g_selectedObject = 8;
+
     if (key == GLFW_KEY_DOWN)
     {
         if (action == GLFW_PRESS)
         {
-            g_ObjectInstances[BUNNY].model_matrix = g_ObjectInstances[BUNNY].model_matrix * Matrix_Translate(0.0f,0.0f,1.1f);
+            g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Translate(0.0f,0.0f,1.1f);
         }
         else if (action == GLFW_RELEASE)
             ;
         else if (action == GLFW_REPEAT)
         {
-            g_ObjectInstances[BUNNY].model_matrix = g_ObjectInstances[BUNNY].model_matrix * Matrix_Translate(0.0f,0.0f,1.1f);
+            g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Translate(0.0f,0.0f,1.1f);
         }   
     }
     if (key == GLFW_KEY_UP)
     {
         if (action == GLFW_PRESS)
         {
-            g_ObjectInstances[BUNNY].model_matrix = g_ObjectInstances[BUNNY].model_matrix * Matrix_Translate(0.0f,0.0f,-1.1f);
+            g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Translate(0.0f,0.0f,-1.1f);
         }
         else if (action == GLFW_RELEASE)
             ;
         else if (action == GLFW_REPEAT)
         {
-            g_ObjectInstances[BUNNY].model_matrix = g_ObjectInstances[BUNNY].model_matrix * Matrix_Translate(0.0f,0.0f,-1.1f);
+            g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Translate(0.0f,0.0f,-1.1f);
         }   
     }
     if (key == GLFW_KEY_RIGHT)
     {
         if (action == GLFW_PRESS)
         {
-            g_ObjectInstances[BUNNY].model_matrix = g_ObjectInstances[BUNNY].model_matrix * Matrix_Translate(1.1f,0.0f,0.0f);
+            g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Translate(1.1f,0.0f,0.0f);
         }
         else if (action == GLFW_RELEASE)
             ;
         else if (action == GLFW_REPEAT)
         {
-            g_ObjectInstances[BUNNY].model_matrix = g_ObjectInstances[BUNNY].model_matrix * Matrix_Translate(1.1f,0.0f,0.0f);
+            g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Translate(1.1f,0.0f,0.0f);
         }   
     }
     if (key == GLFW_KEY_LEFT)
     {
         if (action == GLFW_PRESS)
         {
-            g_ObjectInstances[BUNNY].model_matrix = g_ObjectInstances[BUNNY].model_matrix * Matrix_Translate(-1.1f,0.0f,0.0f);
+            g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Translate(-1.1f,0.0f,0.0f);
         }
         else if (action == GLFW_RELEASE)
         ;
         else if (action == GLFW_REPEAT)
         {
-            g_ObjectInstances[BUNNY].model_matrix = g_ObjectInstances[BUNNY].model_matrix * Matrix_Translate(-1.1f,0.0f,0.0f);
+            g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Translate(-1.1f,0.0f,0.0f);
         }   
     }
 }

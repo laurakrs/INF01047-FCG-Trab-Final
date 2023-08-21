@@ -66,4 +66,4 @@ GLint g_bbox_max_uniform;
 GLuint g_NumLoadedTextures = 0;
 
 // Step 1: Create a variable to keep track of the currently selected object
-int selectedObject = -1;
+int g_selectedObject = -1;
