@@ -96,14 +96,6 @@ void TextRendering_ShowModelViewProjection(GLFWwindow* window, glm::mat4 project
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode);
 
 
-
-// Variáveis para movimentação da câmera
-bool tecla_W_pressionada = false;
-bool tecla_A_pressionada = false;
-bool tecla_S_pressionada = false;
-bool tecla_D_pressionada = false;
-
-
 // CÓDIGO PRINCIPAL ===========================
 int main(int argc, char* argv[])
 {
@@ -399,8 +391,7 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(g_view_uniform       , 1 , GL_FALSE , glm::value_ptr(view));
         glUniformMatrix4fv(g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));
 
-
-
+        // Gera as imagens dos objetos
         for (const auto& pair : g_ObjectInstances) 
         {
             int key = pair.first;

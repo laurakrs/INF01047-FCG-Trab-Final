@@ -15,10 +15,10 @@ bool g_RightMouseButtonPressed = false; // Análogo para botão direito do mouse
 bool g_MiddleMouseButtonPressed = false; // Análogo para botão do meio do mouse
 
 // Variaveis para as teclas que movimentam a camera. " = true" se pressionada
-bool w_pressed = false;
-bool a_pressed = false;
-bool s_pressed = false;
-bool d_pressed = false; 
+bool tecla_W_pressionada = false;
+bool tecla_A_pressionada = false;
+bool tecla_S_pressionada = false;
+bool tecla_D_pressionada = false;
 
 // Variáveis que definem a câmera em coordenadas esféricas, controladas pelo
 // usuário através do mouse (veja função CursorPosCallback()). A posição

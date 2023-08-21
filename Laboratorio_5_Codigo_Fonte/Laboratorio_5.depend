@@ -743,7 +743,7 @@
 
 1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\simd\integer.h
 
-1692573650 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\main.cpp
+1692574667 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\main.cpp
 	<cmath>
 	<cstdio>
 	<cstdlib>
@@ -1049,10 +1049,10 @@
 	<glm/vec4.hpp>
 	"globals.h"
 
-1692566464 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\globals.cpp
+1692574659 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\globals.cpp
 	"globals.h"
 
-1692452987 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\globals.h
+1692574545 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\globals.h
 	<map>
 	<stack>
 	<string>
