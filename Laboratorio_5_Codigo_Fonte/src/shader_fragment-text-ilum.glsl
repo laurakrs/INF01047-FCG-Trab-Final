@@ -89,10 +89,15 @@ void main()
     vec3 Ka; // Refletância ambiente
     float q; // Expoente especular para o modelo de iluminação de Phong
     float q_linha; // Expoente especular para o modelo de iluminação de Blinn-Phong
-
+    
+    
     // Coordenadas de textura U e V
-    //float U = 0.0;
-    //float V = 0.0;
+    float U = 0.0;
+    float V = 0.0;
+
+
+    vec3 Kd0 = texture(TextureImage0, vec2(U,V)).rgb;
+
 
     if ( object_id == SPHERE || object_id == CENTRAL_SPHERE || object_id == SPHERE2 )
     {
@@ -121,9 +126,6 @@ void main()
         V = (phi + M_PI / 2) / M_PI;        // Range: [0, 1)
 
         Kd0 = texture(TextureImage0, vec2(U,V)).rgb;
-
-        U = 0.0;
-        V = 0.0;
 
         // ILUMINACAO DIFUSA
         // Propriedades espectrais da esfera
@@ -160,9 +162,6 @@ void main()
 
         float relative_x_position = (position_model.x - minx);
         float relative_y_position = (position_model.y - miny);
-
-        U = relative_x_position / x_range;
-        V = relative_y_position / y_range;
 
         Kd0 = texture(TextureImage0, vec2(U,V)).rgb;
 

@@ -69,6 +69,8 @@ void main()
     // PARA INTERPOLACAO DE GOURAUD
     // PARA GOURAUD, O QUE ESTÁ NO FRAGMENT SHADER VAI VIR PRA CÁ
 
+    
+
 
 }
 
