@@ -64,5 +64,13 @@ void main()
 
     // Coordenadas de textura obtidas do arquivo OBJ (se existirem!)
     texcoords = texture_coefficients;
+
+
+    // PARA INTERPOLACAO DE GOURAUD
+    // PARA GOURAUD, O QUE ESTÁ NO FRAGMENT SHADER VAI VIR PRA CÁ
+
+
 }
+
+
 

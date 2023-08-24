@@ -14,16 +14,16 @@ Relatório em formato de README.md colocado no Github, contendo uma descrição 
 
 CRITERIOS TECNICOS (RESUMO):
 
-- Malhas poligonais complexas
-- Transformacoes geometricas controladas pelo usuario
-- Camera Livre e Camera Look-at
-- Instancias de objetos
+- Malhas poligonais complexas - ok
+- Transformacoes geometricas controladas pelo usuario - ok
+- Camera Livre e Camera Look-at - ok 
+- Instancias de objetos - ok
 - Tres tipos de testes de interseccao
-- Modelos de Iluminacao Difusa e Blinn-Phong
+- Modelos de Iluminacao Difusa e Blinn-Phong - +/-
 - Modelos de Interpolacao de Phong e Gouraud
-- Mapeamento de texturas em todos os objetos
+- Mapeamento de texturas em todos os objetos - ok 
 - Movimentacao com curva Bezier cubica
-- Animacoes baseadas no tempo ($\Delta t$)
+- Animacoes baseadas no tempo ($\Delta t$) - ok
 
 Requisitos minimos - explicacao:
 
