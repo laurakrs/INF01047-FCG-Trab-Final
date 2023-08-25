@@ -57,6 +57,10 @@
 #include "ObjectInstance.h"
 #include <vector>
 
+// Interface gráfica
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw.h"
+#include "imgui/imgui_impl_opengl3.h"
 
 struct AABB {
     glm::vec3 min; // minimum corner
@@ -126,7 +130,7 @@ int main(int argc, char* argv[])
     // Criamos uma janela do sistema operacional, com 800 colunas e 600 linhas
     // de pixels, e com título "INF01047 ...".
     GLFWwindow* window;
-    window = glfwCreateWindow(800, 600, "INF01047 - Trabalho Final - Laura Keidann e Matheus Sabadin", NULL, NULL);
+    window = glfwCreateWindow(g_windowWidth, g_windowHeight, "INF01047 - Trabalho Final - Laura Keidann e Matheus Sabadin", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -155,7 +159,7 @@ int main(int argc, char* argv[])
     // redimensionada, por consequência alterando o tamanho do "framebuffer"
     // (região de memória onde são armazenados os pixels da imagem).
     glfwSetFramebufferSizeCallback(window, FramebufferSizeCallback);
-    FramebufferSizeCallback(window, 800, 600); // Forçamos a chamada do callback acima, para definir g_ScreenRatio.
+    FramebufferSizeCallback(window, g_windowWidth, g_windowHeight); // Forçamos a chamada do callback acima, para definir g_ScreenRatio.
 
     // Imprimimos no terminal informações sobre a GPU do sistema
     const GLubyte *vendor      = glGetString(GL_VENDOR);
@@ -271,7 +275,7 @@ int main(int argc, char* argv[])
         * Matrix_Scale(0.3f,0.3f,0.3f)
         * Matrix_Rotate_X(g_AngleX + (float)glfwGetTime() * 0.1f);
     ObjectInstance("the_bunny", model, BUNNY);
-    
+
     // Desenhamos outra instancia do coelho
     model = Matrix_Translate(0.8f,-0.5f,0.5f)
             * Matrix_Scale(0.2f,0.2f,0.2f)
@@ -293,6 +297,16 @@ int main(int argc, char* argv[])
     // Desenhamos o modelo do retangulo
     model = Matrix_Translate(-3.0f,0.0f,0.7f);
     ObjectInstance("the_rectangle", model, RECTANGLE);
+
+    // Criação da GUI
+    // Setup Dear ImGui context
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO();
+    io.DisplaySize = ImVec2(static_cast<float>(g_windowWidth), static_cast<float>(g_windowHeight));
+    ImGui::StyleColorsDark();
+    ImGui_ImplGlfw_InitForOpenGL(window, true);  // Assuming you're using GLFW
+    ImGui_ImplOpenGL3_Init("#version 330");
 
     // Ficamos em um loop infinito, renderizando, até que o usuário feche a janela
     while (!glfwWindowShouldClose(window))
@@ -394,7 +408,7 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));
 
         // Gera as imagens dos objetos
-        for (const auto& pair : g_ObjectInstances) 
+        for (const auto& pair : g_ObjectInstances)
         {
             int key = pair.first;
             ObjectInstance instance = pair.second;
@@ -405,7 +419,7 @@ int main(int argc, char* argv[])
                 instance.model_matrix = Matrix_Translate(camera_lookat_l.x,camera_lookat_l.y,camera_lookat_l.z)
                     * Matrix_Scale(0.05f,0.05f,0.05f);
             }
-            
+
             glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(instance.model_matrix));
             glUniform1i(g_object_id_uniform, key);
             DrawVirtualObject(instance.object_name.c_str());
@@ -442,6 +456,66 @@ int main(int argc, char* argv[])
             // Movimenta câmera para direita
             camera_movement += vetor_u * speed * delta_t;
 
+
+        // Inicia o frame da Dear ImGui
+        ImGui_ImplOpenGL3_NewFrame(); // Assuming you're using the GLFW and OpenGL3 backends
+        ImGui::NewFrame();
+
+        // GUI
+        // Define a posição e tamanho da janela da GUI
+        ImVec2 windowSize = ImVec2(220.0f, 150.0f);
+        ImVec2 windowPos = ImVec2(20.0f, 20.0f);
+
+        ImGui::SetNextWindowSize(windowSize);
+        ImGui::SetNextWindowPos(windowPos);
+
+        static bool show_window = true;
+        ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+        ImGui::Begin("Adicionar itens na cena", &show_window, window_flags);
+
+        static bool isSphereSelected = false; // Store selection state for the first selectable
+        if (ImGui::Selectable("Esfera", isSphereSelected))
+        {
+            // isSphereSelected = !isSphereSelected; // Toggle the selection state
+        }
+
+        static bool isCuboidSelected = false; // Store selection state for the first selectable
+        if (ImGui::Selectable("Cubóide", isCuboidSelected))
+        {
+            // isCuboidSelected = !isCuboidSelected; // Toggle the selection state
+        }
+        
+        static bool isCowSelected = false; // Store selection state for the first selectable
+        if (ImGui::Selectable("Vaca", isCowSelected))
+        {
+            // isCowSelected = !isCowSelected; // Toggle the selection state
+        }
+
+        static bool isBunnySelected = false; // Store selection state for the first selectable
+        if (ImGui::Selectable("Coelho", isBunnySelected))
+        {
+            // isBunnySelected = !isBunnySelected; // Toggle the selection state
+        }
+
+        static bool isRectangleSelected = false; // Store selection state for the first selectable
+        if (ImGui::Selectable("Retângulo", isRectangleSelected))
+        {
+            // isRectangleSelected = !isRectangleSelected; // Toggle the selection state
+        }
+
+        if (ImGui::Selectable("Teste"))
+        {
+            // isRectangleSelected = !isRectangleSelected; // Toggle the selection state
+        }
+
+
+        ImGui::End();
+
+        // Rendering
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+
         // O framebuffer onde OpenGL executa as operações de renderização não
         // é o mesmo que está sendo mostrado para o usuário, caso contrário
         // seria possível ver artefatos conhecidos como "screen tearing". A
@@ -456,6 +530,11 @@ int main(int argc, char* argv[])
         // pela biblioteca GLFW.
         glfwPollEvents();
     }
+
+    // Finalizamos o uso dos recursos da interface gráfica IMGUI
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
 
     // Finalizamos o uso dos recursos do sistema operacional
     glfwTerminate();
@@ -1073,7 +1152,7 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
             ;
     }
 
-    if (key == GLFW_KEY_0 || key == GLFW_KEY_1 || key == GLFW_KEY_2 || key == GLFW_KEY_3 || key == GLFW_KEY_4 || 
+    if (key == GLFW_KEY_0 || key == GLFW_KEY_1 || key == GLFW_KEY_2 || key == GLFW_KEY_3 || key == GLFW_KEY_4 ||
         key == GLFW_KEY_5 || key == GLFW_KEY_6 || key == GLFW_KEY_7 || key == GLFW_KEY_8 || key == GLFW_KEY_9)
     {
         float scale = 1.25f;
@@ -1083,7 +1162,7 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
         {
             g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Scale(descale,descale,descale);
         }
-        
+
         switch (key)
         {
         case GLFW_KEY_0:
@@ -1144,7 +1223,7 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
         default:
             break;
         }
-        
+
         if (action == GLFW_PRESS)
         {
             g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Translate(translation_x,translation_y,translation_z);
@@ -1154,7 +1233,7 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
         else if (action == GLFW_REPEAT)
         {
             g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Translate(translation_x,translation_y,translation_z);
-        }   
+        }
     }
 }
 

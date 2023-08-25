@@ -5,6 +5,14 @@
 // "framebuffer" (região de memória onde são armazenados os pixels da imagem).
 void FramebufferSizeCallback(GLFWwindow* window, int width, int height)
 {
+    // Mantém a janela na mesma posição independente do resize
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+
+    ImGuiIO& io = ImGui::GetIO();
+    io.DisplaySize = ImVec2(static_cast<float>(width), static_cast<float>(height));
+    io.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
+
     // Indicamos que queremos renderizar em toda região do framebuffer. A
     // função "glViewport" define o mapeamento das "normalized device
     // coordinates" (NDC) para "pixel coordinates".  Essa é a operação de

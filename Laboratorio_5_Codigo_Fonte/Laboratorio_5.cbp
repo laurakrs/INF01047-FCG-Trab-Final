@@ -384,6 +384,27 @@
 		</Unit>
 		<Unit filename="src/globals.cpp" />
 		<Unit filename="src/globals.h" />
+		<Unit filename="src/imgui/backends/imgui_impl_glfw.cpp" />
+		<Unit filename="src/imgui/backends/imgui_impl_glfw.h" />
+		<Unit filename="src/imgui/backends/imgui_impl_opengl3.cpp" />
+		<Unit filename="src/imgui/backends/imgui_impl_opengl3.h" />
+		<Unit filename="src/imgui/backends/imgui_impl_opengl3_loader.h" />
+		<Unit filename="src/imgui/imconfig.h" />
+		<Unit filename="src/imgui/imgui.cpp" />
+		<Unit filename="src/imgui/imgui.h" />
+		<Unit filename="src/imgui/imgui_demo.cpp" />
+		<Unit filename="src/imgui/imgui_draw.cpp" />
+		<Unit filename="src/imgui/imgui_internal.h" />
+		<Unit filename="src/imgui/imgui_tables.cpp" />
+		<Unit filename="src/imgui/imgui_widgets.cpp" />
+		<Unit filename="src/imgui/imstb_rectpack.h" />
+		<Unit filename="src/imgui/imstb_textedit.h" />
+		<Unit filename="src/imgui/imstb_truetype.h" />
+		<Unit filename="src/imgui/misc/cpp/imgui_stdlib.cpp" />
+		<Unit filename="src/imgui/misc/cpp/imgui_stdlib.h" />
+		<Unit filename="src/imgui/misc/fonts/binary_to_compressed_c.cpp" />
+		<Unit filename="src/imgui/misc/freetype/imgui_freetype.cpp" />
+		<Unit filename="src/imgui/misc/freetype/imgui_freetype.h" />
 		<Unit filename="src/main.cpp" />
 		<Unit filename="src/shader_fragment.glsl" />
 		<Unit filename="src/shader_vertex.glsl" />
