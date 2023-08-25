@@ -67,3 +67,8 @@ GLuint g_NumLoadedTextures = 0;
 
 // Step 1: Create a variable to keep track of the currently selected object
 int g_selectedObject = -1;
+
+// Tamanho da janela (inicializado com valores padrões)
+int g_windowWidth = 800;
+int g_windowHeight = 600;
+

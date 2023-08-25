@@ -5,6 +5,9 @@
 #include <limits>
 #include <cstdio>
 #include "globals.h"
+// #include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw.h"
+// #include "imgui/imgui_impl_opengl3.h"
 
 // Declare all your callback functions here
 void FramebufferSizeCallback(GLFWwindow* window, int width, int height);
