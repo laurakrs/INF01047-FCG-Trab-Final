@@ -71,3 +71,4 @@ int g_selectedObject = -1;
 // Tamanho da janela (inicializado com valores padrões)
 int g_windowWidth = 800;
 int g_windowHeight = 600;
+
