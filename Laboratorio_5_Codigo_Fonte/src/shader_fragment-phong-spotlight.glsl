@@ -150,6 +150,7 @@ void main()
         Kd = vec3(0.08,0.4,0.8);         // Refletância difusa no modelo RGB = (0.08, 0.4, 0.8)
         Ks = vec3(0.8,0.8,0.8);          // Refletância especular no modelo RGB = (0.8, 0.8, 0.8)
         Ka = Kd / 2;                     // Refletância ambiente no modelo RGB = metade da refletância difusa
+        q = 32.0 
         //q_linha = 80.0;                      // Expoente especular de Phong = 32.0
     }
     else if( object_id == COW )
@@ -249,36 +250,32 @@ void main()
     // Espectro da fonte de iluminação
     vec3 I = vec3(1.0,1.0,1.0); // PREENCHA AQUI o espectro da fonte de luz
 
-    // SPOTLIGHT - aulas 17 e 18
-    // implementar uma fonte de luz do tipo spotlight, 
-    // com ângulo de abertura de 30°, posicionada em (0.0,2.0,1.0), 
-    // e com vetor de sentido (0.0,-1.0,0.0),
-    // no sistema de coordenadas Cartesiano:
+     // Propriedades da iluminaão spotligh no slide 204 das aulas 17 e 18 - Modelos de Iluminação
+    vec4 spotlight_position_l = vec4(0.0f,2.0f,1.0f,1.0f);     // Luz posicionada em (0.0,2.0,1.0)
+    vec4 spotlight_direction_v = vec4(0.0f,-1.0f,0.0f,0.0f);   // Com vetor de sentido (0.0,-1.0,0.0)
+    float spotlight_opening_angle_alpha = radians(30.0f);      // Luz do tipo spotlight, com ângulo de abertura de 30°
 
-    vec4 l_posicao = vec4(0.0,2.0,1.0,1.0);  // posicao l da luz
-    vec4 v_direcao = vec4(0.0,-1.0,0.0,0.0); // vetor de sentido
-    float angulo = radians(30.0);   // definicao do angulo 
+    float cos_beta = dot(normalize(p - spotlight_position_l), normalize(spotlight_direction_v));
 
-    // slide 212
-    // o ponto nao  eh iluminado se o resultado for menor do que cos
-    if(dot(normalize(p - l_posicao), normalize(v_direcao)) < cos(angulo)){
-        I = vec3(0.0,0.0,0.0);
+    if (cos_beta < cos(spotlight_opening_angle_alpha))         // Slide 211 e 212
+    {
+        I = vec3(0.0,0.0,0.0);                                 // Zera o espectro da fonte de luz
     }
 
     // Espectro da luz ambiente
-    vec3 Ia = vec3(0.2,0.2,0.2); // PREENCHA AQUI o espectro da luz ambiente
+    vec3 Ia = vec3(0.2,0.2,0.2);    // Fonte de luz ambiente com espectro no modelo RGB = (0.2, 0.2, 0.2)
 
     // Termo difuso utilizando a lei dos cossenos de Lambert
-    // Aula 17 e 18 - Modelos de Iluminação - Slide 103
-    vec3 lambert_diffuse_term = Kd*I*max(0,dot(n,l)); // PREENCHA AQUI o termo difuso de Lambert
+    float clamping_lambert_diffuse = max(0, dot(n,l));                      // Slide 102 das Aulas 17 e 18 - Modelos de Iluminação
+    vec3 lambert_diffuse_term = Kd * I * clamping_lambert_diffuse;          // Slide 102 das Aulas 17 e 18 - Modelos de Iluminação
 
     // Termo ambiente
-    // Slide 103
-    vec3 ambient_term = Ka*Ia; // PREENCHA AQUI o termo ambiente
+    vec3 ambient_term = Ka * Ia;                                            // Slide 104 das Aulas 17 e 18 - Modelos de Iluminação
 
     // Termo especular utilizando o modelo de iluminação de Phong
-    // Slide 128
-    vec3 phong_specular_term  = Ks*I*pow(max(0,dot(r,v)),q); // PREENCHA AQUI o termo especular de Phong
+    float clamping_phong_specular = max(0, dot(r,v));                       // Slide 129 das Aulas 17 e 18 - Modelos de Iluminação
+    vec3 phong_specular_term  = Ks * I * pow(clamping_phong_specular, q);   // Slide 129 das Aulas 17 e 18 - Modelos de Iluminação
+
 
     // MODELO DE BLINN-PHONG - DIFERENTE:
     // Termo especular utilizando o modelo de iluminacao de Blinn-Phong:
