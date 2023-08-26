@@ -11,7 +11,7 @@ v 0.5 -1.0 -0.5     # Vértice 7
 v 0.5  0.0 -0.5     # Vértice 8
 
 # Lista de triângulos (topologia)
-g cube    # Início do objeto chamado "cube"
+
 f 1 2 3   # Primeiro triângulo / face pertencente ao objeto, definido pelos vértices 1, 2 e 3.
 f 8 7 6   # Segundo triângulo / face pertencente ao objeto, definido pelos vértices 8, 7 e 6.
 f 4 3 7   # etc...
