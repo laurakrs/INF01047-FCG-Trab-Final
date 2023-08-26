@@ -266,7 +266,7 @@ void main()
     // MODELO DE BLINN-PHONG - DIFERENTE:
     // Termo especular utilizando o modelo de iluminacao de Blinn-Phong:
     // Slide 150
-    vec3 blinn_phong_specular_term  = Ks*I*pow(dot(n,h),q_linha);
+    vec3 blinn_phong_specular_term  = Ks*I*pow(max(0,dot(n,h)),q_linha);
 
 
     // ANTES - NO ARQUIVO ORIGINAL DO LAB 5

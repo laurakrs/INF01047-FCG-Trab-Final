@@ -1,25 +1,26 @@
 g the_cube
 
-# Vertices
-v -0.5 -0.5 0.5
-v 0.5 -0.5 0.5
-v 0.5 -0.5 -0.5
-v -0.5 -0.5 -0.5
-v -0.5 0.5 0.5
-v 0.5 0.5 0.5
-v 0.5 0.5 -0.5
-v -0.5 0.5 -0.5
+# Lista de vértices (geometria)
+v -0.5  0.0  0.5    # Vértice 1
+v -0.5 -1.0  0.5    # Vértice 2
+v  0.5 -1.0  0.5    # Vértice 3
+v 0.5  0.0  0.5     # Vértice 4
+v -0.5  0.0 -0.5    # Vértice 5
+v -0.5 -1.0 -0.5    # Vértice 6
+v 0.5 -1.0 -0.5     # Vértice 7
+v 0.5  0.0 -0.5     # Vértice 8
 
-# Texture Coordinates
-vt 0 0
-vt 1 0
-vt 1 1
-vt 0 1
-
-# Faces
-f 1/1 2/2 3/3 4/4
-f 5/1 8/2 7/3 6/4
-f 1/1 5/2 6/3 2/4
-f 2/1 6/2 7/3 3/4
-f 3/1 7/2 8/3 4/4
-f 5/1 1/2 4/3 8/4
+# Lista de triângulos (topologia)
+g cube    # Início do objeto chamado "cube"
+f 1 2 3   # Primeiro triângulo / face pertencente ao objeto, definido pelos vértices 1, 2 e 3.
+f 8 7 6   # Segundo triângulo / face pertencente ao objeto, definido pelos vértices 8, 7 e 6.
+f 4 3 7   # etc...
+f 5 1 4
+f 5 6 2
+f 2 6 7
+f 1 3 4
+f 8 6 5
+f 4 7 8
+f 5 4 8
+f 5 2 1
+f 2 7 3

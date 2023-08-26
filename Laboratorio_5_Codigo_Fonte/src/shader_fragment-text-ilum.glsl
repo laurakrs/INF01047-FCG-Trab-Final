@@ -50,6 +50,12 @@ out vec4 color;
 #define M_PI   3.14159265358979323846
 #define M_PI_2 1.57079632679489661923
 
+// deve incluir objetos com os seguintes modelos de iluminação: difusa (Lambert) e Blinn-Phong.
+
+// No mínimo um objeto com modelo de Gouraud
+
+// No mínimo um objeto com modelo de Phong
+
 void main()
 {
     // Obtemos a posição da câmera utilizando a inversa da matriz que define o
@@ -136,7 +142,10 @@ void main()
         q_linha = 1.0;
     }
     else if ( object_id == BUNNY || object_id ==  BUNNY2 )
-    {
+    
+    
+        // BLINN-PHONG
+        
         // PREENCHA AQUI as coordenadas de textura do coelho, computadas com
         // projeção planar XY em COORDENADAS DO MODELO. Utilize como referência
         // o slides 99-104 do documento Aula_20_Mapeamento_de_Texturas.pdf,
