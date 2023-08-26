@@ -110,6 +110,11 @@ bool TestRayOBBIntersection(
 	float& intersection_distance // Output : distance between ray_origin and the intersection with the OBB
 );
 
+// Funções da GUI
+void GenerateGUIWindows();
+void CreateAddNewInstanceWindow(ImVec2 addNewInstanceWindowSize, ImVec2 addNewInstanceWindowPosition);
+void CreateDebugWindow(ImVec2 debugWindowSize, ImVec2 debugWindowPosition);
+void CreateProjectionSettingsWindow(ImVec2 projectionWindowSize, ImVec2 projectionWindowPosition);
 
 // CÓDIGO PRINCIPAL ===========================
 int main(int argc, char* argv[])
@@ -316,14 +321,12 @@ int main(int argc, char* argv[])
     ImGuiIO& io = ImGui::GetIO();
     io.DisplaySize = ImVec2(static_cast<float>(g_windowWidth), static_cast<float>(g_windowHeight));
     ImGui::StyleColorsDark();
-    ImGui_ImplGlfw_InitForOpenGL(window, true);  // Assuming you're using GLFW
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 330");
 
     // Ficamos em um loop infinito, renderizando, até que o usuário feche a janela
     while (!glfwWindowShouldClose(window))
     {
-        // Aqui executamos as operações de renderização
-
         // Definimos a cor do "fundo" do framebuffer como branco.  Tal cor é
         // definida como coeficientes RGBA: Red, Green, Blue, Alpha; isto é:
         // Vermelho, Verde, Azul, Alpha (valor de transparência).
@@ -434,9 +437,6 @@ int main(int argc, char* argv[])
         // terceiro cubo.
         TextRendering_ShowEulerAngles(window);
 
-        // Imprimimos na informação sobre a matriz de projeção sendo utilizada.
-        TextRendering_ShowProjection(window);
-
         // Imprimimos na tela informação sobre o número de quadros renderizados
         // por segundo (frames per second).
         TextRendering_ShowFramesPerSecond(window);
@@ -461,65 +461,7 @@ int main(int argc, char* argv[])
             // Movimenta câmera para direita
             camera_movement += vetor_u * speed * delta_t;
 
-
-        // Inicia o frame da Dear ImGui
-        ImGui_ImplOpenGL3_NewFrame(); // Assuming you're using the GLFW and OpenGL3 backends
-        ImGui::NewFrame();
-
-        // GUI
-        // Define a posição e tamanho da janela da GUI
-        ImVec2 windowSize = ImVec2(220.0f, 150.0f);
-        ImVec2 windowPos = ImVec2(20.0f, 20.0f);
-
-        ImGui::SetNextWindowSize(windowSize);
-        ImGui::SetNextWindowPos(windowPos);
-
-        static bool show_window = true;
-        ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
-        ImGui::Begin("Adicionar itens na cena", &show_window, window_flags);
-
-        static bool isSphereSelected = false; // Store selection state for the first selectable
-        if (ImGui::Selectable("Esfera", isSphereSelected))
-        {
-            // isSphereSelected = !isSphereSelected; // Toggle the selection state
-        }
-
-        static bool isCuboidSelected = false; // Store selection state for the first selectable
-        if (ImGui::Selectable("Cubóide", isCuboidSelected))
-        {
-            // isCuboidSelected = !isCuboidSelected; // Toggle the selection state
-        }
-        
-        static bool isCowSelected = false; // Store selection state for the first selectable
-        if (ImGui::Selectable("Vaca", isCowSelected))
-        {
-            // isCowSelected = !isCowSelected; // Toggle the selection state
-        }
-
-        static bool isBunnySelected = false; // Store selection state for the first selectable
-        if (ImGui::Selectable("Coelho", isBunnySelected))
-        {
-            // isBunnySelected = !isBunnySelected; // Toggle the selection state
-        }
-
-        static bool isRectangleSelected = false; // Store selection state for the first selectable
-        if (ImGui::Selectable("Retângulo", isRectangleSelected))
-        {
-            // isRectangleSelected = !isRectangleSelected; // Toggle the selection state
-        }
-
-        if (ImGui::Selectable("Teste"))
-        {
-            // isRectangleSelected = !isRectangleSelected; // Toggle the selection state
-        }
-
-
-        ImGui::End();
-
-        // Rendering
-        ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
+        GenerateGUIWindows();
 
         // O framebuffer onde OpenGL executa as operações de renderização não
         // é o mesmo que está sendo mostrado para o usuário, caso contrário
@@ -1064,18 +1006,6 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
         g_TorsoPositionY = 0.0f;
     }
 
-    // Se o usuário apertar a tecla P, utilizamos projeção perspectiva.
-    if (key == GLFW_KEY_P && action == GLFW_PRESS)
-    {
-        g_UsePerspectiveProjection = true;
-    }
-
-    // Se o usuário apertar a tecla O, utilizamos projeção ortográfica.
-    if (key == GLFW_KEY_O && action == GLFW_PRESS)
-    {
-        g_UsePerspectiveProjection = false;
-    }
-
     // Se o usuário apertar a tecla H, fazemos um "toggle" do texto informativo mostrado na tela.
     if (key == GLFW_KEY_H && action == GLFW_PRESS)
     {
@@ -1490,6 +1420,147 @@ bool RayIntersectsSphere(glm::vec3 rayOrigin, glm::vec3 rayDirection, glm::vec3 
     intersectionDistance = (t1 < 0) ? t2 : t1; // Get the nearest intersection point in front of the camera
     return true;
 }
+
+
+// Funções da GUI ======================================================================================================
+void GenerateGUIWindows()
+{
+    // Inicia o frame da Dear ImGui
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui::NewFrame();
+
+    // Define a posição e tamanho da janela da GUI que adiciona instâncias de novos objetos
+    float addNewInstanceWindowWidth = 220.0f;
+    float addNewInstanceWindowHeight = 150.0f;
+    ImVec2 addNewInstanceWindowSize = ImVec2(addNewInstanceWindowWidth, addNewInstanceWindowHeight);
+
+    float offsetFromScreenLeftSide = 10.0f;
+    float offsetFromScreenTop = 10.0f;
+    ImVec2 addNewInstanceWindowPosition = ImVec2(offsetFromScreenLeftSide, offsetFromScreenTop);
+
+    CreateAddNewInstanceWindow(addNewInstanceWindowSize, addNewInstanceWindowPosition);
+
+    // Define a posição e tamanho da janela da GUI de debug
+    float debugWindowWidth = 220.0f;
+    float debugWindowHeight = 150.0f;
+    ImVec2 debugWindowSize = ImVec2(addNewInstanceWindowWidth, addNewInstanceWindowHeight);
+    ImVec2 debugWindowPosition = addNewInstanceWindowPosition;
+    float spacingBetweenWindows = 10.0f;
+    debugWindowPosition.x += addNewInstanceWindowSize.x + spacingBetweenWindows;
+
+    CreateDebugWindow(debugWindowSize, debugWindowPosition);
+
+    // Define a posição e tamanho da janela da GUI que escolhe entre proje;'ao perspectiva ou ortográfica
+    ImVec2 screenSize = ImGui::GetIO().DisplaySize;
+    float projectionSettingsWindowWidth = 150.0f;
+    float projectionSettingsWindowHeight = 58.0f;
+    ImVec2 projectionSettingsWindowSize = ImVec2(projectionSettingsWindowWidth, projectionSettingsWindowHeight);
+
+    float offsetFromScreenRightSide = -10.0f;
+    float offsetFromScreenBottom = -10.0f;
+    ImVec2 smallWindowPos = ImVec2(screenSize.x - projectionSettingsWindowSize.x + offsetFromScreenRightSide, screenSize.y - projectionSettingsWindowSize.y + offsetFromScreenBottom);
+    
+    CreateProjectionSettingsWindow(projectionSettingsWindowSize, smallWindowPos);
+
+    // Renderiza a GUI
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
+
+void CreateAddNewInstanceWindow(ImVec2 addNewInstanceWindowSize, ImVec2 addNewInstanceWindowPosition)
+{
+    ImGui::SetNextWindowSize(addNewInstanceWindowSize);
+    ImGui::SetNextWindowPos(addNewInstanceWindowPosition);
+
+    static bool show_window = true;
+    ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+    ImGui::Begin("Adicionar itens na cena", &show_window, window_flags);
+
+    static bool isSphereSelected = false; // Store selection state for the first selectable
+    if (ImGui::Selectable("Esfera", isSphereSelected))
+    {
+        // isSphereSelected = !isSphereSelected; // Toggle the selection state
+    }
+
+    static bool isCuboidSelected = false; // Store selection state for the first selectable
+    if (ImGui::Selectable("Cubóide", isCuboidSelected))
+    {
+        // isCuboidSelected = !isCuboidSelected; // Toggle the selection state
+    }
+    
+    static bool isCowSelected = false; // Store selection state for the first selectable
+    if (ImGui::Selectable("Vaca", isCowSelected))
+    {
+        // isCowSelected = !isCowSelected; // Toggle the selection state
+    }
+
+    static bool isBunnySelected = false; // Store selection state for the first selectable
+    if (ImGui::Selectable("Coelho", isBunnySelected))
+    {
+        // isBunnySelected = !isBunnySelected; // Toggle the selection state
+    }
+
+    static bool isRectangleSelected = false; // Store selection state for the first selectable
+    if (ImGui::Selectable("Retângulo", isRectangleSelected))
+    {
+        // isRectangleSelected = !isRectangleSelected; // Toggle the selection state
+    }
+
+    if (ImGui::Selectable("Teste"))
+    {
+        // isRectangleSelected = !isRectangleSelected; // Toggle the selection state
+    }
+
+
+    ImGui::End();
+}
+
+void CreateDebugWindow(ImVec2 debugWindowSize, ImVec2 debugWindowPosition)
+{
+    ImGui::SetNextWindowSize(debugWindowSize);
+    ImGui::SetNextWindowPos(debugWindowPosition);
+
+    static bool show_window = true;
+    ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+
+    ImGui::Begin("Debug", &show_window, window_flags);
+
+
+    ImGui::End();
+}
+
+void CreateProjectionSettingsWindow(ImVec2 projectionWindowSize, ImVec2 projectionWindowPosition)
+{
+    ImGui::SetNextWindowSize(projectionWindowSize);
+    ImGui::SetNextWindowPos(projectionWindowPosition);
+
+    // Criação da janela
+    ImGuiWindowFlags projectionWindowFlags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+    ImGui::Begin("##NoTitle", NULL, projectionWindowFlags);
+
+    // Inicializa o radio button
+    static int radioValue = 0;
+
+    // Radio button de Perspective
+    if (ImGui::RadioButton("##radio1", &radioValue, 0)) 
+    {
+        g_UsePerspectiveProjection = true;
+    }
+    ImGui::SameLine();
+    ImGui::Text("Perspective");
+
+    // Radio button de Orthographic
+    if (ImGui::RadioButton("##radio2", &radioValue, 1)) 
+    {
+        g_UsePerspectiveProjection = false;
+    }
+    ImGui::SameLine();
+    ImGui::Text("Orthographic");
+
+    ImGui::End();
+}
+
+
 
 
 // std::vector<BoundingBox> computeAllBoundingBoxes(const ObjModel& model) {
