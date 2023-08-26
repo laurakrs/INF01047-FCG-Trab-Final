@@ -140,7 +140,7 @@ void main()
         U = relative_x_position / x_range;
         V = relative_y_position / y_range;
 
-        Kd0 = texture(TextureImage0, vec2(U,V)).rgb;
+        Kd0 = texture(TextureImage5, vec2(U,V)).rgb;
     }
     else if( object_id == COW )
     {
@@ -173,7 +173,7 @@ void main()
         U = relative_x_position / x_range;
         V = relative_y_position / y_range;
 
-        Kd0 = texture(TextureImage3, vec2(U,V)).rgb;
+        Kd0 = texture(TextureImage4, vec2(U,V)).rgb;
     }
     else if( object_id == CUBE )
     {
@@ -189,7 +189,7 @@ void main()
         U = (theta + M_PI) / (2 * M_PI);    // Range: [0,1)
         V = (phi + M_PI / 2) / M_PI;        // Range: [0, 1)
 
-        Kd0 = texture(TextureImage0, vec2(U,V)).rgb;
+        Kd0 = texture(TextureImage2, vec2(U,V)).rgb;
     }
     else if( object_id == RECTANGLE )
     {

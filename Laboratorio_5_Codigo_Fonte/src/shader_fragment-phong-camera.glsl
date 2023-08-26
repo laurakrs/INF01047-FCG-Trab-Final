@@ -150,7 +150,7 @@ void main()
         Kd = vec3(0.08,0.4,0.8);         // Refletância difusa no modelo RGB = (0.08, 0.4, 0.8)
         Ks = vec3(0.8,0.8,0.8);          // Refletância especular no modelo RGB = (0.8, 0.8, 0.8)
         Ka = Kd / 2;                     // Refletância ambiente no modelo RGB = metade da refletância difusa
-        q = 32.0
+        q = 32.0;
         //q_linha = 80.0;                      // Expoente especular de Phong = 32.0
     }
     else if( object_id == COW )
