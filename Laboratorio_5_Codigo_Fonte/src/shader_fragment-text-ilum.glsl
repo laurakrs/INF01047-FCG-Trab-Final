@@ -75,7 +75,7 @@ void main()
     vec4 n = normalize(normal);
 
     // Vetor que define o sentido da fonte de luz em relação ao ponto atual.
-    vec4 l = normalize(vec4(1.0,1.0,0.0,0.0));
+    vec4 l = normalize(vec4(1.0,1.0,0.5,0.0));
 
     // Vetor que define o sentido da câmera em relação ao ponto atual.
     vec4 v = normalize(camera_position - p);
@@ -141,7 +141,7 @@ void main()
         q = 1.0;                        // Expoente especular de Phong não especificado
         q_linha = 1.0;
     }
-    else if ( object_id == BUNNY || object_id ==  BUNNY2 )
+    else if ( object_id == BUNNY || object_id ==  BUNNY2 ){
     
     
         // BLINN-PHONG
@@ -172,7 +172,7 @@ void main()
         float relative_x_position = (position_model.x - minx);
         float relative_y_position = (position_model.y - miny);
 
-        Kd0 = texture(TextureImage0, vec2(U,V)).rgb;
+        Kd0 = texture(TextureImage5, vec2(U,V)).rgb;
 
         // Propriedades espectrais do coelho
         Kd = vec3(0.08,0.4,0.8);         // Refletância difusa no modelo RGB = (0.08, 0.4, 0.8)
@@ -201,7 +201,7 @@ void main()
         U = relative_x_position / x_range;
         V = relative_y_position / y_range;
 
-        Kd0 = texture(TextureImage3, vec2(U,V)).rgb;
+        Kd0 = texture(TextureImage4, vec2(U,V)).rgb;
 
         // Propriedades espectrais da vaca
         Kd = vec3(0.08,0.4,0.8);         // Refletância difusa no modelo RGB = (0.08, 0.4, 0.8)
@@ -226,7 +226,7 @@ void main()
         U = (theta + M_PI) / (2 * M_PI);    // Range: [0,1)
         V = (phi + M_PI / 2) / M_PI;        // Range: [0, 1)
 
-        Kd0 = texture(TextureImage0, vec2(U,V)).rgb;
+        Kd0 = texture(TextureImage2, vec2(U,V)).rgb;
 
         // Propriedades espectrais do cubo
         Kd = vec3(0.8,0.4,0.08);        // Refletância no modelo RGB = (0.8, 0.4, 0.08)
@@ -303,7 +303,7 @@ void main()
 
     // Termo difuso utilizando a lei dos cossenos de Lambert
     // Aula 17 e 18 - Modelos de Iluminação - Slide 103
-    vec3 lambert_diffuse_term = Kd*I*max(0,dot(n,l)); // PREENCHA AQUI o termo difuso de Lambert
+    vec3 lambert_diffuse_term = Kd0*I*max(0,dot(n,l)); // PREENCHA AQUI o termo difuso de Lambert
 
     // Termo ambiente
     // Slide 103
@@ -316,7 +316,7 @@ void main()
     // MODELO DE BLINN-PHONG - DIFERENTE:
     // Termo especular utilizando o modelo de iluminacao de Blinn-Phong:
     // Slide 150
-    vec3 blinn_phong_specular_term  = Ks*I*pow(dot(n,h),q_linha);
+    vec3 blinn_phong_specular_term  = Ks*I*pow(max(0,dot(n,h)),q_linha);
 
 
     // ANTES - NO ARQUIVO ORIGINAL DO LAB 5
@@ -350,15 +350,15 @@ void main()
     color.rgb = lambert_diffuse_term + ambient_term + blinn_phong_specular_term;
 
     // Equação de Iluminação
-    float lambert = max(0,dot(n,l));
+    //float lambert = max(0,dot(n,l));
 
-    color.rgb = Kd0 * (lambert + 0.01);
+    //color.rgb = Kd0 * (lambert + 0.01);
 
     // COMO JUNTAR OS DOIS???
 
     //seria:
 
-    lambert_diffuse_term = Kd0 * (lambert + 0.01); // ????
+    //lambert_diffuse_term = Kd0 * (lambert + 0.01); // ????
 
 
 
