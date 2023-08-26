@@ -1,5 +1,7 @@
 g the_rectangle
 
+# Adaptacao do cubo (FAQ da disciplina)
+
 # Lista de vértices (geometria)
 v -0.75  0.0   0.5
 v -0.75 -1.0   0.5
