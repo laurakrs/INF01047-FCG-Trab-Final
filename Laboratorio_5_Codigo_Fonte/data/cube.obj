@@ -1,33 +1,22 @@
 # from https://github.com/garykac/3d-cubes/blob/master/cube.obj
+# cube.obj
+#
 
 g the_cube
 
 # Vertices
-v 0.0 0.0 0.0  # 1 a
-v 0.0 1.0 0.0  # 2 b
-v 1.0 1.0 0.0  # 3 c
-v 1.0 0.0 0.0  # 4 d
-v 0.0 0.0 1.0  # 5 e
-v 0.0 1.0 1.0  # 6 f
-v 1.0 1.0 1.0  # 7 g
-v 1.0 0.0 1.0  # 8 h
+v 0.0 0.0 0.0   # 1 a
+v 0.0 1.0 0.0   # 2 b
+v 1.0 1.0 0.0   # 3 c (Adjusted x-coordinate)
+v 1.0 0.0 0.0   # 4 d (Adjusted x-coordinate)
+v 0.0 0.0 1.0   # 5 e
+v 0.0 1.0 1.0   # 6 f
+v 1.0 1.0 1.0   # 7 g (Adjusted x-coordinate)
+v 1.0 0.0 1.0   # 8 h (Adjusted x-coordinate)
 
-# Normal vectors
-# One for each face. Shared by all vertices in that face.
-vn  1.0  0.0  0.0  # 1 cghd
-vn -1.0  0.0  0.0  # 2 aefb
-vn  0.0  1.0  0.0  # 3 gcbf
-vn  0.0 -1.0  0.0  # 4 dhea
-vn  0.0  0.0  1.0  # 5 hgfe
-vn  0.0  0.0 -1.0  # 6 cdab
+
 
 # Faces v/vt/vn
-#   3-------2
-#   | -     |
-#   |   #   |  Each face = 2 triangles (ccw)
-#   |     - |            = 1-2-3 + 1-3-4
-#   4-------1
-
 # Face 1: cghd = cgh + chd
 f 3//1 7//1 8//1
 f 3//1 8//1 4//1
@@ -47,6 +36,11 @@ f 4//4 5//4 1//4
 # Face 5: hgfe = hgf + hfe
 f 8//5 7//5 6//5
 f 8//5 6//5 5//5
+
+# Face 6: cdab = cda + cab
+f 3//6 4//6 1//6
+f 3//6 1//6 2//6
+
 
 # Face 6: cdab = cda + cab
 f 3//6 4//6 1//6
