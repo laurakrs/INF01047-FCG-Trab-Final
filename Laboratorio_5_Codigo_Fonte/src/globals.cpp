@@ -78,7 +78,7 @@ float g_actualWindowHeight;
 // Map de instâncias para seu id
 std::map<std::string, int> g_ObjectInstanceNameToIdMap;
 
-// Paths dos modelos a serem carregados
+// Paths de arquivos externos a serem carregados
 std::vector<std::string> g_modelPaths = 
 {
     "../../data/sphere.obj",
