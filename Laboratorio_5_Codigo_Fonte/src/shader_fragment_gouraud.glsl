@@ -13,6 +13,9 @@ in vec4 position_model;
 // Coordenadas de textura obtidas do arquivo OBJ (se existirem!)
 in vec2 texcoords;
 
+// COR DA ESFERA (GOURAUD)
+in vec3 color_sphere;
+
 // Matrizes computadas no código C++ e enviadas para a GPU
 uniform mat4 model;
 uniform mat4 view;
@@ -74,42 +77,13 @@ void main()
     // Vetor que define o sentido da câmera em relação ao ponto atual.
     vec4 v = normalize(camera_position - p);
 
-
     // Coordenadas de textura U e V
     float U = 0.0;
     float V = 0.0;
 
-
-    vec3 Kd0 = texture(TextureImage0, vec2(U,V)).rgb;
-
-
     if ( object_id == SPHERE || object_id == CENTRAL_SPHERE || object_id == SPHERE2 )
     {
-        // PREENCHA AQUI as coordenadas de textura da esfera, computadas com
-        // projeção esférica EM COORDENADAS DO MODELO. Utilize como referência
-        // o slides 134-150 do documento Aula_20_Mapeamento_de_Texturas.pdf.
-        // A esfera que define a projeção deve estar centrada na posição
-        // "bbox_center" definida abaixo.
-
-        // Você deve utilizar:
-        //   função 'length( )' : comprimento Euclidiano de um vetor
-        //   função 'atan( , )' : arcotangente. Veja https://en.wikipedia.org/wiki/Atan2.
-        //   função 'asin( )'   : seno inverso.
-        //   constante M_PI
-        //   variável position_model
-
-        vec4 bbox_center = (bbox_min + bbox_max) / 2.0;
-
-        // Slide 150 da Aula 20 - Mapeamento de Texturas
-        vec4 p = position_model - bbox_center;
-        float theta = atan(p.x, p.z);       // Range: [-PI, PI)
-        float phi = asin(p.y / length(p));  // Range: [-PI/2, PI/2)
-
-        U = (theta + M_PI) / (2 * M_PI);    // Range: [0,1)
-        V = (phi + M_PI / 2) / M_PI;        // Range: [0, 1)
-
-        Kd0 = texture(TextureImage0, vec2(U,V)).rgb; // Planeta
-
+        color = vec3(color_sphere.x, color_sphere.y, color_sphere.z); 
     }
     else if ( object_id == BUNNY || object_id ==  BUNNY2 )
     {
@@ -131,30 +105,13 @@ void main()
         float minz = bbox_min.z;
         float maxz = bbox_max.z;
 
-        float x_range = (maxx - minx);
-        float y_range = (maxy - miny);
-
-        float relative_x_position = (position_model.x - minx);
-        float relative_y_position = (position_model.y - miny);
-
-        U = relative_x_position / x_range;
-        V = relative_y_position / y_range;
-
-        Kd0 = texture(TextureImage5, vec2(U,V)).rgb; // white leather
+        U = 0.0;
+        V = 0.0;
     }
     else if( object_id == COW )
     {
         // as coordenadas de textura da vaca
         // IGUAL AO COELHO POR ENQUANTO
-         // PREENCHA AQUI as coordenadas de textura do coelho, computadas com
-        // projeção planar XY em COORDENADAS DO MODELO. Utilize como referência
-        // o slides 99-104 do documento Aula_20_Mapeamento_de_Texturas.pdf,
-        // e também use as variáveis min*/max* definidas abaixo para normalizar
-        // as coordenadas de textura U e V dentro do intervalo [0,1]. Para
-        // tanto, veja por exemplo o mapeamento da variável 'p_v' utilizando
-        // 'h' no slides 158-160 do documento Aula_20_Mapeamento_de_Texturas.pdf.
-        // Veja também a Questão 4 do Questionário 4 no Moodle.
-
         float minx = bbox_min.x;
         float maxx = bbox_max.x;
 
@@ -164,32 +121,24 @@ void main()
         float minz = bbox_min.z;
         float maxz = bbox_max.z;
 
-        float x_range = (maxx - minx);
-        float y_range = (maxy - miny);
-
-        float relative_x_position = (position_model.x - minx);
-        float relative_y_position = (position_model.y - miny);
-
-        U = relative_x_position / x_range;
-        V = relative_y_position / y_range;
-
-        Kd0 = texture(TextureImage4, vec2(U,V)).rgb; // leather
+        U = 0.0;
+        V = 0.0;
     }
     else if( object_id == CUBE )
     {
         // as coordenadas de textura do cubo
-        // IGUAL A ESFERA POR ENQUANTO
-        vec4 bbox_center = (bbox_min + bbox_max) / 2.0;
+        // IGUAL AO COELHO POR ENQUANTO
+        float minx = bbox_min.x;
+        float maxx = bbox_max.x;
 
-        // Slide 150 da Aula 20 - Mapeamento de Texturas
-        vec4 p = position_model - bbox_center;
-        float theta = atan(p.x, p.z);       // Range: [-PI, PI)
-        float phi = asin(p.y / length(p));  // Range: [-PI/2, PI/2)
+        float miny = bbox_min.y;
+        float maxy = bbox_max.y;
 
-        U = (theta + M_PI) / (2 * M_PI);    // Range: [0,1)
-        V = (phi + M_PI / 2) / M_PI;        // Range: [0, 1)
+        float minz = bbox_min.z;
+        float maxz = bbox_max.z;
 
-        Kd0 = texture(TextureImage2, vec2(U,V)).rgb; // brick wall
+        U = 0.0;
+        V = 0.0;
     }
     else if( object_id == RECTANGLE )
     {
@@ -204,28 +153,20 @@ void main()
         float minz = bbox_min.z;
         float maxz = bbox_max.z;
 
-        float x_range = (maxx - minx);
-        float y_range = (maxy - miny);
-
-        float relative_x_position = (position_model.x - minx);
-        float relative_y_position = (position_model.y - miny);
-
-        U = relative_x_position / x_range;
-        V = relative_y_position / y_range;
-
-        Kd0 = texture(TextureImage3, vec2(U,V)).rgb; // wood table
+        U = 0.0;
+        V = 0.0;
     }
     else if ( object_id == PLANE )
     {
         // Coordenadas de textura do plano, obtidas do arquivo OBJ.
         U = texcoords.x;
         V = texcoords.y;
-
-        Kd0 = texture(TextureImage0, vec2(U,V)).rgb;
     }
 
+
+
     // Obtemos a refletância difusa a partir da leitura da imagem TextureImage0
-    //vec3 Kd0 = texture(TextureImage0, vec2(U,V)).rgb;
+    vec3 Kd0 = texture(TextureImage0, vec2(U,V)).rgb;
 
     // Equação de Iluminação
     float lambert = max(0,dot(n,l));
@@ -249,4 +190,4 @@ void main()
     // Cor final com correção gamma, considerando monitor sRGB.
     // Veja https://en.wikipedia.org/w/index.php?title=Gamma_correction&oldid=751281772#Windows.2C_Mac.2C_sRGB_and_TV.2Fvideo_standard_gammas
     color.rgb = pow(color.rgb, vec3(1.0,1.0,1.0)/2.2);
-}
+} 

@@ -252,21 +252,21 @@ void main()
     vec3 Ia = vec3(0.2,0.2,0.2); // PREENCHA AQUI o espectro da luz ambiente
 
     // Termo difuso utilizando a lei dos cossenos de Lambert
-    // Aula 17 e 18 - Modelos de Iluminação - Slide 103
-    vec3 lambert_diffuse_term = Kd*I*max(0,dot(n,l)); // PREENCHA AQUI o termo difuso de Lambert
+    float clamping_lambert_diffuse = max(0, dot(n,l));                      // Slide 102 das Aulas 17 e 18 - Modelos de Iluminação
+    vec3 lambert_diffuse_term = Kd * I * clamping_lambert_diffuse;          // Slide 102 das Aulas 17 e 18 - Modelos de Iluminação
 
     // Termo ambiente
-    // Slide 103
-    vec3 ambient_term = Ka*Ia; // PREENCHA AQUI o termo ambiente
+    vec3 ambient_term = Ka * Ia;                                            // Slide 104 das Aulas 17 e 18 - Modelos de Iluminação
 
     // Termo especular utilizando o modelo de iluminação de Phong
-    // Slide 128
-    vec3 phong_specular_term  = Ks*I*pow(max(0,dot(r,v)),q); // PREENCHA AQUI o termo especular de Phong
+    float clamping_phong_specular = max(0, dot(r,v));                       // Slide 129 das Aulas 17 e 18 - Modelos de Iluminação
+    vec3 phong_specular_term  = Ks * I * pow(clamping_phong_specular, q);   // Slide 129 das Aulas 17 e 18 - Modelos de Iluminação
 
     // MODELO DE BLINN-PHONG - DIFERENTE:
     // Termo especular utilizando o modelo de iluminacao de Blinn-Phong:
     // Slide 150
-    vec3 blinn_phong_specular_term  = Ks*I*pow(max(0,dot(n,h)),q_linha);
+    float clamping_blinn_phong_specular = max(0,dot(n,h));
+    vec3 blinn_phong_specular_term  = Ks*I*pow(clamping_blinn_phong_specular,q_linha);
 
 
     // ANTES - NO ARQUIVO ORIGINAL DO LAB 5
