@@ -21,7 +21,7 @@ out vec4 normal;
 out vec2 texcoords;
 
 // para a esfera => Gouraud
-out vec3 color_sphere
+out vec3 color_sphere;
 
 void main()
 {
