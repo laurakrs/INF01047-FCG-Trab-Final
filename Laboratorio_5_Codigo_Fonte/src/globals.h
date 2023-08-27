@@ -36,8 +36,9 @@ extern float g_actualWindowWidth, g_actualWindowHeight;
 // Map de instâncias para seu id
 extern std::map<std::string, int> g_ObjectInstanceNameToIdMap;
 
-// Paths dos modelos a serem carregados
+// Paths de arquivos externos a serem carregados
 extern std::vector<std::string> g_modelPaths;
+extern std::vector<std::string> g_texturePaths;
 
 // DEBUG
 extern double g_glfwLastRayCursorPosX, g_glfwLastRayCursorPosY;

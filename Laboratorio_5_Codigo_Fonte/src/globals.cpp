@@ -89,6 +89,14 @@ std::vector<std::string> g_modelPaths =
     "../../data/rectangle.obj"
 };
 
+std::vector<std::string> g_texturePaths = 
+{
+    "../../data/tc-earth_daymap_surface.jpg",
+    "../../data/tc-earth_nightmap_citylights.gif",
+    "../../data/brick_wall_02_diff_4k.jpg",
+    "../../data/wood_table_001_diff_4k.jpg"
+};
+
 // DEBUG
 double g_glfwLastRayCursorPosX, g_glfwLastRayCursorPosY;
 double g_NDCGlfwLastRayCursorPosX, g_NDCGlfwLastRayCursorPosY;

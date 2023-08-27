@@ -78,9 +78,8 @@ void LoadShadersFromFiles(); // Carrega os shaders de vértice e fragmento, cria
 GLuint LoadShader_Vertex(const char* filename);   // Carrega um vertex shader
 GLuint LoadShader_Fragment(const char* filename); // Carrega um fragment shader
 void LoadShader(const char* filename, GLuint shader_id); // Função utilizada pelas duas acima
-void LoadTextureImages(); // Carrega imagens de textura
+void LoadTextureImages(const std::vector<std::string>& texturePaths); // Carrega imagens de textura
 void LoadTextureImage(const char* filename); // Função que carrega imagens de textura
-
 
 // Geração dos objetos
 void GenerateObjectModels(const std::vector<std::string>& modelPaths); // Constrói representações de objetos geométricos
@@ -189,7 +188,7 @@ int main(int argc, char* argv[])
     LoadShadersFromFiles();
 
     // Carregamos imagens para serem utilizadas como textura
-    LoadTextureImages();
+    LoadTextureImages(g_texturePaths);
 
     // Construímos a representação de objetos geométricos através de malhas de triângulos
     GenerateObjectModels(g_modelPaths);
@@ -1155,12 +1154,12 @@ void BuildTrianglesAndAddToVirtualScene(ObjModel* model)
     glBindVertexArray(0);
 }
 
-void LoadTextureImages()
+void LoadTextureImages(const std::vector<std::string>& texturePaths)
 {
-    LoadTextureImage("../../data/tc-earth_daymap_surface.jpg");      // TextureImage0
-    LoadTextureImage("../../data/tc-earth_nightmap_citylights.gif"); // TextureImage1
-    LoadTextureImage("../../data/brick_wall_02_diff_4k.jpg"); // TextureImage2
-    LoadTextureImage("../../data/wood_table_001_diff_4k.jpg"); // TextureImage3
+    for(const auto& path : texturePaths)
+    {
+        LoadTextureImage(path.c_str());
+    }
 }
 
 // Função que carrega uma imagem para ser utilizada como textura
