@@ -1057,7 +1057,7 @@
 1693162880 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\globals.cpp
 	"globals.h"
 
-1693162892 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\globals.h
+1693167767 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\globals.h
 	<map>
 	<stack>
 	<string>
@@ -3489,4 +3489,15 @@
 
 1693114037 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\cursorray.cpp
 	"CursorRay.h"
+
+1693167761 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\gui.cpp
+	"GUI.h"
+	"globals.h"
+	"SceneInformation.h"
+	"ObjectInstance.h"
+
+1693167769 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\gui.h
+	"imgui/imgui.h"
+	"imgui/imgui_impl_glfw.h"
+	"imgui/imgui_impl_opengl3.h"
 

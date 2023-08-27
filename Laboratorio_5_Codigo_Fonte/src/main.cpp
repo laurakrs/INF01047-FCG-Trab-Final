@@ -57,12 +57,8 @@
 #include "ObjectInstance.h"
 #include "SceneInformation.h"
 #include "CursorRay.h"
+#include "GUI.h"
 #include <vector>
-
-// Interface gráfica
-#include "imgui/imgui.h"
-#include "imgui/imgui_impl_glfw.h"
-#include "imgui/imgui_impl_opengl3.h"
 
 // Declaração de funções utilizadas para pilha de matrizes de modelagem.
 void PushMatrix(glm::mat4 M);
@@ -73,13 +69,18 @@ void PopMatrix(glm::mat4& M);
 void SetCallbacks(GLFWwindow* window);
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode);
 
+// Imprime informações do sistema
+void PrintGPUInformation();
+
 // Declaração de várias funções utilizadas em main().  Essas estão definidas
 // logo após a definição de main() neste arquivo.
 void LoadShadersFromFiles(); // Carrega os shaders de vértice e fragmento, criando um programa de GPU
 GLuint LoadShader_Vertex(const char* filename);   // Carrega um vertex shader
 GLuint LoadShader_Fragment(const char* filename); // Carrega um fragment shader
 void LoadShader(const char* filename, GLuint shader_id); // Função utilizada pelas duas acima
+void LoadTextureImages(); // Carrega imagens de textura
 void LoadTextureImage(const char* filename); // Função que carrega imagens de textura
+
 
 // Geração dos objetos
 void GenerateObjectModels(); // Constrói representações de objetos geométricos
@@ -99,8 +100,6 @@ void DrawRay(glm::vec4 cameraPosition, glm::vec4 ray_direction);
 // Funções abaixo renderizam como texto na janela OpenGL algumas matrizes e
 // outras informações do programa. Definidas após main().
 void TextRendering_ShowModelViewProjection(GLFWwindow* window, glm::mat4 projection, glm::mat4 view, glm::mat4 model, glm::vec4 p_model);
-
-
 
 bool TestRayOBBIntersection(
 	glm::vec3 ray_origin,        // Ray origin, in world space
@@ -122,12 +121,6 @@ bool intersectsOnY(float tMin, float tMax, glm::vec3 delta,	glm::vec3 ray_direct
 bool intersectsOnZ(float tMin, float tMax, glm::vec3 delta,	glm::vec3 ray_direction, 
                     glm::vec3 aabb_min, glm::vec3 aabb_max, 
                     glm::mat4 ModelMatrix, float& intersection_distance);
-
-// Funções da GUI
-void GenerateGUIWindows();
-void CreateAddNewInstanceWindow(ImVec2 addNewInstanceWindowSize, ImVec2 addNewInstanceWindowPosition);
-void CreateDebugWindow(ImVec2 debugWindowSize, ImVec2 debugWindowPosition);
-void CreateProjectionSettingsWindow(ImVec2 projectionWindowSize, ImVec2 projectionWindowPosition);
 
 
 // CÓDIGO PRINCIPAL ===========================
@@ -168,6 +161,7 @@ int main(int argc, char* argv[])
         std::exit(EXIT_FAILURE);
     }
 
+    // Seta KeyCallback, MouseButtonCallback, CursorPosCallback e ScrollCallback
     SetCallbacks(window);
 
     // Indicamos que as chamadas OpenGL deverão renderizar nesta janela
@@ -183,24 +177,19 @@ int main(int argc, char* argv[])
     glfwSetFramebufferSizeCallback(window, FramebufferSizeCallback);
     FramebufferSizeCallback(window, g_startWindowWidth, g_startWindowHeight); // Forçamos a chamada do callback acima, para definir g_ScreenRatio.
 
-    // Imprimimos no terminal informações sobre a GPU do sistema
-    const GLubyte *vendor      = glGetString(GL_VENDOR);
-    const GLubyte *renderer    = glGetString(GL_RENDERER);
-    const GLubyte *glversion   = glGetString(GL_VERSION);
-    const GLubyte *glslversion = glGetString(GL_SHADING_LANGUAGE_VERSION);
+    // Inicializamos a interface gráfica GUI
+    InitializeGUI(window);
 
-    printf("GPU: %s, %s, OpenGL %s, GLSL %s\n", vendor, renderer, glversion, glslversion);
+    // Imprime informações do sistema no console
+    PrintGPUInformation();
 
     // Carregamos os shaders de vértices e de fragmentos que serão utilizados
     // para renderização. Veja slides 180-200 do documento Aula_03_Rendering_Pipeline_Grafico.pdf.
     //
     LoadShadersFromFiles();
 
-    // Carregamos duas imagens para serem utilizadas como textura
-    LoadTextureImage("../../data/tc-earth_daymap_surface.jpg");      // TextureImage0
-    LoadTextureImage("../../data/tc-earth_nightmap_citylights.gif"); // TextureImage1
-    LoadTextureImage("../../data/brick_wall_02_diff_4k.jpg"); // TextureImage2
-    LoadTextureImage("../../data/wood_table_001_diff_4k.jpg"); // TextureImage3
+    // Carregamos imagens para serem utilizadas como textura
+    LoadTextureImages();
 
     GenerateObjectModels();
 
@@ -260,16 +249,7 @@ int main(int argc, char* argv[])
     // Geração das instâncias de objetos alterando a model matrix
     GenerateObjectInstances(camera_lookat_l);
 
-    // Criação da GUI
-    // Setup Dear ImGui context
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO();
-    io.DisplaySize = ImVec2(static_cast<float>(g_startWindowWidth), static_cast<float>(g_startWindowHeight));
-    ImGui::StyleColorsDark();
-    ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init("#version 330");
-
+    
     // Ficamos em um loop infinito, renderizando, até que o usuário feche a janela
     while (!glfwWindowShouldClose(window))
     {
@@ -490,9 +470,7 @@ int main(int argc, char* argv[])
     }
 
     // Finalizamos o uso dos recursos da interface gráfica IMGUI
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
+    DisposeGUI();
 
     // Finalizamos o uso dos recursos do sistema operacional
     glfwTerminate();
@@ -500,7 +478,6 @@ int main(int argc, char* argv[])
     // Fim do programa
     return 0;
 }
-
 
 
 // Definição dos callbacks ======================================================================================================
@@ -732,6 +709,18 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
             g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Translate(translation_x,translation_y,translation_z);
         }
     }
+}
+
+
+void PrintGPUInformation()
+{
+    // Imprimimos no terminal informações sobre a GPU do sistema
+    const GLubyte *vendor      = glGetString(GL_VENDOR);
+    const GLubyte *renderer    = glGetString(GL_RENDERER);
+    const GLubyte *glversion   = glGetString(GL_VERSION);
+    const GLubyte *glslversion = glGetString(GL_SHADING_LANGUAGE_VERSION);
+
+    printf("GPU: %s, %s, OpenGL %s, GLSL %s\n", vendor, renderer, glversion, glslversion);
 }
 
 
@@ -1140,6 +1129,14 @@ void BuildTrianglesAndAddToVirtualScene(ObjModel* model)
     // "Desligamos" o VAO, evitando assim que operações posteriores venham a
     // alterar o mesmo. Isso evita bugs.
     glBindVertexArray(0);
+}
+
+void LoadTextureImages()
+{
+    LoadTextureImage("../../data/tc-earth_daymap_surface.jpg");      // TextureImage0
+    LoadTextureImage("../../data/tc-earth_nightmap_citylights.gif"); // TextureImage1
+    LoadTextureImage("../../data/brick_wall_02_diff_4k.jpg"); // TextureImage2
+    LoadTextureImage("../../data/wood_table_001_diff_4k.jpg"); // TextureImage3
 }
 
 // Função que carrega uma imagem para ser utilizada como textura
@@ -1688,189 +1685,6 @@ void DrawRay(glm::vec4 rayStartPoint, glm::vec4 rayDirection)
     glBindVertexArray(VAO_ray_id);
     glDrawArrays(GL_LINES, 0, 2);
     glBindVertexArray(0); // unbind the VAO after drawing
-}
-
-
-
-
-// Funções da GUI ======================================================================================================
-void GenerateGUIWindows()
-{
-    // Inicia o frame da Dear ImGui
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui::NewFrame();
-
-    // Define a posição e tamanho da janela da GUI que adiciona instâncias de novos objetos
-    float addNewInstanceWindowWidth = 220.0f;
-    float addNewInstanceWindowHeight = 150.0f;
-    ImVec2 addNewInstanceWindowSize = ImVec2(addNewInstanceWindowWidth, addNewInstanceWindowHeight);
-
-    float offsetFromScreenLeftSide = 10.0f;
-    float offsetFromScreenTop = 10.0f;
-    ImVec2 addNewInstanceWindowPosition = ImVec2(offsetFromScreenLeftSide, offsetFromScreenTop);
-
-    CreateAddNewInstanceWindow(addNewInstanceWindowSize, addNewInstanceWindowPosition);
-
-    // Define a posição e tamanho da janela da GUI de debug
-    float debugWindowWidth = 440.0f;
-    float debugWindowHeight = 150.0f;
-    ImVec2 debugWindowSize = ImVec2(debugWindowWidth, debugWindowHeight);
-    ImVec2 debugWindowPosition = addNewInstanceWindowPosition;
-    float spacingBetweenWindows = 10.0f;
-    debugWindowPosition.x += addNewInstanceWindowSize.x + spacingBetweenWindows;
-
-    CreateDebugWindow(debugWindowSize, debugWindowPosition);
-
-    // Define a posição e tamanho da janela da GUI que escolhe entre proje;'ao perspectiva ou ortográfica
-    ImVec2 screenSize = ImGui::GetIO().DisplaySize;
-    float projectionSettingsWindowWidth = 150.0f;
-    float projectionSettingsWindowHeight = 58.0f;
-    ImVec2 projectionSettingsWindowSize = ImVec2(projectionSettingsWindowWidth, projectionSettingsWindowHeight);
-
-    float offsetFromScreenRightSide = -10.0f;
-    float offsetFromScreenBottom = -10.0f;
-    ImVec2 smallWindowPos = ImVec2(screenSize.x - projectionSettingsWindowSize.x + offsetFromScreenRightSide, screenSize.y - projectionSettingsWindowSize.y + offsetFromScreenBottom);
-    
-    CreateProjectionSettingsWindow(projectionSettingsWindowSize, smallWindowPos);
-
-    // Renderiza a GUI
-    ImGui::Render();
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-}
-
-void CreateAddNewInstanceWindow(ImVec2 addNewInstanceWindowSize, ImVec2 addNewInstanceWindowPosition)
-{
-    ImGui::SetNextWindowSize(addNewInstanceWindowSize);
-    ImGui::SetNextWindowPos(addNewInstanceWindowPosition);
-
-    static bool show_window = true;
-    ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
-    ImGui::Begin("Adicionar itens na cena", &show_window, window_flags);
-
-    static bool isSphereSelected = false; // Store selection state for the first selectable
-    if (ImGui::Selectable("Esfera", isSphereSelected))
-    {
-        // isSphereSelected = !isSphereSelected; // Toggle the selection state
-    }
-
-    static bool isCuboidSelected = false; // Store selection state for the first selectable
-    if (ImGui::Selectable("Cubóide", isCuboidSelected))
-    {
-        // isCuboidSelected = !isCuboidSelected; // Toggle the selection state
-    }
-    
-    static bool isCowSelected = false; // Store selection state for the first selectable
-    if (ImGui::Selectable("Vaca", isCowSelected))
-    {
-        // isCowSelected = !isCowSelected; // Toggle the selection state
-    }
-
-    static bool isBunnySelected = false; // Store selection state for the first selectable
-    if (ImGui::Selectable("Coelho", isBunnySelected))
-    {
-        // isBunnySelected = !isBunnySelected; // Toggle the selection state
-    }
-
-    static bool isRectangleSelected = false; // Store selection state for the first selectable
-    if (ImGui::Selectable("Retângulo", isRectangleSelected))
-    {
-        // isRectangleSelected = !isRectangleSelected; // Toggle the selection state
-    }
-
-    if (ImGui::Selectable("Teste"))
-    {
-        // isRectangleSelected = !isRectangleSelected; // Toggle the selection state
-    }
-
-
-    ImGui::End();
-}
-
-void CreateDebugWindow(ImVec2 debugWindowSize, ImVec2 debugWindowPosition)
-{
-    ImGui::SetNextWindowSize(debugWindowSize);
-    ImGui::SetNextWindowPos(debugWindowPosition);
-
-    static bool show_window = true;
-    ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
-
-    ImGui::Begin("Debug", &show_window, window_flags);
-
-    glm::vec3 cameraPosition = SceneInformation::camera_position_c;
-
-    // show g_glfwLastRayCursorPosX
-    ImGui::Text("==================================================");
-    ImGui::Text("g_glfwLastRayCursorPosX: %.3f", g_glfwLastRayCursorPosX);
-    ImGui::Text("g_NDCGlfwLastRayCursorPosX: %.3f", g_NDCGlfwLastRayCursorPosX);
-    ImGui::Text("--------------------------------------------------");
-    ImGui::Text("g_glfwLastRayCursorPosY: %.3f", g_glfwLastRayCursorPosY);
-    ImGui::Text("g_NDCGlfwLastRayCursorPosY: %.3f", g_NDCGlfwLastRayCursorPosY);
-    ImGui::Text("==================================================");
-
-    // print g_rayClip, g_rayEye, g_rayWorld, g_rayDirection
-    ImGui::Text("rayClip: x=%.3f, y=%.3f, z=%.3f w=%.3f", g_rayClip.x, g_rayClip.y, g_rayClip.z, g_rayClip.w);
-    ImGui::Text("rayEye: x=%.3f, y=%.3f, z=%.3f w=%.3f", g_rayEye.x, g_rayEye.y, g_rayEye.z, g_rayEye.w);
-    ImGui::Text("rayWorld: x=%.3f, y=%.3f, z=%.3f w=%.3f", g_rayWorld.x, g_rayWorld.y, g_rayWorld.z, g_rayWorld.w);
-    ImGui::Text("rayDirection: x=%.3f, y=%.3f, z=%.3f w=%.3f", g_rayDirection.x, g_rayDirection.y, g_rayDirection.z, g_rayDirection.w);
-
-
-
-
-    ImGui::Text("cameraPosition: x=%.3f, y=%.3f, z=%.3f", cameraPosition.x, cameraPosition.y, cameraPosition.z);
-    ImGui::Text("rayEndPoint: x=%.3f, y=%.3f, z=%.3f w=%.3f", g_rayEndPoint.x, g_rayEndPoint.y, g_rayEndPoint.z, g_rayEndPoint.w);
-    ImGui::Text("Window Width: %.3f", g_actualWindowWidth);
-    ImGui::Text("Window Height: %.3f", g_actualWindowHeight);
-
-    // Print all the keys, object ids and object names on std::map<int, ObjectInstance> g_ObjectInstances;
-    for (auto& object : g_ObjectInstances)
-    {
-        ImGui::Text("Object %d / id: %d - %s", object.first, object.second.object_id, object.second.object_name.c_str());
-
-        // if object id is 9, 10 or 11, print the model matrix from the object
-        if (object.second.object_id == 9 || object.second.object_id == 10 || object.second.object_id == 11)
-        {
-            ImGui::Text("%.3f %.3f %.3f %.3f", object.second.model_matrix[0][0], object.second.model_matrix[0][1], object.second.model_matrix[0][2], object.second.model_matrix[0][3]);
-            ImGui::Text("%.3f %.3f %.3f %.3f", object.second.model_matrix[1][0], object.second.model_matrix[1][1], object.second.model_matrix[1][2], object.second.model_matrix[1][3]);
-            ImGui::Text("%.3f %.3f %.3f %.3f", object.second.model_matrix[2][0], object.second.model_matrix[2][1], object.second.model_matrix[2][2], object.second.model_matrix[2][3]);
-            ImGui::Text("%.3f %.3f %.3f %.3f", object.second.model_matrix[3][0], object.second.model_matrix[3][1], object.second.model_matrix[3][2], object.second.model_matrix[3][3]);
-        }
-    }
-
-    ImGui::Text("==================================================");
-    ImGui::Text("g_error: %s", g_error.c_str());
-
-    ImGui::End();
-}
-
-void CreateProjectionSettingsWindow(ImVec2 projectionWindowSize, ImVec2 projectionWindowPosition)
-{
-    ImGui::SetNextWindowSize(projectionWindowSize);
-    ImGui::SetNextWindowPos(projectionWindowPosition);
-
-    // Criação da janela
-    ImGuiWindowFlags projectionWindowFlags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
-    ImGui::Begin("##NoTitle", NULL, projectionWindowFlags);
-
-    // Inicializa o radio button
-    static int radioValue = 0;
-
-    // Radio button de Perspective
-    if (ImGui::RadioButton("##radio1", &radioValue, 0)) 
-    {
-        g_UsePerspectiveProjection = true;
-    }
-    ImGui::SameLine();
-    ImGui::Text("Perspective");
-
-    // Radio button de Orthographic
-    if (ImGui::RadioButton("##radio2", &radioValue, 1)) 
-    {
-        g_UsePerspectiveProjection = false;
-    }
-    ImGui::SameLine();
-    ImGui::Text("Orthographic");
-
-    ImGui::End();
 }
 
 
