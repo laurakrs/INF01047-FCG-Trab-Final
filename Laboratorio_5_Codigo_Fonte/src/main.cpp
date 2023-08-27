@@ -118,7 +118,6 @@ void CreateProjectionSettingsWindow(ImVec2 projectionWindowSize, ImVec2 projecti
 
 // Criação de eixos da cena
 void SetupXYZAxesVAOVBOAndEBO(GLuint &VAO_X_axis, GLuint &VAO_Y_axis, GLuint &VAO_Z_axis, GLuint &VBO_X_axis, GLuint &VBO_Y_axis, GLuint &VBO_Z_axis);
-void DrawXYZAxes(GLuint &VAO_X_axis, GLuint &VAO_Y_axis, GLuint &VAO_Z_axis);
 
 // Debug
 void SetupRayVAOAndVBO();
@@ -490,11 +489,14 @@ int main(int argc, char* argv[])
 
         }
 
-        
-        g_rayDirection = ComputeRayFromMouse(window, SceneInformation::projection, SceneInformation::view);
-        DrawRay(SceneInformation::camera_position_c, g_rayDirection);
+        if (g_LeftMouseButtonPressed)
+        {
+            g_rayDirection = ComputeRayFromMouse(window, SceneInformation::projection, SceneInformation::view);
+        }
 
-        // DrawXYZAxes(VAO_X_axis, VAO_Y_axis, VAO_Z_axis);
+        DrawRay(SceneInformation::camera_position_c, g_rayDirection);
+        
+        
 
         // Imprimimos na tela os ângulos de Euler que controlam a rotação do
         // terceiro cubo.
@@ -1361,6 +1363,7 @@ glm::vec4 ComputeRayFromMouse(GLFWwindow* window, const glm::mat4& projMatrix, c
     float y = 1.0f - (2.0f * g_LastCursorPosY) / g_actualWindowHeight;
 
     glm::vec4 rayClip = glm::vec4(x, y, -1.0f, 1.0f);
+    g_rayStartPoint = rayClip;
     glm::vec4 rayEye = glm::inverse(projMatrix) * rayClip;
 
     glm::vec4 rayDir;
@@ -1751,67 +1754,30 @@ void SetupXYZAxesVAOVBOAndEBO(GLuint &VAO_X_axis, GLuint &VAO_Y_axis, GLuint &VA
     glBindVertexArray(0); // unbind
 }
 
-void DrawXYZAxes(GLuint &VAO_X_axis, GLuint &VAO_Y_axis, GLuint &VAO_Z_axis)
-{
-    glBindVertexArray(VAO_X_axis);
-    GLenum error = glGetError();
-    if(error != GL_NO_ERROR) {
-        g_error += "Error binding VAOx: " + std::to_string(error) + "\n";
-    }
-
-    glUniform1i(9, X_AXIS); 
-    glDrawArrays(GL_LINES, 0, 2);  // 2 vertices for the X axis
-    error = glGetError();
-    if(error != GL_NO_ERROR) {
-        g_error += "Error drawing VAOx: " + std::to_string(error) + "\n";
-    }
-
-    glBindVertexArray(VAO_Y_axis);
-    error = glGetError();
-    if(error != GL_NO_ERROR) {
-        g_error += "Error binding VAOy: " + std::to_string(error) + "\n";
-    }
-
-    glUniform1i(10, Y_AXIS); 
-    glDrawArrays(GL_LINES, 0, 2);  // 2 vertices for the Y axis
-    error = glGetError();
-    if(error != GL_NO_ERROR) {
-        g_error += "Error drawing VAOy: " + std::to_string(error) + "\n";
-    }
-
-    glBindVertexArray(VAO_Z_axis);
-    error = glGetError();
-    if(error != GL_NO_ERROR) {
-        g_error += "Error binding VAOz: " + std::to_string(error) + "\n";
-    }
-
-    glUniform1i(11, Z_AXIS); 
-    glDrawArrays(GL_LINES, 0, 2);  // 2 vertices for the Z axis
-    error = glGetError();
-    if(error != GL_NO_ERROR) {
-        g_error += "Error drawing VAOz: " + std::to_string(error) + "\n";
-    }
-}
-
 
 void SetupRayVAOAndVBO()
 {
+    GLuint location = 0; // "(location = 0)" em "shader_vertex.glsl"
+    GLint  number_of_dimensions = 4; // vec4 em "shader_vertex.glsl"
+
     glGenVertexArrays(1, &VAO_ray_id);
     glBindVertexArray(VAO_ray_id);
     
     glGenBuffers(1, &VBO_ray_id);
     glBindBuffer(GL_ARRAY_BUFFER, VBO_ray_id);
 
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
-    
+    glVertexAttribPointer(location, number_of_dimensions, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(location);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+    
     glBindVertexArray(0); // unbind the VAO
 }
 
 void DrawRay(glm::vec4 cameraPosition, glm::vec4 ray_direction)
 {
     // Calculate ray end point
+    cameraPosition = g_rayStartPoint;
+
     g_rayEndPoint = cameraPosition + ray_direction * g_rayLength;
     glm::vec4 g_rayVertices[2] = {cameraPosition, g_rayEndPoint};
 

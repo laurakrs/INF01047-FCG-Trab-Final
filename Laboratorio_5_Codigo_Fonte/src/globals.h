@@ -32,12 +32,9 @@ extern int g_selectedObject;
 extern int g_startWindowWidth, g_startWindowHeight;
 extern float g_actualWindowWidth, g_actualWindowHeight;
 
-// Eixos da origem
-extern GLuint g_VAO_axes, g_VBO_axes, g_EBO_axes;
-extern GLuint g_VAO_X_axis, g_VAO_Y_axis, g_VAO_Z_axis;
-extern GLuint g_VBO_X_axis, g_VBO_Y_axis, g_VBO_Z_axis;
 
 // DEBUG
+extern glm::vec4 g_rayStartPoint;
 extern float g_rayLength;
 extern glm::vec4 g_rayEndPoint;
 extern glm::vec4 g_rayDirection;

@@ -75,13 +75,9 @@ int g_startWindowHeight = 600;
 float g_actualWindowWidth;
 float g_actualWindowHeight;
 
-// Eixos da origem
-GLuint g_VAO_axes, g_VBO_axes, g_EBO_axes;
-GLuint g_VAO_X_axis, g_VAO_Y_axis, g_VAO_Z_axis;
-GLuint g_VBO_X_axis, g_VBO_Y_axis, g_VBO_Z_axis;
-
 // DEBUG
 // Raio projetado com o clique do mouse
+glm::vec4 g_rayStartPoint;
 float g_rayLength = 10.0f;
 glm::vec4 g_rayEndPoint;
 glm::vec4 g_rayDirection;
