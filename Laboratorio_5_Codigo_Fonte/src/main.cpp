@@ -249,7 +249,6 @@ int main(int argc, char* argv[])
     // Geração das instâncias de objetos alterando a model matrix
     GenerateObjectInstances(camera_lookat_l);
 
-    
     // Ficamos em um loop infinito, renderizando, até que o usuário feche a janela
     while (!glfwWindowShouldClose(window))
     {
@@ -415,15 +414,13 @@ int main(int argc, char* argv[])
                 // Check if ray intersects with object
                 if (intersectsSomething)
                 {
-                    g_ObjectInstances[id].model_matrix = g_ObjectInstances[id].model_matrix * Matrix_Scale(1.01f,1.01f,1.01f);
+                    // g_ObjectInstances[id].model_matrix = g_ObjectInstances[id].model_matrix * Matrix_Scale(1.01f,1.01f,1.01f);
                 }
             }
         }
 
         DrawRay(g_cursorRay.startPoint, g_cursorRay.direction);
         
-        
-
         // Imprimimos na tela os ângulos de Euler que controlam a rotação do
         // terceiro cubo.
         TextRendering_ShowEulerAngles(window);
