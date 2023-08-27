@@ -55,8 +55,13 @@
 #include "textrendering.h"
 #include "SceneObject.h"
 #include "ObjectInstance.h"
+#include "SceneInformation.h"
 #include <vector>
 
+// Interface gráfica
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw.h"
+#include "imgui/imgui_impl_opengl3.h"
 
 struct AABB {
     glm::vec3 min; // minimum corner
@@ -95,6 +100,16 @@ void TextRendering_ShowModelViewProjection(GLFWwindow* window, glm::mat4 project
 // usuário. Veja mais comentários nas definições das mesmas, abaixo.
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode);
 
+glm::vec3 ComputeRayFromMouse(GLFWwindow* window, const glm::mat4& projMatrix, const glm::mat4& viewMatrix, int windowWidth, int windowHeight);
+bool TestRayOBBIntersection(
+	glm::vec3 ray_origin,        // Ray origin, in world space
+	glm::vec3 ray_direction,     // Ray direction (NOT target position!), in world space. Must be normalize()'d.
+	glm::vec3 aabb_min,          // Minimum X,Y,Z coords of the mesh when not transformed at all.
+	glm::vec3 aabb_max,          // Maximum X,Y,Z coords. Often aabb_min*-1 if your mesh is centered, but it's not always the case.
+	glm::mat4 ModelMatrix,       // Transformation applied to the mesh (which will thus be also applied to its bounding box)
+	float& intersection_distance // Output : distance between ray_origin and the intersection with the OBB
+);
+
 
 // CÓDIGO PRINCIPAL ===========================
 int main(int argc, char* argv[])
@@ -126,7 +141,7 @@ int main(int argc, char* argv[])
     // Criamos uma janela do sistema operacional, com 800 colunas e 600 linhas
     // de pixels, e com título "INF01047 ...".
     GLFWwindow* window;
-    window = glfwCreateWindow(800, 600, "INF01047 - Trabalho Final - Laura Keidann e Matheus Sabadin", NULL, NULL);
+    window = glfwCreateWindow(g_windowWidth, g_windowHeight, "INF01047 - Trabalho Final - Laura Keidann e Matheus Sabadin", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -155,7 +170,7 @@ int main(int argc, char* argv[])
     // redimensionada, por consequência alterando o tamanho do "framebuffer"
     // (região de memória onde são armazenados os pixels da imagem).
     glfwSetFramebufferSizeCallback(window, FramebufferSizeCallback);
-    FramebufferSizeCallback(window, 800, 600); // Forçamos a chamada do callback acima, para definir g_ScreenRatio.
+    FramebufferSizeCallback(window, g_windowWidth, g_windowHeight); // Forçamos a chamada do callback acima, para definir g_ScreenRatio.
 
     // Imprimimos no terminal informações sobre a GPU do sistema
     const GLubyte *vendor      = glGetString(GL_VENDOR);
@@ -273,7 +288,7 @@ int main(int argc, char* argv[])
         * Matrix_Scale(0.3f,0.3f,0.3f)
         * Matrix_Rotate_X(g_AngleX + (float)glfwGetTime() * 0.1f);
     ObjectInstance("the_bunny", model, BUNNY);
-    
+
     // Desenhamos outra instancia do coelho
     model = Matrix_Translate(0.8f,-0.5f,0.5f)
             * Matrix_Scale(0.2f,0.2f,0.2f)
@@ -295,6 +310,16 @@ int main(int argc, char* argv[])
     // Desenhamos o modelo do retangulo
     model = Matrix_Translate(-3.0f,0.0f,0.7f);
     ObjectInstance("the_rectangle", model, RECTANGLE);
+
+    // Criação da GUI
+    // Setup Dear ImGui context
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO();
+    io.DisplaySize = ImVec2(static_cast<float>(g_windowWidth), static_cast<float>(g_windowHeight));
+    ImGui::StyleColorsDark();
+    ImGui_ImplGlfw_InitForOpenGL(window, true);  // Assuming you're using GLFW
+    ImGui_ImplOpenGL3_Init("#version 330");
 
     // Ficamos em um loop infinito, renderizando, até que o usuário feche a janela
     while (!glfwWindowShouldClose(window))
@@ -327,39 +352,33 @@ int main(int argc, char* argv[])
         float x = r*cos(g_CameraPhi)*sin(g_CameraTheta);
 
         bool isMovementKeyPressed = tecla_W_pressionada || tecla_A_pressionada || tecla_S_pressionada || tecla_D_pressionada;
-        glm::vec4 camera_view_vector;
-        glm::vec4 camera_position_c;
 
         if (isMovementKeyPressed)
         {
             // Modo free camera
-            camera_position_c  = glm::vec4(x,y,z,1.0f) + camera_movement;
-            camera_lookat_l = origin + camera_movement;  // Move the lookat point in tandem with the camera.
-            x = camera_position_c.x;
-            y = camera_position_c.y;
-            z = camera_position_c.z;
+            SceneInformation::camera_position_c = glm::vec4(x,y,z,1.0f) + camera_movement;
+            camera_lookat_l = origin + camera_movement;
+            x = SceneInformation::camera_position_c.x;
+            y = SceneInformation::camera_position_c.y;
+            z = SceneInformation::camera_position_c.z;
         }
         else
         {
             // Modo lookat camera
-            camera_position_c  = glm::vec4(x,y,z,1.0f) + camera_movement; // Ponto "c", centro da câmera
-            camera_view_vector = camera_lookat_l - camera_position_c; // Vetor "view", sentido para onde a câmera está virada
+            SceneInformation::camera_position_c  = glm::vec4(x,y,z,1.0f) + camera_movement; // Ponto "c", centro da câmera
+            SceneInformation::camera_view_vector = camera_lookat_l - SceneInformation::camera_position_c; // Vetor "view", sentido para onde a câmera está virada
         }
 
         // FREE CAMERA
         // Definicoes da Free Camera
-        glm::vec4 camera_up_vector   = glm::vec4(0.0f,1.0f,0.0f,0.0f); // Vetor "up" fixado para apontar para o "céu" (eito Y global)
-        glm::vec4 vetor_w = -camera_view_vector;
-        glm::vec4 vetor_u = crossproduct(camera_up_vector, vetor_w);
+        glm::vec4 vetor_w = -SceneInformation::camera_view_vector;
+        glm::vec4 vetor_u = crossproduct(SceneInformation::camera_up_vector, vetor_w);
         vetor_w = vetor_w / norm(vetor_w);
         vetor_u = vetor_u / norm(vetor_u);
 
         // Computamos a matriz "View" utilizando os parâmetros da câmera para
         // definir o sistema de coordenadas da câmera.  Veja slides 2-14, 184-190 e 236-242 do documento Aula_08_Sistemas_de_Coordenadas.pdf.
-        glm::mat4 view = Matrix_Camera_View(camera_position_c, camera_view_vector, camera_up_vector);
-
-        // Agora computamos a matriz de Projeção.
-        glm::mat4 projection;
+        SceneInformation::view = Matrix_Camera_View(SceneInformation::camera_position_c, SceneInformation::camera_view_vector, SceneInformation::camera_up_vector);
 
         // Note que, no sistema de coordenadas da câmera, os planos near e far
         // estão no sentido negativo! Veja slides 176-204 do documento Aula_09_Projecoes.pdf.
@@ -371,7 +390,7 @@ int main(int argc, char* argv[])
             // Projeção Perspectiva.
             // Para definição do field of view (FOV), veja slides 205-215 do documento Aula_09_Projecoes.pdf.
             float field_of_view = 3.141592 / 3.0f;
-            projection = Matrix_Perspective(field_of_view, g_ScreenRatio, nearplane, farplane);
+            SceneInformation::projection = Matrix_Perspective(field_of_view, g_ScreenRatio, nearplane, farplane);
         }
         else
         {
@@ -384,7 +403,7 @@ int main(int argc, char* argv[])
             float b = -t;
             float r = t*g_ScreenRatio;
             float l = -r;
-            projection = Matrix_Orthographic(l, r, b, t, nearplane, farplane);
+            SceneInformation::projection = Matrix_Orthographic(l, r, b, t, nearplane, farplane);
         }
 
         glm::mat4 model = Matrix_Identity(); // Transformação identidade de modelagem
@@ -392,11 +411,11 @@ int main(int argc, char* argv[])
         // Enviamos as matrizes "view" e "projection" para a placa de vídeo
         // (GPU). Veja o arquivo "shader_vertex.glsl", onde estas são
         // efetivamente aplicadas em todos os pontos.
-        glUniformMatrix4fv(g_view_uniform       , 1 , GL_FALSE , glm::value_ptr(view));
-        glUniformMatrix4fv(g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));
+        glUniformMatrix4fv(g_view_uniform       , 1 , GL_FALSE , glm::value_ptr(SceneInformation::view));
+        glUniformMatrix4fv(g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(SceneInformation::projection));
 
         // Gera as imagens dos objetos
-        for (const auto& pair : g_ObjectInstances) 
+        for (const auto& pair : g_ObjectInstances)
         {
             int key = pair.first;
             ObjectInstance instance = pair.second;
@@ -407,7 +426,7 @@ int main(int argc, char* argv[])
                 instance.model_matrix = Matrix_Translate(camera_lookat_l.x,camera_lookat_l.y,camera_lookat_l.z)
                     * Matrix_Scale(0.05f,0.05f,0.05f);
             }
-            
+
             glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(instance.model_matrix));
             glUniform1i(g_object_id_uniform, key);
             DrawVirtualObject(instance.object_name.c_str());
@@ -444,6 +463,66 @@ int main(int argc, char* argv[])
             // Movimenta câmera para direita
             camera_movement += vetor_u * speed * delta_t;
 
+
+        // Inicia o frame da Dear ImGui
+        ImGui_ImplOpenGL3_NewFrame(); // Assuming you're using the GLFW and OpenGL3 backends
+        ImGui::NewFrame();
+
+        // GUI
+        // Define a posição e tamanho da janela da GUI
+        ImVec2 windowSize = ImVec2(220.0f, 150.0f);
+        ImVec2 windowPos = ImVec2(20.0f, 20.0f);
+
+        ImGui::SetNextWindowSize(windowSize);
+        ImGui::SetNextWindowPos(windowPos);
+
+        static bool show_window = true;
+        ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+        ImGui::Begin("Adicionar itens na cena", &show_window, window_flags);
+
+        static bool isSphereSelected = false; // Store selection state for the first selectable
+        if (ImGui::Selectable("Esfera", isSphereSelected))
+        {
+            // isSphereSelected = !isSphereSelected; // Toggle the selection state
+        }
+
+        static bool isCuboidSelected = false; // Store selection state for the first selectable
+        if (ImGui::Selectable("Cubóide", isCuboidSelected))
+        {
+            // isCuboidSelected = !isCuboidSelected; // Toggle the selection state
+        }
+        
+        static bool isCowSelected = false; // Store selection state for the first selectable
+        if (ImGui::Selectable("Vaca", isCowSelected))
+        {
+            // isCowSelected = !isCowSelected; // Toggle the selection state
+        }
+
+        static bool isBunnySelected = false; // Store selection state for the first selectable
+        if (ImGui::Selectable("Coelho", isBunnySelected))
+        {
+            // isBunnySelected = !isBunnySelected; // Toggle the selection state
+        }
+
+        static bool isRectangleSelected = false; // Store selection state for the first selectable
+        if (ImGui::Selectable("Retângulo", isRectangleSelected))
+        {
+            // isRectangleSelected = !isRectangleSelected; // Toggle the selection state
+        }
+
+        if (ImGui::Selectable("Teste"))
+        {
+            // isRectangleSelected = !isRectangleSelected; // Toggle the selection state
+        }
+
+
+        ImGui::End();
+
+        // Rendering
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+
         // O framebuffer onde OpenGL executa as operações de renderização não
         // é o mesmo que está sendo mostrado para o usuário, caso contrário
         // seria possível ver artefatos conhecidos como "screen tearing". A
@@ -458,6 +537,11 @@ int main(int argc, char* argv[])
         // pela biblioteca GLFW.
         glfwPollEvents();
     }
+
+    // Finalizamos o uso dos recursos da interface gráfica IMGUI
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
 
     // Finalizamos o uso dos recursos do sistema operacional
     glfwTerminate();
@@ -1075,14 +1159,17 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
             ;
     }
 
-    if (key == GLFW_KEY_0 || key == GLFW_KEY_1 || key == GLFW_KEY_2 || key == GLFW_KEY_3 || key == GLFW_KEY_4 || 
+    if (key == GLFW_KEY_0 || key == GLFW_KEY_1 || key == GLFW_KEY_2 || key == GLFW_KEY_3 || key == GLFW_KEY_4 ||
         key == GLFW_KEY_5 || key == GLFW_KEY_6 || key == GLFW_KEY_7 || key == GLFW_KEY_8 || key == GLFW_KEY_9)
     {
+        float scale = 1.25f;
+        float descale = 1.00f/scale;
+
         if (g_selectedObject != -1)
         {
-            g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Scale(1.00/1.5f,1.00/1.5f,1.00/1.5f);
+            g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Scale(descale,descale,descale);
         }
-        
+
         switch (key)
         {
         case GLFW_KEY_0:
@@ -1116,7 +1203,40 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
             break;
         }
 
-        g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Scale(1.5f,1.5f,1.5f);
+        g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Scale(scale,scale,scale);
+    }
+
+    if (key == GLFW_KEY_Q)
+    {
+        if (action == GLFW_PRESS)
+            ;
+        else if (action == GLFW_RELEASE)
+        {
+            glm::vec3 ray_direction = ComputeRayFromMouse(window, SceneInformation::projection, 
+                                                          SceneInformation::view, g_windowWidth, g_windowHeight);
+
+            bool intersectsSomething = false;
+
+            // Loop for each object in g_VirtualScene
+            for (auto& object : g_VirtualScene)
+            {
+                SceneObject sceneObject = object.second;
+
+                float intersection_distance;
+                intersectsSomething = TestRayOBBIntersection(SceneInformation::camera_position_c, ray_direction, sceneObject.bbox_min, sceneObject.bbox_max, 
+                                                             Matrix_Identity(), intersection_distance);
+
+                // Check if ray intersects with object
+                if (intersectsSomething)
+                {
+                    g_ObjectInstances[3].model_matrix = g_ObjectInstances[3].model_matrix * Matrix_Scale(1.01f,1.01f,1.01f);
+                }
+            }
+        }
+
+        else if (action == GLFW_REPEAT)
+
+            ;
     }
 
 
@@ -1143,7 +1263,7 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
         default:
             break;
         }
-        
+
         if (action == GLFW_PRESS)
         {
             g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Translate(translation_x,translation_y,translation_z);
@@ -1153,7 +1273,7 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
         else if (action == GLFW_REPEAT)
         {
             g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Translate(translation_x,translation_y,translation_z);
-        }   
+        }
     }
 }
 
@@ -1226,11 +1346,13 @@ void TextRendering_ShowModelViewProjection(
 
 // FUNÇÕES NOVAS ======================================================================================================
 
-glm::vec3 ComputeRayFromMouse(float mouseX, float mouseY, const glm::mat4& projMatrix, const glm::mat4& viewMatrix, int windowWidth, int windowHeight)
+glm::vec3 ComputeRayFromMouse(GLFWwindow* window, const glm::mat4& projMatrix, const glm::mat4& viewMatrix, int windowWidth, int windowHeight)
 {
+    glfwGetCursorPos(window, &g_LastCursorPosX, &g_LastCursorPosY);
+
     // Convert to normalized device coordinates
-    float x = (2.0f * mouseX) / windowWidth - 1.0f;
-    float y = 1.0f - (2.0f * mouseY) / windowHeight;
+    float x = (2.0f * g_LastCursorPosX) / windowWidth - 1.0f;
+    float y = 1.0f - (2.0f * g_LastCursorPosY) / windowHeight;
 
     glm::vec4 rayClip = glm::vec4(x, y, -1.0f, 1.0f);
 
@@ -1241,6 +1363,63 @@ glm::vec3 ComputeRayFromMouse(float mouseX, float mouseY, const glm::mat4& projM
     glm::vec3 rayDir = glm::normalize(glm::vec3(rayWorld));
 
     return rayDir;
+}
+
+bool TestRayOBBIntersection(
+	glm::vec3 ray_origin,        // Ray origin, in world space
+	glm::vec3 ray_direction,     // Ray direction (NOT target position!), in world space. Must be normalize()'d.
+	glm::vec3 aabb_min,          // Minimum X,Y,Z coords of the mesh when not transformed at all.
+	glm::vec3 aabb_max,          // Maximum X,Y,Z coords. Often aabb_min*-1 if your mesh is centered, but it's not always the case.
+	glm::mat4 ModelMatrix,       // Transformation applied to the mesh (which will thus be also applied to its bounding box)
+	float& intersection_distance // Output : distance between ray_origin and the intersection with the OBB
+)
+{
+    float tMin = 0.0f;
+    float tMax = 100000.0f;
+
+    glm::vec3 OBBposition_worldspace(ModelMatrix[3].x, ModelMatrix[3].y, ModelMatrix[3].z);
+
+    glm::vec3 delta = OBBposition_worldspace - ray_origin;
+
+    // Test intersection with the 2 planes perpendicular to the OBB's X axis
+    {
+        glm::vec3 xaxis(ModelMatrix[0].x, ModelMatrix[0].y, ModelMatrix[0].z);
+        float e = glm::dot(xaxis, delta);
+        float f = glm::dot(ray_direction, xaxis);
+
+        if (fabs(f) > 0.001f) { // Standard case
+
+            float t1 = (e + aabb_min.x) / f; // Intersection with the "left" plane
+            float t2 = (e + aabb_max.x) / f; // Intersection with the "right" plane
+            // t1 and t2 now contain distances betwen ray origin and ray-plane intersections
+
+            // We want t1 to represent the nearest intersection,
+            // so if it's not the case, invert t1 and t2
+            if (t1>t2) {
+                float w = t1; t1 = t2; t2 = w; // swap t1 and t2
+            }
+
+            // tMax is the nearest "far" intersection (amongst the X,Y and Z planes pairs)
+            if (t2 < tMax)
+                tMax = t2;
+            // tMin is the farthest "near" intersection (amongst the X,Y and Z planes pairs)
+            if (t1 > tMin)
+                tMin = t1;
+
+            // And here's the trick :
+            // If "far" is closer than "near", then there is NO intersection.
+            // See the images in the tutorials for the visual explanation.
+            if (tMax < tMin)
+                return false;
+
+        }
+        else { // Rare case : the ray is almost parallel to the planes, so they don't have any "intersection"
+            if (-e + aabb_min.x > 0.0f || -e + aabb_max.x < 0.0f)
+                return false;
+        }
+    }
+
+    //
 }
 
 // AABB ComputeAABB(const ObjModel& model) {
