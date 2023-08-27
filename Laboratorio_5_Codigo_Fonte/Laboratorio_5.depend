@@ -1054,13 +1054,14 @@
 	<glm/vec4.hpp>
 	"globals.h"
 
-1693169041 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\globals.cpp
+1693169666 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\globals.cpp
 	"globals.h"
 
-1693169041 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\globals.h
+1693171356 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\globals.h
 	<map>
 	<stack>
 	<string>
+	<vector>
 	<GLFW/glfw3.h>
 	<glm/mat4x4.hpp>
 
@@ -1071,12 +1072,12 @@
 	"globals.h"
 	"imgui/imgui_impl_glfw.h"
 
-1693169041 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\callbacks.cpp
+1693169666 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\callbacks.cpp
 	"Callbacks.h"
 
 1692417644 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\geometryfunctions.h
 
-1693169041 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\sceneobject.h
+1693169666 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\sceneobject.h
 	<string>
 	<map>
 	<GLFW/glfw3.h>
@@ -3479,7 +3480,7 @@
 1692938684 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\sceneinformation.h
 	<glm/glm.hpp>
 
-1693169041 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\cursorray.h
+1693169666 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\cursorray.h
 	<glm/glm.hpp>
 	"globals.h"
 	"SceneInformation.h"
@@ -3487,16 +3488,16 @@
 	<glm/vec4.hpp>
 	<glm/gtc/type_ptr.hpp>
 
-1693169041 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\cursorray.cpp
+1693169666 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\cursorray.cpp
 	"CursorRay.h"
 
-1693169041 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\gui.cpp
+1693169666 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\gui.cpp
 	"GUI.h"
 	"globals.h"
 	"SceneInformation.h"
 	"ObjectInstance.h"
 
-1693169041 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\gui.h
+1693169666 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\gui.h
 	"imgui/imgui.h"
 	"imgui/imgui_impl_glfw.h"
 	"imgui/imgui_impl_opengl3.h"

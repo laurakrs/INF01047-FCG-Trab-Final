@@ -78,6 +78,24 @@ float g_actualWindowHeight;
 // Map de instâncias para seu id
 std::map<std::string, int> g_ObjectInstanceNameToIdMap;
 
+// Paths de arquivos externos a serem carregados
+std::vector<std::string> g_modelPaths = 
+{
+    "../../data/sphere.obj",
+    "../../data/bunny.obj",
+    "../../data/plane.obj",
+    "../../data/cow.obj",
+    "../../data/cube.obj",
+    "../../data/rectangle.obj"
+};
+
+std::vector<std::string> g_texturePaths = 
+{
+    "../../data/tc-earth_daymap_surface.jpg",
+    "../../data/tc-earth_nightmap_citylights.gif",
+    "../../data/brick_wall_02_diff_4k.jpg",
+    "../../data/wood_table_001_diff_4k.jpg"
+};
 
 // DEBUG
 double g_glfwLastRayCursorPosX, g_glfwLastRayCursorPosY;

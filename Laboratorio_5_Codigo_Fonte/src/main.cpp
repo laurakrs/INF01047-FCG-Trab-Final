@@ -29,6 +29,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <algorithm>
+#include <vector>
 
 // Headers das bibliotecas OpenGL
 #include <glad/glad.h>   // Criação de contexto OpenGL 3.3
@@ -58,7 +59,6 @@
 #include "SceneInformation.h"
 #include "CursorRay.h"
 #include "GUI.h"
-#include <vector>
 
 // Declaração de funções utilizadas para pilha de matrizes de modelagem.
 void PushMatrix(glm::mat4 M);
@@ -78,12 +78,11 @@ void LoadShadersFromFiles(); // Carrega os shaders de vértice e fragmento, cria
 GLuint LoadShader_Vertex(const char* filename);   // Carrega um vertex shader
 GLuint LoadShader_Fragment(const char* filename); // Carrega um fragment shader
 void LoadShader(const char* filename, GLuint shader_id); // Função utilizada pelas duas acima
-void LoadTextureImages(); // Carrega imagens de textura
+void LoadTextureImages(const std::vector<std::string>& texturePaths); // Carrega imagens de textura
 void LoadTextureImage(const char* filename); // Função que carrega imagens de textura
 
-
 // Geração dos objetos
-void GenerateObjectModels(); // Constrói representações de objetos geométricos
+void GenerateObjectModels(const std::vector<std::string>& modelPaths); // Constrói representações de objetos geométricos
 void BuildTrianglesAndAddToVirtualScene(ObjModel*); // Constrói representação de um ObjModel como malha de triângulos para renderização
 GLuint BuildTriangles(); // Constrói triângulos para renderização
 void ComputeNormals(ObjModel* model); // Computa normais de um ObjModel, caso não existam.
@@ -189,9 +188,31 @@ int main(int argc, char* argv[])
     LoadShadersFromFiles();
 
     // Carregamos imagens para serem utilizadas como textura
-    LoadTextureImages();
+    LoadTextureImages(g_texturePaths);
 
-    GenerateObjectModels();
+    // Construímos a representação de objetos geométricos através de malhas de triângulos
+    GenerateObjectModels(g_modelPaths);
+
+    // After processing all shapes in the model, but before creating VBOs for the main model:
+    for (auto& [name, obj] : g_VirtualScene) // loop through all the objects in g_VirtualScene
+    {
+        // Create a VBO for bounding box vertices
+        GLuint bbox_vbo;
+        glGenBuffers(1, &bbox_vbo);
+        glBindBuffer(GL_ARRAY_BUFFER, bbox_vbo);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(obj.bbox_vertices), obj.bbox_vertices.data(), GL_STATIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+        // Create an IBO for bounding box indices
+        GLuint bbox_ibo;
+        glGenBuffers(1, &bbox_ibo);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bbox_ibo);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(obj.bbox_indices), obj.bbox_indices.data(), GL_STATIC_DRAW);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+        // obj.bbox_vbo = bbox_vbo;
+        // obj.bbox_ibo = bbox_ibo;
+    }
 
     // Modelo dos eixos XYZ
     GLuint VAO_X_axis, VAO_Y_axis, VAO_Z_axis;
@@ -983,6 +1004,9 @@ void BuildTrianglesAndAddToVirtualScene(ObjModel* model)
         glm::vec3 bbox_min = glm::vec3(maxval,maxval,maxval);
         glm::vec3 bbox_max = glm::vec3(minval,minval,minval);
 
+
+
+
         // Adição dos vértices da bounding box
         // Create vertices for the bounding box
         glm::vec3 bbox_vertices[8];
@@ -1130,12 +1154,12 @@ void BuildTrianglesAndAddToVirtualScene(ObjModel* model)
     glBindVertexArray(0);
 }
 
-void LoadTextureImages()
+void LoadTextureImages(const std::vector<std::string>& texturePaths)
 {
-    LoadTextureImage("../../data/tc-earth_daymap_surface.jpg");      // TextureImage0
-    LoadTextureImage("../../data/tc-earth_nightmap_citylights.gif"); // TextureImage1
-    LoadTextureImage("../../data/brick_wall_02_diff_4k.jpg"); // TextureImage2
-    LoadTextureImage("../../data/wood_table_001_diff_4k.jpg"); // TextureImage3
+    for(const auto& path : texturePaths)
+    {
+        LoadTextureImage(path.c_str());
+    }
 }
 
 // Função que carrega uma imagem para ser utilizada como textura
@@ -1193,32 +1217,14 @@ void LoadTextureImage(const char* filename)
 
 
 // Geração dos modelos ======================================================================================================
-void GenerateObjectModels()
+void GenerateObjectModels(const std::vector<std::string>& modelPaths)
 {
-    // Construímos a representação de objetos geométricos através de malhas de triângulos
-    ObjModel spheremodel("../../data/sphere.obj");
-    ComputeNormals(&spheremodel);
-    BuildTrianglesAndAddToVirtualScene(&spheremodel);
-
-    ObjModel bunnymodel("../../data/bunny.obj");
-    ComputeNormals(&bunnymodel);
-    BuildTrianglesAndAddToVirtualScene(&bunnymodel);
-
-    ObjModel planemodel("../../data/plane.obj");
-    ComputeNormals(&planemodel);
-    BuildTrianglesAndAddToVirtualScene(&planemodel);
-
-    ObjModel cowmodel("../../data/cow.obj");
-    ComputeNormals(&cowmodel);
-    BuildTrianglesAndAddToVirtualScene(&cowmodel);
-
-    ObjModel cubemodel("../../data/cube.obj");
-    ComputeNormals(&cubemodel);
-    BuildTrianglesAndAddToVirtualScene(&cubemodel);
-
-    ObjModel rectanglemodel("../../data/rectangle.obj");
-    ComputeNormals(&rectanglemodel);
-    BuildTrianglesAndAddToVirtualScene(&rectanglemodel);
+    for(const auto& path : modelPaths)
+    {
+        ObjModel model(path.c_str());
+        ComputeNormals(&model);
+        BuildTrianglesAndAddToVirtualScene(&model);
+    }
 }
 
 void GenerateObjectInstances(glm::vec4 camera_lookat_l)
