@@ -75,6 +75,8 @@ int g_startWindowHeight = 600;
 float g_actualWindowWidth;
 float g_actualWindowHeight;
 
+// Map de instâncias para seu id
+std::map<std::string, int> g_ObjectInstanceNameToIdMap;
 
 
 // DEBUG
