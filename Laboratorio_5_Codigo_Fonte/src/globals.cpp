@@ -75,12 +75,16 @@ int g_startWindowHeight = 600;
 float g_actualWindowWidth;
 float g_actualWindowHeight;
 
+
+
 // DEBUG
-// Raio projetado com o clique do mouse
+double g_glfwLastRayCursorPosX, g_glfwLastRayCursorPosY;
+double g_NDCGlfwLastRayCursorPosX, g_NDCGlfwLastRayCursorPosY;
+glm::vec4 g_rayClip, g_rayEye, g_rayWorld, g_rayDirection;
+
 glm::vec4 g_rayStartPoint;
-float g_rayLength = 10.0f;
+float g_rayLength = 1000.0f;
 glm::vec4 g_rayEndPoint;
-glm::vec4 g_rayDirection;
 glm::vec3 g_rayVertices[2];
 GLuint VBO_ray_id;
 GLuint VAO_ray_id;

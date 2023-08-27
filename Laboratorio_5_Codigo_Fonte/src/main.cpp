@@ -56,6 +56,7 @@
 #include "SceneObject.h"
 #include "ObjectInstance.h"
 #include "SceneInformation.h"
+#include "CursorRay.h"
 #include <vector>
 
 // Interface gráfica
@@ -100,7 +101,7 @@ void TextRendering_ShowModelViewProjection(GLFWwindow* window, glm::mat4 project
 // usuário. Veja mais comentários nas definições das mesmas, abaixo.
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode);
 
-glm::vec4 ComputeRayFromMouse(GLFWwindow* window, const glm::mat4& projMatrix, const glm::mat4& viewMatrix);
+
 bool TestRayOBBIntersection(
 	glm::vec3 ray_origin,        // Ray origin, in world space
 	glm::vec3 ray_direction,     // Ray direction (NOT target position!), in world space. Must be normalize()'d.
@@ -488,13 +489,13 @@ int main(int argc, char* argv[])
             }
 
         }
-
+        
         if (g_LeftMouseButtonPressed)
         {
-            g_rayDirection = ComputeRayFromMouse(window, SceneInformation::projection, SceneInformation::view);
+            g_cursorRay = ComputeRayFromMouse(window, SceneInformation::projection, SceneInformation::view);
         }
-
-        DrawRay(SceneInformation::camera_position_c, g_rayDirection);
+        
+        DrawRay(g_cursorRay.startPoint, g_cursorRay.direction);
         
         
 
@@ -1183,23 +1184,14 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
         case GLFW_KEY_5:
             g_selectedObject = 5;
             break;
-        // case GLFW_KEY_6:
-        //     g_selectedObject = 6;
-        //     break;
-        // case GLFW_KEY_7:
-        //     g_selectedObject = 7;
-        //     break;
-        // case GLFW_KEY_8:
-        //     g_selectedObject = 8;
-        //     break;
-         case GLFW_KEY_6:
-            g_selectedObject = 9;
+        case GLFW_KEY_6:
+            g_selectedObject = 6;
             break;
         case GLFW_KEY_7:
-            g_selectedObject = 10;
+            g_selectedObject = 7;
             break;
         case GLFW_KEY_8:
-            g_selectedObject = 11;
+            g_selectedObject = 8;
             break;
         default:
             break;
@@ -1207,46 +1199,6 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
 
         g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Scale(scale,scale,scale);
     }
-
-    if (key == GLFW_KEY_Q)
-    {
-        if (action == GLFW_PRESS)
-            ;
-        else if (action == GLFW_RELEASE)
-        {
-            // glm::vec3 ray_direction = ComputeRayFromMouse(window, SceneInformation::projection, 
-            //                                               SceneInformation::view, g_windowWidth, g_windowHeight);
-
-            // float rayLength = 100.0f;
-
-            // glm::vec3 ray_direction = ComputeRayFromMouse(window, SceneInformation::projection, SceneInformation::view, g_windowWidth, g_windowHeight);
-            // glm::vec3 cameraPosition = SceneInformation::camera_position_c;
-            
-
-            bool intersectsSomething = false;
-
-            // Loop for each object in g_VirtualScene
-            for (auto& object : g_VirtualScene)
-            {
-                SceneObject sceneObject = object.second;
-
-                float intersection_distance;
-                intersectsSomething = TestRayOBBIntersection(SceneInformation::camera_position_c, g_rayDirection, sceneObject.bbox_min, sceneObject.bbox_max, 
-                                                             Matrix_Identity(), intersection_distance);
-
-                // Check if ray intersects with object
-                if (intersectsSomething)
-                {
-                    g_ObjectInstances[3].model_matrix = g_ObjectInstances[3].model_matrix * Matrix_Scale(1.01f,1.01f,1.01f);
-                }
-            }
-        }
-
-        else if (action == GLFW_REPEAT)
-
-            ;
-    }
-
 
     if (g_selectedObject != -1)
     {
@@ -1354,49 +1306,7 @@ void TextRendering_ShowModelViewProjection(
 
 // FUNÇÕES NOVAS ======================================================================================================
 
-glm::vec4 ComputeRayFromMouse(GLFWwindow* window, const glm::mat4& projMatrix, const glm::mat4& viewMatrix)
-{
-    glfwGetCursorPos(window, &g_LastCursorPosX, &g_LastCursorPosY);
 
-    // Convert to normalized device coordinates
-    float x = (2.0f * g_LastCursorPosX) / g_actualWindowWidth - 1.0f;
-    float y = 1.0f - (2.0f * g_LastCursorPosY) / g_actualWindowHeight;
-
-    glm::vec4 rayClip = glm::vec4(x, y, -1.0f, 1.0f);
-    g_rayStartPoint = rayClip;
-    glm::vec4 rayEye = glm::inverse(projMatrix) * rayClip;
-
-    glm::vec4 rayDir;
-
-    if (g_UsePerspectiveProjection)
-    {
-        
-        // For orthographic projection, the ray direction in the eye space is 
-        // always parallel to the negative z-axis
-        rayEye.z = -1.0f; // pointing forward
-        rayEye.w = 0.0f;  // represents direction, not a point
-
-        glm::vec4 rayWorld = glm::inverse(viewMatrix) * rayEye;
-        rayDir = glm::normalize(rayWorld);
-        rayDir.w = 0.0f; // Ensure the w coordinate remains zero for directions.
-    }
-    else
-    {
-        // For orthographic projection, the ray direction in the eye space is 
-        // always parallel to the negative z-axis
-        rayEye.z = -1.0f; // pointing forward
-        rayEye.w = 0.0f;  // represents direction, not a point
-
-        glm::vec4 rayWorld = glm::inverse(viewMatrix) * rayEye;
-        rayDir = glm::normalize(rayWorld);
-        rayDir.w = 0.0f; // Ensure the w coordinate remains zero for directions.
-    }
-    
-
-    
-
-    return rayDir;
-}
 
 bool TestRayOBBIntersection(
 	glm::vec3 ray_origin,        // Ray origin, in world space
@@ -1632,9 +1542,26 @@ void CreateDebugWindow(ImVec2 debugWindowSize, ImVec2 debugWindowPosition)
 
     glm::vec3 cameraPosition = SceneInformation::camera_position_c;
 
+    // show g_glfwLastRayCursorPosX
+    ImGui::Text("==================================================");
+    ImGui::Text("g_glfwLastRayCursorPosX: %.3f", g_glfwLastRayCursorPosX);
+    ImGui::Text("g_NDCGlfwLastRayCursorPosX: %.3f", g_NDCGlfwLastRayCursorPosX);
+    ImGui::Text("--------------------------------------------------");
+    ImGui::Text("g_glfwLastRayCursorPosY: %.3f", g_glfwLastRayCursorPosY);
+    ImGui::Text("g_NDCGlfwLastRayCursorPosY: %.3f", g_NDCGlfwLastRayCursorPosY);
+    ImGui::Text("==================================================");
+
+    // print g_rayClip, g_rayEye, g_rayWorld, g_rayDirection
+    ImGui::Text("rayClip: x=%.3f, y=%.3f, z=%.3f w=%.3f", g_rayClip.x, g_rayClip.y, g_rayClip.z, g_rayClip.w);
+    ImGui::Text("rayEye: x=%.3f, y=%.3f, z=%.3f w=%.3f", g_rayEye.x, g_rayEye.y, g_rayEye.z, g_rayEye.w);
+    ImGui::Text("rayWorld: x=%.3f, y=%.3f, z=%.3f w=%.3f", g_rayWorld.x, g_rayWorld.y, g_rayWorld.z, g_rayWorld.w);
+    ImGui::Text("rayDirection: x=%.3f, y=%.3f, z=%.3f w=%.3f", g_rayDirection.x, g_rayDirection.y, g_rayDirection.z, g_rayDirection.w);
+
+
+
+
     ImGui::Text("cameraPosition: x=%.3f, y=%.3f, z=%.3f", cameraPosition.x, cameraPosition.y, cameraPosition.z);
     ImGui::Text("rayEndPoint: x=%.3f, y=%.3f, z=%.3f w=%.3f", g_rayEndPoint.x, g_rayEndPoint.y, g_rayEndPoint.z, g_rayEndPoint.w);
-    ImGui::Text("rayDirection: x=%.3f, y=%.3f, z=%.3f w=%.3f", g_rayDirection.x, g_rayDirection.y, g_rayDirection.z, g_rayDirection.w);
     ImGui::Text("Window Width: %.3f", g_actualWindowWidth);
     ImGui::Text("Window Height: %.3f", g_actualWindowHeight);
 
@@ -1773,13 +1700,11 @@ void SetupRayVAOAndVBO()
     glBindVertexArray(0); // unbind the VAO
 }
 
-void DrawRay(glm::vec4 cameraPosition, glm::vec4 ray_direction)
+void DrawRay(glm::vec4 rayStartPoint, glm::vec4 rayDirection)
 {
     // Calculate ray end point
-    cameraPosition = g_rayStartPoint;
-
-    g_rayEndPoint = cameraPosition + ray_direction * g_rayLength;
-    glm::vec4 g_rayVertices[2] = {cameraPosition, g_rayEndPoint};
+    glm::vec4 rayEndPoint = rayStartPoint + rayDirection * g_rayLength;
+    glm::vec4 g_rayVertices[2] = {rayStartPoint, rayEndPoint};
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO_ray_id);
     glBufferData(GL_ARRAY_BUFFER, sizeof(g_rayVertices), g_rayVertices, GL_DYNAMIC_DRAW);
