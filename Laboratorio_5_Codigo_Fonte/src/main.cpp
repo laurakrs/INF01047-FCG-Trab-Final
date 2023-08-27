@@ -709,6 +709,8 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
 }
 
 
+
+// Impressão de informações ======================================================================================================
 void PrintGPUInformation()
 {
     // Imprimimos no terminal informações sobre a GPU do sistema
