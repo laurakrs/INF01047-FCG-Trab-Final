@@ -29,6 +29,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <algorithm>
+#include <vector>
 
 // Headers das bibliotecas OpenGL
 #include <glad/glad.h>   // Criação de contexto OpenGL 3.3
@@ -58,7 +59,6 @@
 #include "SceneInformation.h"
 #include "CursorRay.h"
 #include "GUI.h"
-#include <vector>
 
 // Declaração de funções utilizadas para pilha de matrizes de modelagem.
 void PushMatrix(glm::mat4 M);
@@ -83,7 +83,7 @@ void LoadTextureImage(const char* filename); // Função que carrega imagens de 
 
 
 // Geração dos objetos
-void GenerateObjectModels(); // Constrói representações de objetos geométricos
+void GenerateObjectModels(const std::vector<std::string>& modelPaths); // Constrói representações de objetos geométricos
 void BuildTrianglesAndAddToVirtualScene(ObjModel*); // Constrói representação de um ObjModel como malha de triângulos para renderização
 GLuint BuildTriangles(); // Constrói triângulos para renderização
 void ComputeNormals(ObjModel* model); // Computa normais de um ObjModel, caso não existam.
@@ -191,7 +191,29 @@ int main(int argc, char* argv[])
     // Carregamos imagens para serem utilizadas como textura
     LoadTextureImages();
 
-    GenerateObjectModels();
+    // Construímos a representação de objetos geométricos através de malhas de triângulos
+    GenerateObjectModels(g_modelPaths);
+
+    // After processing all shapes in the model, but before creating VBOs for the main model:
+    for (auto& [name, obj] : g_VirtualScene) // loop through all the objects in g_VirtualScene
+    {
+        // Create a VBO for bounding box vertices
+        GLuint bbox_vbo;
+        glGenBuffers(1, &bbox_vbo);
+        glBindBuffer(GL_ARRAY_BUFFER, bbox_vbo);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(obj.bbox_vertices), obj.bbox_vertices.data(), GL_STATIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+        // Create an IBO for bounding box indices
+        GLuint bbox_ibo;
+        glGenBuffers(1, &bbox_ibo);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bbox_ibo);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(obj.bbox_indices), obj.bbox_indices.data(), GL_STATIC_DRAW);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+        // obj.bbox_vbo = bbox_vbo;
+        // obj.bbox_ibo = bbox_ibo;
+    }
 
     // Modelo dos eixos XYZ
     GLuint VAO_X_axis, VAO_Y_axis, VAO_Z_axis;
@@ -983,6 +1005,9 @@ void BuildTrianglesAndAddToVirtualScene(ObjModel* model)
         glm::vec3 bbox_min = glm::vec3(maxval,maxval,maxval);
         glm::vec3 bbox_max = glm::vec3(minval,minval,minval);
 
+
+
+
         // Adição dos vértices da bounding box
         // Create vertices for the bounding box
         glm::vec3 bbox_vertices[8];
@@ -1193,32 +1218,14 @@ void LoadTextureImage(const char* filename)
 
 
 // Geração dos modelos ======================================================================================================
-void GenerateObjectModels()
+void GenerateObjectModels(const std::vector<std::string>& modelPaths)
 {
-    // Construímos a representação de objetos geométricos através de malhas de triângulos
-    ObjModel spheremodel("../../data/sphere.obj");
-    ComputeNormals(&spheremodel);
-    BuildTrianglesAndAddToVirtualScene(&spheremodel);
-
-    ObjModel bunnymodel("../../data/bunny.obj");
-    ComputeNormals(&bunnymodel);
-    BuildTrianglesAndAddToVirtualScene(&bunnymodel);
-
-    ObjModel planemodel("../../data/plane.obj");
-    ComputeNormals(&planemodel);
-    BuildTrianglesAndAddToVirtualScene(&planemodel);
-
-    ObjModel cowmodel("../../data/cow.obj");
-    ComputeNormals(&cowmodel);
-    BuildTrianglesAndAddToVirtualScene(&cowmodel);
-
-    ObjModel cubemodel("../../data/cube.obj");
-    ComputeNormals(&cubemodel);
-    BuildTrianglesAndAddToVirtualScene(&cubemodel);
-
-    ObjModel rectanglemodel("../../data/rectangle.obj");
-    ComputeNormals(&rectanglemodel);
-    BuildTrianglesAndAddToVirtualScene(&rectanglemodel);
+    for(const auto& path : modelPaths)
+    {
+        ObjModel model(path.c_str());
+        ComputeNormals(&model);
+        BuildTrianglesAndAddToVirtualScene(&model);
+    }
 }
 
 void GenerateObjectInstances(glm::vec4 camera_lookat_l)

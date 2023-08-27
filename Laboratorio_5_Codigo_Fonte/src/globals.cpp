@@ -78,6 +78,16 @@ float g_actualWindowHeight;
 // Map de instâncias para seu id
 std::map<std::string, int> g_ObjectInstanceNameToIdMap;
 
+// Paths dos modelos a serem carregados
+std::vector<std::string> g_modelPaths = 
+{
+    "../../data/sphere.obj",
+    "../../data/bunny.obj",
+    "../../data/plane.obj",
+    "../../data/cow.obj",
+    "../../data/cube.obj",
+    "../../data/rectangle.obj"
+};
 
 // DEBUG
 double g_glfwLastRayCursorPosX, g_glfwLastRayCursorPosY;
