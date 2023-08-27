@@ -288,14 +288,6 @@ void main()
         q = 20.0;                       // Expoente especular de Phong = 20.0
         q_linha = 20.00;
     }
-    else // Objeto desconhecido = preto
-    {
-        Kd = vec3(0.0,0.0,0.0);
-        Ks = vec3(0.0,0.0,0.0);
-        Ka = vec3(0.0,0.0,0.0);
-        q = 1.0;
-        q_linha = 1.0;
-    }
     else if( object_id == X_AXIS )
     {
         color = vec4(1.0, 0.0, 0.0, 1.0);  // Vermelho
@@ -316,6 +308,15 @@ void main()
     //    color = vec4(1.0, 0.0, 0.0, 1.0); // Red color for bounding box
     //    return;
     //}
+    else // Objeto desconhecido = preto
+    {
+        Kd = vec3(0.0,0.0,0.0);
+        Ks = vec3(0.0,0.0,0.0);
+        Ka = vec3(0.0,0.0,0.0);
+        q = 1.0;
+        q_linha = 1.0;
+    }
+   
 
 
     // Espectro da fonte de iluminação
