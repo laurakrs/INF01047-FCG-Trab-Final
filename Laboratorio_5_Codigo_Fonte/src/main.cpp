@@ -56,51 +56,51 @@
 #include "SceneObject.h"
 #include "ObjectInstance.h"
 #include "SceneInformation.h"
+#include "CursorRay.h"
+#include "GUI.h"
 #include <vector>
-
-// Interface gráfica
-#include "imgui/imgui.h"
-#include "imgui/imgui_impl_glfw.h"
-#include "imgui/imgui_impl_opengl3.h"
-
-struct AABB {
-    glm::vec3 min; // minimum corner
-    glm::vec3 max; // maximum corner
-};
-
-AABB planeAABB;
-AABB bunnyAABB;
-AABB sphereAABB;
-AABB cowAABB;
-AABB cubeAABB;
-AABB rectangleAABB;
-
 
 // Declaração de funções utilizadas para pilha de matrizes de modelagem.
 void PushMatrix(glm::mat4 M);
 void PopMatrix(glm::mat4& M);
 
+// Funções callback para comunicação com o sistema operacional e interação do
+// usuário. Veja mais comentários nas definições das mesmas, abaixo.
+void SetCallbacks(GLFWwindow* window);
+void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode);
+
+// Imprime informações do sistema
+void PrintGPUInformation();
+
 // Declaração de várias funções utilizadas em main().  Essas estão definidas
 // logo após a definição de main() neste arquivo.
-void BuildTrianglesAndAddToVirtualScene(ObjModel*); // Constrói representação de um ObjModel como malha de triângulos para renderização
-GLuint BuildTriangles(); // Constrói triângulos para renderização
-void ComputeNormals(ObjModel* model); // Computa normais de um ObjModel, caso não existam.
 void LoadShadersFromFiles(); // Carrega os shaders de vértice e fragmento, criando um programa de GPU
-void LoadTextureImage(const char* filename); // Função que carrega imagens de textura
-void DrawVirtualObject(const char* object_name); // Desenha um objeto armazenado em g_VirtualScene
 GLuint LoadShader_Vertex(const char* filename);   // Carrega um vertex shader
 GLuint LoadShader_Fragment(const char* filename); // Carrega um fragment shader
 void LoadShader(const char* filename, GLuint shader_id); // Função utilizada pelas duas acima
+void LoadTextureImages(); // Carrega imagens de textura
+void LoadTextureImage(const char* filename); // Função que carrega imagens de textura
+
+
+// Geração dos objetos
+void GenerateObjectModels(); // Constrói representações de objetos geométricos
+void BuildTrianglesAndAddToVirtualScene(ObjModel*); // Constrói representação de um ObjModel como malha de triângulos para renderização
+GLuint BuildTriangles(); // Constrói triângulos para renderização
+void ComputeNormals(ObjModel* model); // Computa normais de um ObjModel, caso não existam.
+void GenerateObjectInstances(glm::vec4 camera_lookat_l); // Constrói representações de instâncias de objetos geométricos
+
+// Criação de eixos da cena
+void SetupXYZAxesVAOAndVBO(GLuint &VAO_X_axis, GLuint &VAO_Y_axis, GLuint &VAO_Z_axis, GLuint &VBO_X_axis, GLuint &VBO_Y_axis, GLuint &VBO_Z_axis);
+void SetupRayVAOAndVBO();
+
+// Funções de desenho
+void DrawVirtualObject(const char* object_name); // Desenha um objeto armazenado em g_VirtualScene
+void DrawRay(glm::vec4 cameraPosition, glm::vec4 ray_direction);
 
 // Funções abaixo renderizam como texto na janela OpenGL algumas matrizes e
 // outras informações do programa. Definidas após main().
 void TextRendering_ShowModelViewProjection(GLFWwindow* window, glm::mat4 projection, glm::mat4 view, glm::mat4 model, glm::vec4 p_model);
 
-// Funções callback para comunicação com o sistema operacional e interação do
-// usuário. Veja mais comentários nas definições das mesmas, abaixo.
-void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode);
-
-glm::vec3 ComputeRayFromMouse(GLFWwindow* window, const glm::mat4& projMatrix, const glm::mat4& viewMatrix, int windowWidth, int windowHeight);
 bool TestRayOBBIntersection(
 	glm::vec3 ray_origin,        // Ray origin, in world space
 	glm::vec3 ray_direction,     // Ray direction (NOT target position!), in world space. Must be normalize()'d.
@@ -109,6 +109,18 @@ bool TestRayOBBIntersection(
 	glm::mat4 ModelMatrix,       // Transformation applied to the mesh (which will thus be also applied to its bounding box)
 	float& intersection_distance // Output : distance between ray_origin and the intersection with the OBB
 );
+
+bool intersectsOnX(float tMin, float tMax, glm::vec3 delta,	glm::vec3 ray_direction, 
+                    glm::vec3 aabb_min, glm::vec3 aabb_max, 
+                    glm::mat4 ModelMatrix, float& intersection_distance);
+
+bool intersectsOnY(float tMin, float tMax, glm::vec3 delta,	glm::vec3 ray_direction, 
+                    glm::vec3 aabb_min, glm::vec3 aabb_max, 
+                    glm::mat4 ModelMatrix, float& intersection_distance);
+
+bool intersectsOnZ(float tMin, float tMax, glm::vec3 delta,	glm::vec3 ray_direction, 
+                    glm::vec3 aabb_min, glm::vec3 aabb_max, 
+                    glm::mat4 ModelMatrix, float& intersection_distance);
 
 
 // CÓDIGO PRINCIPAL ===========================
@@ -141,7 +153,7 @@ int main(int argc, char* argv[])
     // Criamos uma janela do sistema operacional, com 800 colunas e 600 linhas
     // de pixels, e com título "INF01047 ...".
     GLFWwindow* window;
-    window = glfwCreateWindow(g_windowWidth, g_windowHeight, "INF01047 - Trabalho Final - Laura Keidann e Matheus Sabadin", NULL, NULL);
+    window = glfwCreateWindow(g_startWindowWidth, g_startWindowHeight, "INF01047 - Trabalho Final - Laura Keidann e Matheus Sabadin", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -149,15 +161,8 @@ int main(int argc, char* argv[])
         std::exit(EXIT_FAILURE);
     }
 
-    // Definimos a função de callback que será chamada sempre que o usuário
-    // pressionar alguma tecla do teclado ...
-    glfwSetKeyCallback(window, KeyCallback);
-    // ... ou clicar os botões do mouse ...
-    glfwSetMouseButtonCallback(window, MouseButtonCallback);
-    // ... ou movimentar o cursor do mouse em cima da janela ...
-    glfwSetCursorPosCallback(window, CursorPosCallback);
-    // ... ou rolar a "rodinha" do mouse.
-    glfwSetScrollCallback(window, ScrollCallback);
+    // Seta KeyCallback, MouseButtonCallback, CursorPosCallback e ScrollCallback
+    SetCallbacks(window);
 
     // Indicamos que as chamadas OpenGL deverão renderizar nesta janela
     glfwMakeContextCurrent(window);
@@ -170,53 +175,32 @@ int main(int argc, char* argv[])
     // redimensionada, por consequência alterando o tamanho do "framebuffer"
     // (região de memória onde são armazenados os pixels da imagem).
     glfwSetFramebufferSizeCallback(window, FramebufferSizeCallback);
-    FramebufferSizeCallback(window, g_windowWidth, g_windowHeight); // Forçamos a chamada do callback acima, para definir g_ScreenRatio.
+    FramebufferSizeCallback(window, g_startWindowWidth, g_startWindowHeight); // Forçamos a chamada do callback acima, para definir g_ScreenRatio.
 
-    // Imprimimos no terminal informações sobre a GPU do sistema
-    const GLubyte *vendor      = glGetString(GL_VENDOR);
-    const GLubyte *renderer    = glGetString(GL_RENDERER);
-    const GLubyte *glversion   = glGetString(GL_VERSION);
-    const GLubyte *glslversion = glGetString(GL_SHADING_LANGUAGE_VERSION);
+    // Inicializamos a interface gráfica GUI
+    InitializeGUI(window);
 
-    printf("GPU: %s, %s, OpenGL %s, GLSL %s\n", vendor, renderer, glversion, glslversion);
+    // Imprime informações do sistema no console
+    PrintGPUInformation();
 
     // Carregamos os shaders de vértices e de fragmentos que serão utilizados
     // para renderização. Veja slides 180-200 do documento Aula_03_Rendering_Pipeline_Grafico.pdf.
     //
     LoadShadersFromFiles();
 
-    // Carregamos duas imagens para serem utilizadas como textura
-    LoadTextureImage("../../data/tc-earth_daymap_surface.jpg");      // TextureImage0
-    LoadTextureImage("../../data/tc-earth_nightmap_citylights.gif"); // TextureImage1
-    LoadTextureImage("../../data/brick_wall_02_diff_4k.jpg"); // TextureImage2
-    LoadTextureImage("../../data/wood_table_001_diff_4k.jpg"); // TextureImage3
+    // Carregamos imagens para serem utilizadas como textura
+    LoadTextureImages();
 
-    // Construímos a representação de objetos geométricos através de malhas de triângulos
-    ObjModel spheremodel("../../data/sphere.obj");
-    ComputeNormals(&spheremodel);
-    BuildTrianglesAndAddToVirtualScene(&spheremodel);
+    GenerateObjectModels();
 
-    ObjModel bunnymodel("../../data/bunny.obj");
-    ComputeNormals(&bunnymodel);
-    BuildTrianglesAndAddToVirtualScene(&bunnymodel);
+    // Modelo dos eixos XYZ
+    GLuint VAO_X_axis, VAO_Y_axis, VAO_Z_axis;
+    GLuint VBO_X_axis, VBO_Y_axis, VBO_Z_axis;
+    SetupXYZAxesVAOAndVBO(VAO_X_axis, VAO_Y_axis, VAO_Z_axis, VBO_X_axis, VBO_Y_axis, VBO_Z_axis);
 
-    ObjModel planemodel("../../data/plane.obj");
-    ComputeNormals(&planemodel);
-    BuildTrianglesAndAddToVirtualScene(&planemodel);
-
-    ObjModel cowmodel("../../data/cow.obj");
-    ComputeNormals(&cowmodel);
-    BuildTrianglesAndAddToVirtualScene(&cowmodel);
-
-    ObjModel cubemodel("../../data/cube.obj");
-    ComputeNormals(&cubemodel);
-    BuildTrianglesAndAddToVirtualScene(&cubemodel);
-
-    ObjModel rectanglemodel("../../data/rectangle.obj");
-    ComputeNormals(&rectanglemodel);
-    BuildTrianglesAndAddToVirtualScene(&rectanglemodel);
-
-
+    // Modelo do raio a partir do clique do mouse
+    SetupRayVAOAndVBO();
+    
     if ( argc > 1 )
     {
         ObjModel model(argv[1]);
@@ -233,7 +217,6 @@ int main(int argc, char* argv[])
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     glFrontFace(GL_CCW);
-
 
     //  // VARIAVEIS ESPECIFICAS DA FREE CAMERA
     // Definição de propriedades da câmera
@@ -259,71 +242,16 @@ int main(int argc, char* argv[])
     #define COW    6
     #define CUBE   7
     #define RECTANGLE 8
+    #define X_AXIS 9
+    #define Y_AXIS 10
+    #define Z_AXIS 11
 
-    // Inicialização de um objeto
-    glm::mat4 model = Matrix_Identity(); // Transformação identidade de modelagem
-
-    // For the first sphere:
-    model = Matrix_Translate(camera_lookat_l.x,camera_lookat_l.y,camera_lookat_l.z)
-            * Matrix_Scale(0.05f,0.05f,0.05f);
-    ObjectInstance("the_sphere", model, CENTRAL_SPHERE);
-
-    //Desenhamos o modelo da esfera
-    model = Matrix_Translate(-0.4f,0.0f,0.5f)
-            * Matrix_Scale(0.2f,0.2f,0.2f)
-            * Matrix_Rotate_Z(0.6f)
-            * Matrix_Rotate_X(0.2f)
-            * Matrix_Rotate_Y(g_AngleY + (float)glfwGetTime() * 0.1f);
-    ObjectInstance("the_sphere", model, SPHERE);
-
-    // Desenhamos outra instancia da esfera
-    model = Matrix_Translate(-0.9f,0.3f,0.8f)
-            * Matrix_Scale(0.4f,0.4f,0.4f);
-    ObjectInstance("the_sphere", model, SPHERE2);
-
-    // Desenhamos o modelo do coelho
-    model = Matrix_Translate(1.0f,0.0f,0.0f)
-        * Matrix_Scale(0.3f,0.3f,0.3f)
-        * Matrix_Rotate_X(g_AngleX + (float)glfwGetTime() * 0.1f);
-    ObjectInstance("the_bunny", model, BUNNY);
-
-    // Desenhamos outra instancia do coelho
-    model = Matrix_Translate(0.8f,-0.5f,0.5f)
-            * Matrix_Scale(0.2f,0.2f,0.2f)
-            * Matrix_Rotate_X(g_AngleX + (float)glfwGetTime() * 0.1f);
-    ObjectInstance("the_bunny", model, BUNNY2);
-
-    // Desenhamos o plano do chão
-    model = Matrix_Translate(0.0f,-1.1f,0.0f);
-    ObjectInstance("the_plane", model, PLANE);
-
-    // Desenhamos o modelo da vaca
-    model = Matrix_Translate(-0.4f,-0.5f,-0.6f);
-    ObjectInstance("the_cow", model, COW);
-
-    // Desenhamos o modelo do cubo
-    model = Matrix_Translate(2.0f,0.0f,-0.7f);
-    ObjectInstance("the_cube", model, CUBE);
-
-    // Desenhamos o modelo do retangulo
-    model = Matrix_Translate(-3.0f,0.0f,0.7f);
-    ObjectInstance("the_rectangle", model, RECTANGLE);
-
-    // Criação da GUI
-    // Setup Dear ImGui context
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO();
-    io.DisplaySize = ImVec2(static_cast<float>(g_windowWidth), static_cast<float>(g_windowHeight));
-    ImGui::StyleColorsDark();
-    ImGui_ImplGlfw_InitForOpenGL(window, true);  // Assuming you're using GLFW
-    ImGui_ImplOpenGL3_Init("#version 330");
+    // Geração das instâncias de objetos alterando a model matrix
+    GenerateObjectInstances(camera_lookat_l);
 
     // Ficamos em um loop infinito, renderizando, até que o usuário feche a janela
     while (!glfwWindowShouldClose(window))
     {
-        // Aqui executamos as operações de renderização
-
         // Definimos a cor do "fundo" do framebuffer como branco.  Tal cor é
         // definida como coeficientes RGBA: Red, Green, Blue, Alpha; isto é:
         // Vermelho, Verde, Azul, Alpha (valor de transparência).
@@ -412,6 +340,11 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(g_view_uniform       , 1 , GL_FALSE , glm::value_ptr(SceneInformation::view));
         glUniformMatrix4fv(g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(SceneInformation::projection));
 
+        // parece estar dando algum erro nesse loop quando debuga com
+        // GLenum error = glGetError();
+        // if(error != GL_NO_ERROR) {
+        //     g_error += "Error glBindVertexArray: " + std::to_string(error) + "\n";
+        // }
         // Gera as imagens dos objetos
         for (const auto& pair : g_ObjectInstances)
         {
@@ -427,15 +360,70 @@ int main(int argc, char* argv[])
 
             glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(instance.model_matrix));
             glUniform1i(g_object_id_uniform, key);
-            DrawVirtualObject(instance.object_name.c_str());
+
+            if (key == X_AXIS || key == Y_AXIS || key == Z_AXIS)
+            {
+                switch (key)
+                {
+                case X_AXIS:
+                    glBindVertexArray(VAO_X_axis);
+                    break;
+                case Y_AXIS:
+                    glBindVertexArray(VAO_Y_axis);
+                    break;
+                case Z_AXIS:
+                    glBindVertexArray(VAO_Z_axis);
+                    break;
+                default:
+                    break;
+                }
+
+                glDrawArrays(GL_LINES, 0, 2);  // 2 vertices for the X axis
+                glBindVertexArray(0);
+            }
+            else
+            {
+                glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(instance.model_matrix));
+                glUniform1i(g_object_id_uniform, key);
+                DrawVirtualObject(instance.object_name.c_str());
+            }
+
+        }
+        
+        if (g_LeftMouseButtonPressed)
+        {
+            g_cursorRay = ComputeRayFromMouse(window, SceneInformation::projection, SceneInformation::view);
+            
+
+            bool intersectsSomething = false;
+
+            // Loop for each object in g_VirtualScene
+            for (auto& object : g_VirtualScene)
+            {
+                std::string object_name = object.first;
+                SceneObject sceneObject = object.second;
+                int id = g_ObjectInstanceNameToIdMap[object_name];
+                glm::mat4 model_matrix = g_ObjectInstances[id].model_matrix;
+
+                float intersection_distance;
+
+                intersectsSomething = TestRayOBBIntersection(g_cursorRay.startPoint, g_cursorRay.direction, 
+                                                             sceneObject.bbox_min, sceneObject.bbox_max, 
+                                                             model_matrix, intersection_distance);
+
+                // Check if ray intersects with object
+                if (intersectsSomething)
+                {
+                    // g_ObjectInstances[id].model_matrix = g_ObjectInstances[id].model_matrix * Matrix_Scale(1.01f,1.01f,1.01f);
+                }
+            }
         }
 
+        DrawRay(g_cursorRay.startPoint, g_cursorRay.direction);
+        
         // Imprimimos na tela os ângulos de Euler que controlam a rotação do
         // terceiro cubo.
         TextRendering_ShowEulerAngles(window);
-
-        // Imprimimos na informação sobre a matriz de projeção sendo utilizada.
-        TextRendering_ShowProjection(window);
 
         // Imprimimos na tela informação sobre o número de quadros renderizados
         // por segundo (frames per second).
@@ -461,65 +449,7 @@ int main(int argc, char* argv[])
             // Movimenta câmera para direita
             camera_movement += vetor_u * speed * delta_t;
 
-
-        // Inicia o frame da Dear ImGui
-        ImGui_ImplOpenGL3_NewFrame(); // Assuming you're using the GLFW and OpenGL3 backends
-        ImGui::NewFrame();
-
-        // GUI
-        // Define a posição e tamanho da janela da GUI
-        ImVec2 windowSize = ImVec2(220.0f, 150.0f);
-        ImVec2 windowPos = ImVec2(20.0f, 20.0f);
-
-        ImGui::SetNextWindowSize(windowSize);
-        ImGui::SetNextWindowPos(windowPos);
-
-        static bool show_window = true;
-        ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
-        ImGui::Begin("Adicionar itens na cena", &show_window, window_flags);
-
-        static bool isSphereSelected = false; // Store selection state for the first selectable
-        if (ImGui::Selectable("Esfera", isSphereSelected))
-        {
-            // isSphereSelected = !isSphereSelected; // Toggle the selection state
-        }
-
-        static bool isCuboidSelected = false; // Store selection state for the first selectable
-        if (ImGui::Selectable("Cubóide", isCuboidSelected))
-        {
-            // isCuboidSelected = !isCuboidSelected; // Toggle the selection state
-        }
-        
-        static bool isCowSelected = false; // Store selection state for the first selectable
-        if (ImGui::Selectable("Vaca", isCowSelected))
-        {
-            // isCowSelected = !isCowSelected; // Toggle the selection state
-        }
-
-        static bool isBunnySelected = false; // Store selection state for the first selectable
-        if (ImGui::Selectable("Coelho", isBunnySelected))
-        {
-            // isBunnySelected = !isBunnySelected; // Toggle the selection state
-        }
-
-        static bool isRectangleSelected = false; // Store selection state for the first selectable
-        if (ImGui::Selectable("Retângulo", isRectangleSelected))
-        {
-            // isRectangleSelected = !isRectangleSelected; // Toggle the selection state
-        }
-
-        if (ImGui::Selectable("Teste"))
-        {
-            // isRectangleSelected = !isRectangleSelected; // Toggle the selection state
-        }
-
-
-        ImGui::End();
-
-        // Rendering
-        ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
+        GenerateGUIWindows();
 
         // O framebuffer onde OpenGL executa as operações de renderização não
         // é o mesmo que está sendo mostrado para o usuário, caso contrário
@@ -537,9 +467,7 @@ int main(int argc, char* argv[])
     }
 
     // Finalizamos o uso dos recursos da interface gráfica IMGUI
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
+    DisposeGUI();
 
     // Finalizamos o uso dos recursos do sistema operacional
     glfwTerminate();
@@ -548,91 +476,255 @@ int main(int argc, char* argv[])
     return 0;
 }
 
-// Função que carrega uma imagem para ser utilizada como textura
-void LoadTextureImage(const char* filename)
+
+// Definição dos callbacks ======================================================================================================
+void SetCallbacks(GLFWwindow* window)
 {
-    printf("Carregando imagem \"%s\"... ", filename);
+       // Definimos a função de callback que será chamada sempre que o usuário
+    // pressionar alguma tecla do teclado ...
+    glfwSetKeyCallback(window, KeyCallback);
+    // ... ou clicar os botões do mouse ...
+    glfwSetMouseButtonCallback(window, MouseButtonCallback);
+    // ... ou movimentar o cursor do mouse em cima da janela ...
+    glfwSetCursorPosCallback(window, CursorPosCallback);
+    // ... ou rolar a "rodinha" do mouse.
+    glfwSetScrollCallback(window, ScrollCallback);
+}
 
-    // Primeiro fazemos a leitura da imagem do disco
-    stbi_set_flip_vertically_on_load(true);
-    int width;
-    int height;
-    int channels;
-    unsigned char *data = stbi_load(filename, &width, &height, &channels, 3);
+// Definição da função que será chamada sempre que o usuário pressionar alguma
+// tecla do teclado. Veja http://www.glfw.org/docs/latest/input_guide.html#input_key
+void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
+{
+    // ==================
+    // Não modifique este loop! Ele é utilizando para correção automatizada dos
+    // laboratórios. Deve ser sempre o primeiro comando desta função KeyCallback().
+    for (int i = 0; i < 10; ++i)
+        if (key == GLFW_KEY_0 + i && action == GLFW_PRESS && mod == GLFW_MOD_SHIFT)
+            std::exit(100 + i);
+    // ==================
 
-    if ( data == NULL )
+    // Se o usuário pressionar a tecla ESC, fechamos a janela.
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, GL_TRUE);
+
+    // O código abaixo implementa a seguinte lógica:
+    //   Se apertar tecla X       então g_AngleX += delta;
+    //   Se apertar tecla shift+X então g_AngleX -= delta;
+    //   Se apertar tecla Y       então g_AngleY += delta;
+    //   Se apertar tecla shift+Y então g_AngleY -= delta;
+    //   Se apertar tecla Z       então g_AngleZ += delta;
+    //   Se apertar tecla shift+Z então g_AngleZ -= delta;
+
+    float delta = 3.141592 / 16; // 22.5 graus, em radianos.
+
+    if (key == GLFW_KEY_X && action == GLFW_PRESS)
     {
-        fprintf(stderr, "ERROR: Cannot open image file \"%s\".\n", filename);
-        std::exit(EXIT_FAILURE);
+        g_AngleX += (mod & GLFW_MOD_SHIFT) ? -delta : delta;
     }
 
-    printf("OK (%dx%d).\n", width, height);
+    if (key == GLFW_KEY_Y && action == GLFW_PRESS)
+    {
+        g_AngleY += (mod & GLFW_MOD_SHIFT) ? -delta : delta;
+    }
+    if (key == GLFW_KEY_Z && action == GLFW_PRESS)
+    {
+        g_AngleZ += (mod & GLFW_MOD_SHIFT) ? -delta : delta;
+    }
 
-    // Agora criamos objetos na GPU com OpenGL para armazenar a textura
-    GLuint texture_id;
-    GLuint sampler_id;
-    glGenTextures(1, &texture_id);
-    glGenSamplers(1, &sampler_id);
+    // Se o usuário apertar a tecla espaço, resetamos os ângulos de Euler para zero.
+    if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
+    {
+        g_AngleX = 0.0f;
+        g_AngleY = 0.0f;
+        g_AngleZ = 0.0f;
+        g_ForearmAngleX = 0.0f;
+        g_ForearmAngleZ = 0.0f;
+        g_TorsoPositionX = 0.0f;
+        g_TorsoPositionY = 0.0f;
+    }
 
-    // Veja slides 95-96 do documento Aula_20_Mapeamento_de_Texturas.pdf
-    glSamplerParameteri(sampler_id, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glSamplerParameteri(sampler_id, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    // Se o usuário apertar a tecla H, fazemos um "toggle" do texto informativo mostrado na tela.
+    if (key == GLFW_KEY_H && action == GLFW_PRESS)
+    {
+        g_ShowInfoText = !g_ShowInfoText;
+    }
 
-    // Parâmetros de amostragem da textura.
-    glSamplerParameteri(sampler_id, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glSamplerParameteri(sampler_id, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // Se o usuário apertar a tecla R, recarregamos os shaders dos arquivos "shader_fragment.glsl" e "shader_vertex.glsl".
+    if (key == GLFW_KEY_R && action == GLFW_PRESS)
+    {
+        LoadShadersFromFiles();
+        fprintf(stdout,"Shaders recarregados!\n");
+        fflush(stdout);
+    }
 
-    // Agora enviamos a imagem lida do disco para a GPU
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
-    glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
-    glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
+    // Tarefa 4 - LAB 2 0 FREE CAMERA
+    // A tecla 'W' deve movimentar a câmera para FRENTE (em relação ao sistema de coordenadas da câmera);
+    // A tecla 'S' deve movimentar a câmera para TRÁS (em relação ao sistema de coordenadas da câmera);
+    // A tecla 'D' deve movimentar a câmera para DIREITA (em relação ao sistema de coordenadas da câmera);
+    // A tecla 'A' deve movimentar a câmera para ESQUERDA (em relação ao sistema de coordenadas da câmera);
 
-    GLuint textureunit = g_NumLoadedTextures;
-    glActiveTexture(GL_TEXTURE0 + textureunit);
-    glBindTexture(GL_TEXTURE_2D, texture_id);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_SRGB8, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-    glGenerateMipmap(GL_TEXTURE_2D);
-    glBindSampler(textureunit, sampler_id);
+    if (key == GLFW_KEY_W)
+    {
+        if (action == GLFW_PRESS)
+            // Usuário apertou a tecla W, então atualizamos o estado para pressionada
+            tecla_W_pressionada = true;
+        else if (action == GLFW_RELEASE)
+            // Usuário largou a tecla W, então atualizamos o estado para NÃO pressionada
+            tecla_W_pressionada = false;
+        else if (action == GLFW_REPEAT)
+            // Usuário está segurando a tecla W e o sistema operacional está
+            // disparando eventos de repetição. Neste caso, não precisamos
+            // atualizar o estado da tecla, pois antes de um evento REPEAT
+            // necessariamente deve ter ocorrido um evento PRESS.
+            ;
+    }
+    if (key == GLFW_KEY_A)
+    {
+        if (action == GLFW_PRESS)
+            // Usuário apertou a tecla A, então atualizamos o estado para pressionada
+            tecla_A_pressionada = true;
+        else if (action == GLFW_RELEASE)
+            // Usuário largou a tecla A, então atualizamos o estado para NÃO pressionada
+            tecla_A_pressionada = false;
+        else if (action == GLFW_REPEAT)
+            // Usuário está segurando a tecla A e o sistema operacional está
+            // disparando eventos de repetição. Neste caso, não precisamos
+            // atualizar o estado da tecla, pois antes de um evento REPEAT
+            // necessariamente deve ter ocorrido um evento PRESS.
+            ;
+    }
+    if (key == GLFW_KEY_S)
+    {
+        if (action == GLFW_PRESS)
+            // Usuário apertou a tecla S, então atualizamos o estado para pressionada
+            tecla_S_pressionada = true;
+        else if (action == GLFW_RELEASE)
+            // Usuário largou a tecla S, então atualizamos o estado para NÃO pressionada
+            tecla_S_pressionada = false;
+        else if (action == GLFW_REPEAT)
+            // Usuário está segurando a tecla S e o sistema operacional está
+            // disparando eventos de repetição. Neste caso, não precisamos
+            // atualizar o estado da tecla, pois antes de um evento REPEAT
+            // necessariamente deve ter ocorrido um evento PRESS.
+            ;
+    }
+    if (key == GLFW_KEY_D)
+    {
+        if (action == GLFW_PRESS)
+            // Usuário apertou a tecla D, então atualizamos o estado para pressionada
+            tecla_D_pressionada = true;
+        else if (action == GLFW_RELEASE)
+            // Usuário largou a tecla D, então atualizamos o estado para NÃO pressionada
+            tecla_D_pressionada = false;
+        else if (action == GLFW_REPEAT)
+            // Usuário está segurando a tecla D e o sistema operacional está
+            // disparando eventos de repetição. Neste caso, não precisamos
+            // atualizar o estado da tecla, pois antes de um evento REPEAT
+            // necessariamente deve ter ocorrido um evento PRESS.
+            ;
+    }
 
-    stbi_image_free(data);
+    if (key == GLFW_KEY_0 || key == GLFW_KEY_1 || key == GLFW_KEY_2 || key == GLFW_KEY_3 || key == GLFW_KEY_4 ||
+        key == GLFW_KEY_5 || key == GLFW_KEY_6 || key == GLFW_KEY_7 || key == GLFW_KEY_8 || key == GLFW_KEY_9)
+    {
+        float scale = 1.25f;
+        float descale = 1.00f/scale;
 
-    g_NumLoadedTextures += 1;
+        if (g_selectedObject != -1)
+        {
+            g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Scale(descale,descale,descale);
+        }
+
+        switch (key)
+        {
+        case GLFW_KEY_0:
+            g_selectedObject = 0;
+            break;
+        case GLFW_KEY_1:
+            g_selectedObject = 1;
+            break;
+        case GLFW_KEY_2:
+            g_selectedObject = 2;
+            break;
+        case GLFW_KEY_3:
+            g_selectedObject = 3;
+            break;
+        case GLFW_KEY_4:
+            g_selectedObject = 4;
+            break;
+        case GLFW_KEY_5:
+            g_selectedObject = 5;
+            break;
+        case GLFW_KEY_6:
+            g_selectedObject = 6;
+            break;
+        case GLFW_KEY_7:
+            g_selectedObject = 7;
+            break;
+        case GLFW_KEY_8:
+            g_selectedObject = 8;
+            break;
+        default:
+            break;
+        }
+
+        g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Scale(scale,scale,scale);
+    }
+
+    if (g_selectedObject != -1)
+    {
+        float translation_x = 0.0f;
+        float translation_y = 0.0f;
+        float translation_z = 0.0f;
+
+        switch (key)
+        {
+        case GLFW_KEY_DOWN:
+            translation_z = 1.1f;
+            break;
+        case GLFW_KEY_UP:
+            translation_z = -1.1f;
+            break;
+        case GLFW_KEY_RIGHT:
+            translation_x = 1.1f;
+            break;
+        case GLFW_KEY_LEFT:
+            translation_x = -1.1f;
+            break;
+        default:
+            break;
+        }
+
+        if (action == GLFW_PRESS)
+        {
+            g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Translate(translation_x,translation_y,translation_z);
+        }
+        else if (action == GLFW_RELEASE)
+            ;
+        else if (action == GLFW_REPEAT)
+        {
+            g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Translate(translation_x,translation_y,translation_z);
+        }
+    }
 }
 
-// Função que desenha um objeto armazenado em g_VirtualScene. Veja definição
-// dos objetos na função BuildTrianglesAndAddToVirtualScene().
-void DrawVirtualObject(const char* object_name)
+
+
+// Impressão de informações ======================================================================================================
+void PrintGPUInformation()
 {
-    // "Ligamos" o VAO. Informamos que queremos utilizar os atributos de
-    // vértices apontados pelo VAO criado pela função BuildTrianglesAndAddToVirtualScene(). Veja
-    // comentários detalhados dentro da definição de BuildTrianglesAndAddToVirtualScene().
-    glBindVertexArray(g_VirtualScene[object_name].vertex_array_object_id);
+    // Imprimimos no terminal informações sobre a GPU do sistema
+    const GLubyte *vendor      = glGetString(GL_VENDOR);
+    const GLubyte *renderer    = glGetString(GL_RENDERER);
+    const GLubyte *glversion   = glGetString(GL_VERSION);
+    const GLubyte *glslversion = glGetString(GL_SHADING_LANGUAGE_VERSION);
 
-    // Setamos as variáveis "bbox_min" e "bbox_max" do fragment shader
-    // com os parâmetros da axis-aligned bounding box (AABB) do modelo.
-    glm::vec3 bbox_min = g_VirtualScene[object_name].bbox_min;
-    glm::vec3 bbox_max = g_VirtualScene[object_name].bbox_max;
-    glUniform4f(g_bbox_min_uniform, bbox_min.x, bbox_min.y, bbox_min.z, 1.0f);
-    glUniform4f(g_bbox_max_uniform, bbox_max.x, bbox_max.y, bbox_max.z, 1.0f);
-
-    // Pedimos para a GPU rasterizar os vértices dos eixos XYZ
-    // apontados pelo VAO como linhas. Veja a definição de
-    // g_VirtualScene[""] dentro da função BuildTrianglesAndAddToVirtualScene(), e veja
-    // a documentação da função glDrawElements() em
-    // http://docs.gl/gl3/glDrawElements.
-    glDrawElements(
-        g_VirtualScene[object_name].rendering_mode,
-        g_VirtualScene[object_name].num_indices,
-        GL_UNSIGNED_INT,
-        (void*)(g_VirtualScene[object_name].first_index * sizeof(GLuint))
-    );
-
-    // "Desligamos" o VAO, evitando assim que operações posteriores venham a
-    // alterar o mesmo. Isso evita bugs.
-    glBindVertexArray(0);
+    printf("GPU: %s, %s, OpenGL %s, GLSL %s\n", vendor, renderer, glversion, glslversion);
 }
 
+
+
+// Operações com shaders ======================================================================================================
 // Função que carrega os shaders de vértices e de fragmentos que serão
 // utilizados para renderização. Veja slides 180-200 do documento Aula_03_Rendering_Pipeline_Grafico.pdf.
 //
@@ -891,6 +983,28 @@ void BuildTrianglesAndAddToVirtualScene(ObjModel* model)
         glm::vec3 bbox_min = glm::vec3(maxval,maxval,maxval);
         glm::vec3 bbox_max = glm::vec3(minval,minval,minval);
 
+        // Adição dos vértices da bounding box
+        // Create vertices for the bounding box
+        glm::vec3 bbox_vertices[8];
+        bbox_vertices[0] = bbox_min;
+        bbox_vertices[1] = glm::vec3(bbox_max.x, bbox_min.y, bbox_min.z);
+        bbox_vertices[2] = glm::vec3(bbox_max.x, bbox_max.y, bbox_min.z);
+        bbox_vertices[3] = glm::vec3(bbox_min.x, bbox_max.y, bbox_min.z);
+        bbox_vertices[4] = glm::vec3(bbox_min.x, bbox_min.y, bbox_max.z);
+        bbox_vertices[5] = glm::vec3(bbox_max.x, bbox_min.y, bbox_max.z);
+        bbox_vertices[6] = bbox_max;
+        bbox_vertices[7] = glm::vec3(bbox_min.x, bbox_max.y, bbox_max.z);
+
+        // Indices for the 12 edges of the bounding box
+        GLuint bbox_indices[24] = {
+            0, 1, 1, 2, 2, 3, 3, 0, // bottom
+            4, 5, 5, 6, 6, 7, 7, 4, // top
+            0, 4, 1, 5, 2, 6, 3, 7  // vertical edges
+        };
+
+        
+
+
         for (size_t triangle = 0; triangle < num_triangles; ++triangle)
         {
             assert(model->shapes[shape].mesh.num_face_vertices[triangle] == 3);
@@ -955,6 +1069,10 @@ void BuildTrianglesAndAddToVirtualScene(ObjModel* model)
         theobject.bbox_min = bbox_min;
         theobject.bbox_max = bbox_max;
 
+        // You can save these bbox_vertices and bbox_indices in your `SceneObject` structure:
+        theobject.bbox_vertices.assign(bbox_vertices, bbox_vertices + 8);
+        theobject.bbox_indices.assign(bbox_indices, bbox_indices + 24);
+
         g_VirtualScene[model->shapes[shape].name] = theobject;
     }
 
@@ -1012,269 +1130,565 @@ void BuildTrianglesAndAddToVirtualScene(ObjModel* model)
     glBindVertexArray(0);
 }
 
-// Definição da função que será chamada sempre que o usuário pressionar alguma
-// tecla do teclado. Veja http://www.glfw.org/docs/latest/input_guide.html#input_key
-void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
+void LoadTextureImages()
 {
-    // ==================
-    // Não modifique este loop! Ele é utilizando para correção automatizada dos
-    // laboratórios. Deve ser sempre o primeiro comando desta função KeyCallback().
-    for (int i = 0; i < 10; ++i)
-        if (key == GLFW_KEY_0 + i && action == GLFW_PRESS && mod == GLFW_MOD_SHIFT)
-            std::exit(100 + i);
-    // ==================
+    LoadTextureImage("../../data/tc-earth_daymap_surface.jpg");      // TextureImage0
+    LoadTextureImage("../../data/tc-earth_nightmap_citylights.gif"); // TextureImage1
+    LoadTextureImage("../../data/brick_wall_02_diff_4k.jpg"); // TextureImage2
+    LoadTextureImage("../../data/wood_table_001_diff_4k.jpg"); // TextureImage3
+}
 
-    // Se o usuário pressionar a tecla ESC, fechamos a janela.
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, GL_TRUE);
+// Função que carrega uma imagem para ser utilizada como textura
+void LoadTextureImage(const char* filename)
+{
+    printf("Carregando imagem \"%s\"... ", filename);
 
-    // O código abaixo implementa a seguinte lógica:
-    //   Se apertar tecla X       então g_AngleX += delta;
-    //   Se apertar tecla shift+X então g_AngleX -= delta;
-    //   Se apertar tecla Y       então g_AngleY += delta;
-    //   Se apertar tecla shift+Y então g_AngleY -= delta;
-    //   Se apertar tecla Z       então g_AngleZ += delta;
-    //   Se apertar tecla shift+Z então g_AngleZ -= delta;
+    // Primeiro fazemos a leitura da imagem do disco
+    stbi_set_flip_vertically_on_load(true);
+    int width;
+    int height;
+    int channels;
+    unsigned char *data = stbi_load(filename, &width, &height, &channels, 3);
 
-    float delta = 3.141592 / 16; // 22.5 graus, em radianos.
-
-    if (key == GLFW_KEY_X && action == GLFW_PRESS)
+    if ( data == NULL )
     {
-        g_AngleX += (mod & GLFW_MOD_SHIFT) ? -delta : delta;
+        fprintf(stderr, "ERROR: Cannot open image file \"%s\".\n", filename);
+        std::exit(EXIT_FAILURE);
     }
 
-    if (key == GLFW_KEY_Y && action == GLFW_PRESS)
+    printf("OK (%dx%d).\n", width, height);
+
+    // Agora criamos objetos na GPU com OpenGL para armazenar a textura
+    GLuint texture_id;
+    GLuint sampler_id;
+    glGenTextures(1, &texture_id);
+    glGenSamplers(1, &sampler_id);
+
+    // Veja slides 95-96 do documento Aula_20_Mapeamento_de_Texturas.pdf
+    glSamplerParameteri(sampler_id, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glSamplerParameteri(sampler_id, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    // Parâmetros de amostragem da textura.
+    glSamplerParameteri(sampler_id, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glSamplerParameteri(sampler_id, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    // Agora enviamos a imagem lida do disco para a GPU
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+    glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
+    glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
+
+    GLuint textureunit = g_NumLoadedTextures;
+    glActiveTexture(GL_TEXTURE0 + textureunit);
+    glBindTexture(GL_TEXTURE_2D, texture_id);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_SRGB8, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    glBindSampler(textureunit, sampler_id);
+
+    stbi_image_free(data);
+
+    g_NumLoadedTextures += 1;
+}
+
+
+
+// Geração dos modelos ======================================================================================================
+void GenerateObjectModels()
+{
+    // Construímos a representação de objetos geométricos através de malhas de triângulos
+    ObjModel spheremodel("../../data/sphere.obj");
+    ComputeNormals(&spheremodel);
+    BuildTrianglesAndAddToVirtualScene(&spheremodel);
+
+    ObjModel bunnymodel("../../data/bunny.obj");
+    ComputeNormals(&bunnymodel);
+    BuildTrianglesAndAddToVirtualScene(&bunnymodel);
+
+    ObjModel planemodel("../../data/plane.obj");
+    ComputeNormals(&planemodel);
+    BuildTrianglesAndAddToVirtualScene(&planemodel);
+
+    ObjModel cowmodel("../../data/cow.obj");
+    ComputeNormals(&cowmodel);
+    BuildTrianglesAndAddToVirtualScene(&cowmodel);
+
+    ObjModel cubemodel("../../data/cube.obj");
+    ComputeNormals(&cubemodel);
+    BuildTrianglesAndAddToVirtualScene(&cubemodel);
+
+    ObjModel rectanglemodel("../../data/rectangle.obj");
+    ComputeNormals(&rectanglemodel);
+    BuildTrianglesAndAddToVirtualScene(&rectanglemodel);
+}
+
+void GenerateObjectInstances(glm::vec4 camera_lookat_l)
+{
+    // Inicialização de um objeto
+    glm::mat4 model = Matrix_Identity(); // Transformação identidade de modelagem
+
+    // For the first sphere:
+    model = Matrix_Translate(camera_lookat_l.x,camera_lookat_l.y,camera_lookat_l.z)
+            * Matrix_Scale(0.05f,0.05f,0.05f);
+    ObjectInstance("the_sphere", model, CENTRAL_SPHERE);
+
+    //Desenhamos o modelo da esfera
+    model = Matrix_Translate(-0.4f,0.0f,0.5f)
+            * Matrix_Scale(0.2f,0.2f,0.2f)
+            * Matrix_Rotate_Z(0.6f)
+            * Matrix_Rotate_X(0.2f)
+            * Matrix_Rotate_Y(g_AngleY + (float)glfwGetTime() * 0.1f);
+    ObjectInstance("the_sphere", model, SPHERE);
+
+    // Desenhamos outra instancia da esfera
+    model = Matrix_Translate(-0.9f,0.3f,0.8f)
+            * Matrix_Scale(0.4f,0.4f,0.4f);
+    ObjectInstance("the_sphere", model, SPHERE2);
+
+    // Desenhamos o modelo do coelho
+    model = Matrix_Translate(1.0f,0.0f,0.0f)
+        * Matrix_Scale(0.3f,0.3f,0.3f)
+        * Matrix_Rotate_X(g_AngleX + (float)glfwGetTime() * 0.1f);
+    ObjectInstance("the_bunny", model, BUNNY);
+
+    // Desenhamos outra instancia do coelho
+    model = Matrix_Translate(0.8f,-0.5f,0.5f)
+            * Matrix_Scale(0.2f,0.2f,0.2f)
+            * Matrix_Rotate_X(g_AngleX + (float)glfwGetTime() * 0.1f);
+    ObjectInstance("the_bunny", model, BUNNY2);
+
+    // Desenhamos o plano do chão
+    model = Matrix_Translate(0.0f,-1.1f,0.0f);
+    ObjectInstance("the_plane", model, PLANE);
+
+    // Desenhamos o modelo da vaca
+    model = Matrix_Translate(-0.4f,-0.5f,-0.6f);
+    ObjectInstance("the_cow", model, COW);
+
+    // Desenhamos o modelo do cubo
+    model = Matrix_Translate(2.0f,0.0f,-0.7f);
+    ObjectInstance("the_cube", model, CUBE);
+
+    // Desenhamos o modelo do retangulo
+    model = Matrix_Translate(-3.0f,0.0f,0.7f);
+    ObjectInstance("the_rectangle", model, RECTANGLE);
+
+    // Desenhamos os eixos XYZ
+    glm::mat4 model_origin = Matrix_Translate(0.0f,0.0f,0.0f);
+    ObjectInstance("the_x_axis", model_origin, X_AXIS);
+    ObjectInstance("the_y_axis", model_origin, Y_AXIS);
+    ObjectInstance("the_z_axis", model_origin, Z_AXIS);
+
+    // Itera por todas as instâncias de objetos na cena e faz um mapa entre o nome da instância do objeto e seu id
+    for (auto const& x : g_ObjectInstances)
     {
-        g_AngleY += (mod & GLFW_MOD_SHIFT) ? -delta : delta;
-    }
-    if (key == GLFW_KEY_Z && action == GLFW_PRESS)
-    {
-        g_AngleZ += (mod & GLFW_MOD_SHIFT) ? -delta : delta;
-    }
-
-    // Se o usuário apertar a tecla espaço, resetamos os ângulos de Euler para zero.
-    if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
-    {
-        g_AngleX = 0.0f;
-        g_AngleY = 0.0f;
-        g_AngleZ = 0.0f;
-        g_ForearmAngleX = 0.0f;
-        g_ForearmAngleZ = 0.0f;
-        g_TorsoPositionX = 0.0f;
-        g_TorsoPositionY = 0.0f;
-    }
-
-    // Se o usuário apertar a tecla P, utilizamos projeção perspectiva.
-    if (key == GLFW_KEY_P && action == GLFW_PRESS)
-    {
-        g_UsePerspectiveProjection = true;
-    }
-
-    // Se o usuário apertar a tecla O, utilizamos projeção ortográfica.
-    if (key == GLFW_KEY_O && action == GLFW_PRESS)
-    {
-        g_UsePerspectiveProjection = false;
-    }
-
-    // Se o usuário apertar a tecla H, fazemos um "toggle" do texto informativo mostrado na tela.
-    if (key == GLFW_KEY_H && action == GLFW_PRESS)
-    {
-        g_ShowInfoText = !g_ShowInfoText;
-    }
-
-    // Se o usuário apertar a tecla R, recarregamos os shaders dos arquivos "shader_fragment.glsl" e "shader_vertex.glsl".
-    if (key == GLFW_KEY_R && action == GLFW_PRESS)
-    {
-        LoadShadersFromFiles();
-        fprintf(stdout,"Shaders recarregados!\n");
-        fflush(stdout);
-    }
-
-    // Tarefa 4 - LAB 2 0 FREE CAMERA
-    // A tecla 'W' deve movimentar a câmera para FRENTE (em relação ao sistema de coordenadas da câmera);
-    // A tecla 'S' deve movimentar a câmera para TRÁS (em relação ao sistema de coordenadas da câmera);
-    // A tecla 'D' deve movimentar a câmera para DIREITA (em relação ao sistema de coordenadas da câmera);
-    // A tecla 'A' deve movimentar a câmera para ESQUERDA (em relação ao sistema de coordenadas da câmera);
-
-    if (key == GLFW_KEY_W)
-    {
-        if (action == GLFW_PRESS)
-            // Usuário apertou a tecla W, então atualizamos o estado para pressionada
-            tecla_W_pressionada = true;
-        else if (action == GLFW_RELEASE)
-            // Usuário largou a tecla W, então atualizamos o estado para NÃO pressionada
-            tecla_W_pressionada = false;
-        else if (action == GLFW_REPEAT)
-            // Usuário está segurando a tecla W e o sistema operacional está
-            // disparando eventos de repetição. Neste caso, não precisamos
-            // atualizar o estado da tecla, pois antes de um evento REPEAT
-            // necessariamente deve ter ocorrido um evento PRESS.
-            ;
-    }
-    if (key == GLFW_KEY_A)
-    {
-        if (action == GLFW_PRESS)
-            // Usuário apertou a tecla A, então atualizamos o estado para pressionada
-            tecla_A_pressionada = true;
-        else if (action == GLFW_RELEASE)
-            // Usuário largou a tecla A, então atualizamos o estado para NÃO pressionada
-            tecla_A_pressionada = false;
-        else if (action == GLFW_REPEAT)
-            // Usuário está segurando a tecla A e o sistema operacional está
-            // disparando eventos de repetição. Neste caso, não precisamos
-            // atualizar o estado da tecla, pois antes de um evento REPEAT
-            // necessariamente deve ter ocorrido um evento PRESS.
-            ;
-    }
-    if (key == GLFW_KEY_S)
-    {
-        if (action == GLFW_PRESS)
-            // Usuário apertou a tecla S, então atualizamos o estado para pressionada
-            tecla_S_pressionada = true;
-        else if (action == GLFW_RELEASE)
-            // Usuário largou a tecla S, então atualizamos o estado para NÃO pressionada
-            tecla_S_pressionada = false;
-        else if (action == GLFW_REPEAT)
-            // Usuário está segurando a tecla S e o sistema operacional está
-            // disparando eventos de repetição. Neste caso, não precisamos
-            // atualizar o estado da tecla, pois antes de um evento REPEAT
-            // necessariamente deve ter ocorrido um evento PRESS.
-            ;
-    }
-    if (key == GLFW_KEY_D)
-    {
-        if (action == GLFW_PRESS)
-            // Usuário apertou a tecla D, então atualizamos o estado para pressionada
-            tecla_D_pressionada = true;
-        else if (action == GLFW_RELEASE)
-            // Usuário largou a tecla D, então atualizamos o estado para NÃO pressionada
-            tecla_D_pressionada = false;
-        else if (action == GLFW_REPEAT)
-            // Usuário está segurando a tecla D e o sistema operacional está
-            // disparando eventos de repetição. Neste caso, não precisamos
-            // atualizar o estado da tecla, pois antes de um evento REPEAT
-            // necessariamente deve ter ocorrido um evento PRESS.
-            ;
-    }
-
-    if (key == GLFW_KEY_0 || key == GLFW_KEY_1 || key == GLFW_KEY_2 || key == GLFW_KEY_3 || key == GLFW_KEY_4 ||
-        key == GLFW_KEY_5 || key == GLFW_KEY_6 || key == GLFW_KEY_7 || key == GLFW_KEY_8 || key == GLFW_KEY_9)
-    {
-        float scale = 1.25f;
-        float descale = 1.00f/scale;
-
-        if (g_selectedObject != -1)
-        {
-            g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Scale(descale,descale,descale);
-        }
-
-        switch (key)
-        {
-        case GLFW_KEY_0:
-            g_selectedObject = 0;
-            break;
-        case GLFW_KEY_1:
-            g_selectedObject = 1;
-            break;
-        case GLFW_KEY_2:
-            g_selectedObject = 2;
-            break;
-        case GLFW_KEY_3:
-            g_selectedObject = 3;
-            break;
-        case GLFW_KEY_4:
-            g_selectedObject = 4;
-            break;
-        case GLFW_KEY_5:
-            g_selectedObject = 5;
-            break;
-        case GLFW_KEY_6:
-            g_selectedObject = 6;
-            break;
-        case GLFW_KEY_7:
-            g_selectedObject = 7;
-            break;
-        case GLFW_KEY_8:
-            g_selectedObject = 8;
-            break;
-        default:
-            break;
-        }
-
-        g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Scale(scale,scale,scale);
-    }
-
-    if (key == GLFW_KEY_Q)
-    {
-        if (action == GLFW_PRESS)
-            ;
-        else if (action == GLFW_RELEASE)
-        {
-            glm::vec3 ray_direction = ComputeRayFromMouse(window, SceneInformation::projection, 
-                                                          SceneInformation::view, g_windowWidth, g_windowHeight);
-
-            bool intersectsSomething = false;
-
-            // Loop for each object in g_VirtualScene
-            for (auto& object : g_VirtualScene)
-            {
-                SceneObject sceneObject = object.second;
-
-                float intersection_distance;
-                intersectsSomething = TestRayOBBIntersection(SceneInformation::camera_position_c, ray_direction, sceneObject.bbox_min, sceneObject.bbox_max, 
-                                                             Matrix_Identity(), intersection_distance);
-
-                // Check if ray intersects with object
-                if (intersectsSomething)
-                {
-                    g_ObjectInstances[3].model_matrix = g_ObjectInstances[3].model_matrix * Matrix_Scale(1.01f,1.01f,1.01f);
-                }
-            }
-        }
-
-        else if (action == GLFW_REPEAT)
-
-            ;
-    }
-
-
-    if (g_selectedObject != -1)
-    {
-        float translation_x = 0.0f;
-        float translation_y = 0.0f;
-        float translation_z = 0.0f;
-
-        switch (key)
-        {
-        case GLFW_KEY_DOWN:
-            translation_z = 1.1f;
-            break;
-        case GLFW_KEY_UP:
-            translation_z = -1.1f;
-            break;
-        case GLFW_KEY_RIGHT:
-            translation_x = 1.1f;
-            break;
-        case GLFW_KEY_LEFT:
-            translation_x = -1.1f;
-            break;
-        default:
-            break;
-        }
-
-        if (action == GLFW_PRESS)
-        {
-            g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Translate(translation_x,translation_y,translation_z);
-        }
-        else if (action == GLFW_RELEASE)
-            ;
-        else if (action == GLFW_REPEAT)
-        {
-            g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Translate(translation_x,translation_y,translation_z);
-        }
+        g_ObjectInstanceNameToIdMap[x.second.object_name] = x.second.object_id;
     }
 }
 
+void SetupXYZAxesVAOAndVBO(GLuint &VAO_X_axis, GLuint &VAO_Y_axis, GLuint &VAO_Z_axis, GLuint &VBO_X_axis, GLuint &VBO_Y_axis, GLuint &VBO_Z_axis)
+{
+    GLuint location = 0; // "(location = 0)" em "shader_vertex.glsl"
+    GLint  number_of_dimensions = 4; // vec4 em "shader_vertex.glsl"
+
+    glm::vec4 x_axisVertices[] = {
+    glm::vec4(0.0f, 0.0f, 0.0f, 1.0f),  // Origin for X-axis
+    glm::vec4(1.0f, 0.0f, 0.0f, 1.0f),  // X-axis end
+    };
+
+    // Set up the X axis
+    glGenVertexArrays(1, &VAO_X_axis);
+    glBindVertexArray(VAO_X_axis);
+
+    glGenBuffers(1, &VBO_X_axis);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO_X_axis);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(x_axisVertices), x_axisVertices, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(location, number_of_dimensions, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(location);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    glBindVertexArray(0); // unbind
+
+
+    glm::vec4 y_axisVertices[] = {
+    glm::vec4(0.0f, 0.0f, 0.0f, 1.0f),  // Origin for Y-axis
+    glm::vec4(0.0f, 1.0f, 0.0f, 1.0f),  // Y-axis end
+    };
+
+    // Set up the Y axis
+    glGenVertexArrays(1, &VAO_Y_axis);
+    glBindVertexArray(VAO_Y_axis);
+
+    glGenBuffers(1, &VBO_Y_axis);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO_Y_axis);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(y_axisVertices), y_axisVertices, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(location, number_of_dimensions, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(location);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    glBindVertexArray(0); // unbind
+
+    glm::vec4 z_axisVertices[] = {
+    glm::vec4(0.0f, 0.0f, 0.0f, 1.0f),  // Origin for Z-axis
+    glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),  // Z-axis end
+    };
+
+    // Set up the Z axis
+    glGenVertexArrays(1, &VAO_Z_axis);
+    glBindVertexArray(VAO_Z_axis);
+
+    glGenBuffers(1, &VBO_Z_axis);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO_Z_axis);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(z_axisVertices), z_axisVertices, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(location, number_of_dimensions, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(location);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    glBindVertexArray(0); // unbind
+}
+
+void SetupRayVAOAndVBO()
+{
+    GLuint location = 0; // "(location = 0)" em "shader_vertex.glsl"
+    GLint  number_of_dimensions = 4; // vec4 em "shader_vertex.glsl"
+
+    glGenVertexArrays(1, &VAO_ray_id);
+    glBindVertexArray(VAO_ray_id);
+    
+    glGenBuffers(1, &VBO_ray_id);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO_ray_id);
+
+    glVertexAttribPointer(location, number_of_dimensions, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(location);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    
+    glBindVertexArray(0); // unbind the VAO
+}
+
+
+
+// Funções de colisão ======================================================================================================
+bool TestRayOBBIntersection(
+	glm::vec3 ray_origin,        // Ray origin, in world space
+	glm::vec3 ray_direction,     // Ray direction (NOT target position!), in world space. Must be normalize()'d.
+	glm::vec3 aabb_min,          // Minimum X,Y,Z coords of the mesh when not transformed at all.
+	glm::vec3 aabb_max,          // Maximum X,Y,Z coords. Often aabb_min*-1 if your mesh is centered, but it's not always the case.
+	glm::mat4 ModelMatrix,       // Transformation applied to the mesh (which will thus be also applied to its bounding box)
+	float& intersection_distance // Output : distance between ray_origin and the intersection with the OBB
+)
+{
+	// Intersection method from Real-Time Rendering and Essential Mathematics for Games
+	
+	float tMin = 0.0f;
+	float tMax = 100000.0f;
+
+	glm::vec3 OBBposition_worldspace(ModelMatrix[3].x, ModelMatrix[3].y, ModelMatrix[3].z);
+
+	glm::vec3 delta = OBBposition_worldspace - ray_origin;
+
+	// Test intersection with the 2 planes perpendicular to the OBB's X axis
+	{
+		glm::vec3 xaxis(ModelMatrix[0].x, ModelMatrix[0].y, ModelMatrix[0].z);
+		float e = glm::dot(xaxis, delta);
+		float f = glm::dot(ray_direction, xaxis);
+
+		if ( fabs(f) > 0.001f ){ // Standard case
+
+			float t1 = (e+aabb_min.x)/f; // Intersection with the "left" plane
+			float t2 = (e+aabb_max.x)/f; // Intersection with the "right" plane
+			// t1 and t2 now contain distances betwen ray origin and ray-plane intersections
+
+			// We want t1 to represent the nearest intersection, 
+			// so if it's not the case, invert t1 and t2
+			if (t1>t2){
+				float w=t1;t1=t2;t2=w; // swap t1 and t2
+			}
+
+			// tMax is the nearest "far" intersection (amongst the X,Y and Z planes pairs)
+			if ( t2 < tMax )
+				tMax = t2;
+			// tMin is the farthest "near" intersection (amongst the X,Y and Z planes pairs)
+			if ( t1 > tMin )
+				tMin = t1;
+
+			// And here's the trick :
+			// If "far" is closer than "near", then there is NO intersection.
+			// See the images in the tutorials for the visual explanation.
+			if (tMax < tMin )
+				return false;
+
+		}else{ // Rare case : the ray is almost parallel to the planes, so they don't have any "intersection"
+			if(-e+aabb_min.x > 0.0f || -e+aabb_max.x < 0.0f)
+				return false;
+		}
+	}
+
+
+	// Test intersection with the 2 planes perpendicular to the OBB's Y axis
+	// Exactly the same thing than above.
+	{
+		glm::vec3 yaxis(ModelMatrix[1].x, ModelMatrix[1].y, ModelMatrix[1].z);
+		float e = glm::dot(yaxis, delta);
+		float f = glm::dot(ray_direction, yaxis);
+
+		if ( fabs(f) > 0.001f ){
+
+			float t1 = (e+aabb_min.y)/f;
+			float t2 = (e+aabb_max.y)/f;
+
+			if (t1>t2){float w=t1;t1=t2;t2=w;}
+
+			if ( t2 < tMax )
+				tMax = t2;
+			if ( t1 > tMin )
+				tMin = t1;
+			if (tMin > tMax)
+				return false;
+
+		}else{
+			if(-e+aabb_min.y > 0.0f || -e+aabb_max.y < 0.0f)
+				return false;
+		}
+	}
+
+
+	// Test intersection with the 2 planes perpendicular to the OBB's Z axis
+	// Exactly the same thing than above.
+	{
+		glm::vec3 zaxis(ModelMatrix[2].x, ModelMatrix[2].y, ModelMatrix[2].z);
+		float e = glm::dot(zaxis, delta);
+		float f = glm::dot(ray_direction, zaxis);
+
+		if ( fabs(f) > 0.001f ){
+
+			float t1 = (e+aabb_min.z)/f;
+			float t2 = (e+aabb_max.z)/f;
+
+			if (t1>t2){float w=t1;t1=t2;t2=w;}
+
+			if ( t2 < tMax )
+				tMax = t2;
+			if ( t1 > tMin )
+				tMin = t1;
+			if (tMin > tMax)
+				return false;
+
+		}else{
+			if(-e+aabb_min.z > 0.0f || -e+aabb_max.z < 0.0f)
+				return false;
+		}
+	}
+
+	intersection_distance = tMin;
+	return true;
+
+}
+
+bool intersectsOnX(float tMin, float tMax, glm::vec3 delta,	glm::vec3 ray_direction, 
+                    glm::vec3 aabb_min, glm::vec3 aabb_max, 
+                    glm::mat4 ModelMatrix, float& intersection_distance)
+{
+    // Test intersection with the 2 planes perpendicular to the OBB's X axis
+    {
+        glm::vec3 xaxis(ModelMatrix[0].x, ModelMatrix[0].y, ModelMatrix[0].z);
+        float e = glm::dot(xaxis, delta);
+        float f = glm::dot(ray_direction, xaxis);
+
+        if (fabs(f) > 0.001f) { // Standard case
+
+            float t1 = (e + aabb_min.x) / f; // Intersection with the "left" plane
+            float t2 = (e + aabb_max.x) / f; // Intersection with the "right" plane
+            // t1 and t2 now contain distances betwen ray origin and ray-plane intersections
+
+            // We want t1 to represent the nearest intersection,
+            // so if it's not the case, invert t1 and t2
+            if (t1>t2) {
+                float w = t1; t1 = t2; t2 = w; // swap t1 and t2
+            }
+
+            // tMax is the nearest "far" intersection (amongst the X,Y and Z planes pairs)
+            if (t2 < tMax)
+                tMax = t2;
+            // tMin is the farthest "near" intersection (amongst the X,Y and Z planes pairs)
+            if (t1 > tMin)
+                tMin = t1;
+
+            // And here's the trick :
+            // If "far" is closer than "near", then there is NO intersection.
+            // See the images in the tutorials for the visual explanation.
+            if (tMax < tMin)
+                return false;
+
+        }
+        else { // Rare case : the ray is almost parallel to the planes, so they don't have any "intersection"
+            if (-e + aabb_min.x > 0.0f || -e + aabb_max.x < 0.0f)
+                return false;
+        }
+    }
+
+    //
+}
+
+bool intersectsOnY(float tMin, float tMax, glm::vec3 delta,	glm::vec3 ray_direction, 
+                    glm::vec3 aabb_min, glm::vec3 aabb_max, 
+                    glm::mat4 ModelMatrix, float& intersection_distance)
+{
+    glm::vec3 yaxis(ModelMatrix[1].x, ModelMatrix[1].y, ModelMatrix[1].z);
+    float e = glm::dot(yaxis, delta);
+    float f = glm::dot(ray_direction, yaxis);
+
+    if (fabs(f) > 0.001f) {
+
+        float t1 = (e + aabb_min.y) / f;
+        float t2 = (e + aabb_max.y) / f;
+
+        if (t1 > t2) {
+            std::swap(t1, t2);
+        }
+
+        if (t2 < tMax)
+            tMax = t2;
+        if (t1 > tMin)
+            tMin = t1;
+        if (tMax < tMin)
+            return false;
+
+    } else {
+        if (-e + aabb_min.y > 0.0f || -e + aabb_max.y < 0.0f)
+            return false;
+    }
+}
+
+bool intersectsOnZ(float tMin, float tMax, glm::vec3 delta,	glm::vec3 ray_direction, 
+                    glm::vec3 aabb_min, glm::vec3 aabb_max, 
+                    glm::mat4 ModelMatrix, float& intersection_distance)
+{
+    glm::vec3 zaxis(ModelMatrix[2].x, ModelMatrix[2].y, ModelMatrix[2].z);
+    float e = glm::dot(zaxis, delta);
+    float f = glm::dot(ray_direction, zaxis);
+
+    if (fabs(f) > 0.001f) {
+
+        float t1 = (e + aabb_min.z) / f;
+        float t2 = (e + aabb_max.z) / f;
+
+        if (t1 > t2) {
+            std::swap(t1, t2);
+        }
+
+        if (t2 < tMax)
+            tMax = t2;
+        if (t1 > tMin)
+            tMin = t1;
+        if (tMax < tMin)
+            return false;
+
+    } else {
+        if (-e + aabb_min.z > 0.0f || -e + aabb_max.z < 0.0f)
+            return false;
+    }
+}
+
+bool RayIntersectsSphere(glm::vec3 rayOrigin, glm::vec3 rayDirection, glm::vec3 sphereCenter, float sphereRadius, float& intersectionDistance)
+{
+    glm::vec3 toSphere = sphereCenter - rayOrigin;
+    float t = glm::dot(toSphere, rayDirection);
+    glm::vec3 closestPoint = rayOrigin + rayDirection * t;
+
+    float distSquared = glm::dot(toSphere, toSphere) - t * t;
+    float radiusSquared = sphereRadius * sphereRadius;
+
+    if (distSquared > radiusSquared)
+        return false; // No intersection
+
+    float dt = sqrt(radiusSquared - distSquared);
+    float t1 = t - dt;
+    float t2 = t + dt;
+
+    if (t2 < 0)
+        return false; // Object is behind the camera
+
+    intersectionDistance = (t1 < 0) ? t2 : t1; // Get the nearest intersection point in front of the camera
+    return true;
+}
+
+
+
+// Funções de desenho ======================================================================================================
+// Função que desenha um objeto armazenado em g_VirtualScene. Veja definição
+// dos objetos na função BuildTrianglesAndAddToVirtualScene().
+void DrawVirtualObject(const char* object_name)
+{
+    // "Ligamos" o VAO. Informamos que queremos utilizar os atributos de
+    // vértices apontados pelo VAO criado pela função BuildTrianglesAndAddToVirtualScene(). Veja
+    // comentários detalhados dentro da definição de BuildTrianglesAndAddToVirtualScene().
+    glBindVertexArray(g_VirtualScene[object_name].vertex_array_object_id);
+
+    // Setamos as variáveis "bbox_min" e "bbox_max" do fragment shader
+    // com os parâmetros da axis-aligned bounding box (AABB) do modelo.
+    glm::vec3 bbox_min = g_VirtualScene[object_name].bbox_min;
+    glm::vec3 bbox_max = g_VirtualScene[object_name].bbox_max;
+    glUniform4f(g_bbox_min_uniform, bbox_min.x, bbox_min.y, bbox_min.z, 1.0f);
+    glUniform4f(g_bbox_max_uniform, bbox_max.x, bbox_max.y, bbox_max.z, 1.0f);
+
+    // Pedimos para a GPU rasterizar os vértices dos eixos XYZ
+    // apontados pelo VAO como linhas. Veja a definição de
+    // g_VirtualScene[""] dentro da função BuildTrianglesAndAddToVirtualScene(), e veja
+    // a documentação da função glDrawElements() em
+    // http://docs.gl/gl3/glDrawElements.
+    glDrawElements(
+        g_VirtualScene[object_name].rendering_mode,
+        g_VirtualScene[object_name].num_indices,
+        GL_UNSIGNED_INT,
+        (void*)(g_VirtualScene[object_name].first_index * sizeof(GLuint))
+    );
+
+    // "Desligamos" o VAO, evitando assim que operações posteriores venham a
+    // alterar o mesmo. Isso evita bugs.
+    glBindVertexArray(0);
+
+
+    // Draw the bounding box
+    glBindVertexArray(g_VirtualScene[object_name].vertex_array_object_id);
+
+    // Create a buffer for bounding box vertices if you haven't done so already.
+    // For brevity, this step is omitted here but you should create and bind 
+    // vertex buffer objects (VBOs) for the bounding box vertices and indices.
+
+    // Set the shader uniforms if the bounding box requires any.
+    // Example: You might want to use a different color for the bounding box.
+
+    // Render the bounding box
+    glDrawElements(
+        GL_LINES, 
+        g_VirtualScene[object_name].bbox_indices.size(),
+        GL_UNSIGNED_INT,
+        g_VirtualScene[object_name].bbox_indices.data()
+    );
+
+    glBindVertexArray(0);
+}
+
+void DrawRay(glm::vec4 rayStartPoint, glm::vec4 rayDirection)
+{
+    // Calculate ray end point
+    glm::vec4 rayEndPoint = rayStartPoint + rayDirection * g_rayLength;
+    glm::vec4 g_rayVertices[2] = {rayStartPoint, rayEndPoint};
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO_ray_id);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(g_rayVertices), g_rayVertices, GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0); // unbind the VBO
+
+    glBindVertexArray(VAO_ray_id);
+    glDrawArrays(GL_LINES, 0, 2);
+    glBindVertexArray(0); // unbind the VAO after drawing
+}
+
+
+
+// ??????????? ======================================================================================================
 // Esta função recebe um vértice com coordenadas de modelo p_model e passa o
 // mesmo por todos os sistemas de coordenadas armazenados nas matrizes model,
 // view, e projection; e escreve na tela as matrizes e pontos resultantes
@@ -1337,166 +1751,6 @@ void TextRendering_ShowModelViewProjection(
     TextRendering_PrintMatrixVectorProductMoreDigits(window, viewport_mapping, p_ndc, -1.0f, 1.0f-26*pad, 1.0f);
 }
 
-
 // set makeprg=cd\ ..\ &&\ make\ run\ >/dev/null
 // vim: set spell spelllang=pt_br :
-
-
-// FUNÇÕES NOVAS ======================================================================================================
-
-glm::vec3 ComputeRayFromMouse(GLFWwindow* window, const glm::mat4& projMatrix, const glm::mat4& viewMatrix, int windowWidth, int windowHeight)
-{
-    glfwGetCursorPos(window, &g_LastCursorPosX, &g_LastCursorPosY);
-
-    // Convert to normalized device coordinates
-    float x = (2.0f * g_LastCursorPosX) / windowWidth - 1.0f;
-    float y = 1.0f - (2.0f * g_LastCursorPosY) / windowHeight;
-
-    glm::vec4 rayClip = glm::vec4(x, y, -1.0f, 1.0f);
-
-    glm::vec4 rayEye = glm::inverse(projMatrix) * rayClip;
-    rayEye = glm::vec4(rayEye.x, rayEye.y, -1.0f, 0.0f);
-
-    glm::vec4 rayWorld = glm::inverse(viewMatrix) * rayEye;
-    glm::vec3 rayDir = glm::normalize(glm::vec3(rayWorld));
-
-    return rayDir;
-}
-
-bool TestRayOBBIntersection(
-	glm::vec3 ray_origin,        // Ray origin, in world space
-	glm::vec3 ray_direction,     // Ray direction (NOT target position!), in world space. Must be normalize()'d.
-	glm::vec3 aabb_min,          // Minimum X,Y,Z coords of the mesh when not transformed at all.
-	glm::vec3 aabb_max,          // Maximum X,Y,Z coords. Often aabb_min*-1 if your mesh is centered, but it's not always the case.
-	glm::mat4 ModelMatrix,       // Transformation applied to the mesh (which will thus be also applied to its bounding box)
-	float& intersection_distance // Output : distance between ray_origin and the intersection with the OBB
-)
-{
-    float tMin = 0.0f;
-    float tMax = 100000.0f;
-
-    glm::vec3 OBBposition_worldspace(ModelMatrix[3].x, ModelMatrix[3].y, ModelMatrix[3].z);
-
-    glm::vec3 delta = OBBposition_worldspace - ray_origin;
-
-    // Test intersection with the 2 planes perpendicular to the OBB's X axis
-    {
-        glm::vec3 xaxis(ModelMatrix[0].x, ModelMatrix[0].y, ModelMatrix[0].z);
-        float e = glm::dot(xaxis, delta);
-        float f = glm::dot(ray_direction, xaxis);
-
-        if (fabs(f) > 0.001f) { // Standard case
-
-            float t1 = (e + aabb_min.x) / f; // Intersection with the "left" plane
-            float t2 = (e + aabb_max.x) / f; // Intersection with the "right" plane
-            // t1 and t2 now contain distances betwen ray origin and ray-plane intersections
-
-            // We want t1 to represent the nearest intersection,
-            // so if it's not the case, invert t1 and t2
-            if (t1>t2) {
-                float w = t1; t1 = t2; t2 = w; // swap t1 and t2
-            }
-
-            // tMax is the nearest "far" intersection (amongst the X,Y and Z planes pairs)
-            if (t2 < tMax)
-                tMax = t2;
-            // tMin is the farthest "near" intersection (amongst the X,Y and Z planes pairs)
-            if (t1 > tMin)
-                tMin = t1;
-
-            // And here's the trick :
-            // If "far" is closer than "near", then there is NO intersection.
-            // See the images in the tutorials for the visual explanation.
-            if (tMax < tMin)
-                return false;
-
-        }
-        else { // Rare case : the ray is almost parallel to the planes, so they don't have any "intersection"
-            if (-e + aabb_min.x > 0.0f || -e + aabb_max.x < 0.0f)
-                return false;
-        }
-    }
-
-    //
-}
-
-// AABB ComputeAABB(const ObjModel& model) {
-//     AABB aabb;
-
-//     // Initialize to very large/small numbers
-//     aabb.min = glm::vec3(std::numeric_limits<float>::max());
-//     aabb.max = glm::vec3(std::numeric_limits<float>::lowest());
-
-//     for (const glm::vec3& vertex : model.vertices) {
-//         // Update min
-//         if (vertex.x < aabb.min.x) aabb.min.x = vertex.x;
-//         if (vertex.y < aabb.min.y) aabb.min.y = vertex.y;
-//         if (vertex.z < aabb.min.z) aabb.min.z = vertex.z;
-
-//         // Update max
-//         if (vertex.x > aabb.max.x) aabb.max.x = vertex.x;
-//         if (vertex.y > aabb.max.y) aabb.max.y = vertex.y;
-//         if (vertex.z > aabb.max.z) aabb.max.z = vertex.z;
-//     }
-
-//     return aabb;
-// }
-
-bool RayAABBIntersection(const glm::vec3& rayOrigin, const glm::vec3& rayDir, const AABB& box) {
-    float tmin = (box.min.x - rayOrigin.x) / rayDir.x;
-    float tmax = (box.max.x - rayOrigin.x) / rayDir.x;
-
-    if (tmin > tmax) std::swap(tmin, tmax);
-
-    float tymin = (box.min.y - rayOrigin.y) / rayDir.y;
-    float tymax = (box.max.y - rayOrigin.y) / rayDir.y;
-
-    if (tymin > tymax) std::swap(tymin, tymax);
-
-    if ((tmin > tymax) || (tymin > tmax)) return false;
-
-    if (tymin > tmin) tmin = tymin;
-    if (tymax < tmax) tmax = tymax;
-
-    float tzmin = (box.min.z - rayOrigin.z) / rayDir.z;
-    float tzmax = (box.max.z - rayOrigin.z) / rayDir.z;
-
-    if (tzmin > tzmax) std::swap(tzmin, tzmax);
-
-    if ((tmin > tzmax) || (tzmin > tmax)) return false;
-
-    return true;
-}
-
-bool RayIntersectsSphere(glm::vec3 rayOrigin, glm::vec3 rayDirection, glm::vec3 sphereCenter, float sphereRadius, float& intersectionDistance)
-{
-    glm::vec3 toSphere = sphereCenter - rayOrigin;
-    float t = glm::dot(toSphere, rayDirection);
-    glm::vec3 closestPoint = rayOrigin + rayDirection * t;
-
-    float distSquared = glm::dot(toSphere, toSphere) - t * t;
-    float radiusSquared = sphereRadius * sphereRadius;
-
-    if (distSquared > radiusSquared)
-        return false; // No intersection
-
-    float dt = sqrt(radiusSquared - distSquared);
-    float t1 = t - dt;
-    float t2 = t + dt;
-
-    if (t2 < 0)
-        return false; // Object is behind the camera
-
-    intersectionDistance = (t1 < 0) ? t2 : t1; // Get the nearest intersection point in front of the camera
-    return true;
-}
-
-
-// std::vector<BoundingBox> computeAllBoundingBoxes(const ObjModel& model) {
-//     std::vector<BoundingBox> bboxes;
-//     for (const auto& shape : model.shapes) {
-//         bboxes.push_back(computeBoundingBox(model.attrib, shape));
-//     }
-//     return bboxes;
-// }
 

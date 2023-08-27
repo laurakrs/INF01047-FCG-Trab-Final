@@ -4,6 +4,7 @@
 #include <map>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
+#include <vector>
 
 // Definimos uma estrutura que armazenará dados necessários para renderizar
 // cada objeto da cena virtual.
@@ -16,6 +17,9 @@ struct SceneObject
     GLuint       vertex_array_object_id;
     glm::vec3    bbox_min;
     glm::vec3    bbox_max;
+
+    std::vector<glm::vec3> bbox_vertices;
+    std::vector<GLuint> bbox_indices;
 };
 
 // A cena virtual é uma lista de objetos nomeados, guardados em um dicionário

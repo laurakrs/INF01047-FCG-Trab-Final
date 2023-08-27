@@ -13,6 +13,9 @@ void FramebufferSizeCallback(GLFWwindow* window, int width, int height)
     io.DisplaySize = ImVec2(static_cast<float>(width), static_cast<float>(height));
     io.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
 
+    g_actualWindowWidth = width;
+    g_actualWindowHeight = height;
+    
     // Indicamos que queremos renderizar em toda região do framebuffer. A
     // função "glViewport" define o mapeamento das "normalized device
     // coordinates" (NDC) para "pixel coordinates".  Essa é a operação de
@@ -46,7 +49,7 @@ void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
         // com o botão esquerdo pressionado.
         glfwGetCursorPos(window, &g_LastCursorPosX, &g_LastCursorPosY);
         g_LeftMouseButtonPressed = true;
-
+    
         // glm::vec3 rayDir = ComputeRayFromMouse(g_LastCursorPosX, g_LastCursorPosY, projectionMatrix, viewMatrix, windowWidth, windowHeight);
 
         // glm::vec3 rayOrigin = cameraPosition;  // assuming you have cameraPosition as the camera's world position
@@ -120,19 +123,19 @@ void CursorPosCallback(GLFWwindow* window, double xpos, double ypos)
         float dx = xpos - g_LastCursorPosX;
         float dy = ypos - g_LastCursorPosY;
     
-        // Atualizamos parâmetros da câmera com os deslocamentos
-        g_CameraTheta -= 0.01f*dx;
-        g_CameraPhi   += 0.01f*dy;
+        // // Atualizamos parâmetros da câmera com os deslocamentos
+        // g_CameraTheta -= 0.01f*dx;
+        // g_CameraPhi   += 0.01f*dy;
     
-        // Em coordenadas esféricas, o ângulo phi deve ficar entre -pi/2 e +pi/2.
-        float phimax = 3.141592f/2;
-        float phimin = -phimax;
+        // // Em coordenadas esféricas, o ângulo phi deve ficar entre -pi/2 e +pi/2.
+        // float phimax = 3.141592f/2;
+        // float phimin = -phimax;
     
-        if (g_CameraPhi > phimax)
-            g_CameraPhi = phimax;
+        // if (g_CameraPhi > phimax)
+        //     g_CameraPhi = phimax;
     
-        if (g_CameraPhi < phimin)
-            g_CameraPhi = phimin;
+        // if (g_CameraPhi < phimin)
+        //     g_CameraPhi = phimin;
     
         // Atualizamos as variáveis globais para armazenar a posição atual do
         // cursor como sendo a última posição conhecida do cursor.
@@ -146,9 +149,9 @@ void CursorPosCallback(GLFWwindow* window, double xpos, double ypos)
         float dx = xpos - g_LastCursorPosX;
         float dy = ypos - g_LastCursorPosY;
     
-        // Atualizamos parâmetros da antebraço com os deslocamentos
-        g_ForearmAngleZ -= 0.01f*dx;
-        g_ForearmAngleX += 0.01f*dy;
+        // // Atualizamos parâmetros da antebraço com os deslocamentos
+        // g_ForearmAngleZ -= 0.01f*dx;
+        // g_ForearmAngleX += 0.01f*dy;
     
         // Atualizamos as variáveis globais para armazenar a posição atual do
         // cursor como sendo a última posição conhecida do cursor.
@@ -162,9 +165,23 @@ void CursorPosCallback(GLFWwindow* window, double xpos, double ypos)
         float dx = xpos - g_LastCursorPosX;
         float dy = ypos - g_LastCursorPosY;
     
-        // Atualizamos parâmetros da antebraço com os deslocamentos
-        g_TorsoPositionX += 0.01f*dx;
-        g_TorsoPositionY -= 0.01f*dy;
+        // // Atualizamos parâmetros da antebraço com os deslocamentos
+        // g_TorsoPositionX += 0.01f*dx;
+        // g_TorsoPositionY -= 0.01f*dy;
+
+        // Atualizamos parâmetros da câmera com os deslocamentos
+        g_CameraTheta -= 0.01f*dx;
+        g_CameraPhi   += 0.01f*dy;
+    
+        // Em coordenadas esféricas, o ângulo phi deve ficar entre -pi/2 e +pi/2.
+        float phimax = 3.141592f/2;
+        float phimin = -phimax;
+    
+        if (g_CameraPhi > phimax)
+            g_CameraPhi = phimax;
+    
+        if (g_CameraPhi < phimin)
+            g_CameraPhi = phimin;
     
         // Atualizamos as variáveis globais para armazenar a posição atual do
         // cursor como sendo a última posição conhecida do cursor.
