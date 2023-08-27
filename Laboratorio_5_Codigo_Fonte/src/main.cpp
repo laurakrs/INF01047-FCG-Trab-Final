@@ -111,6 +111,18 @@ bool TestRayOBBIntersection(
 	float& intersection_distance // Output : distance between ray_origin and the intersection with the OBB
 );
 
+bool intersectsOnX(float tMin, float tMax, glm::vec3 delta,	glm::vec3 ray_direction, 
+                    glm::vec3 aabb_min, glm::vec3 aabb_max, 
+                    glm::mat4 ModelMatrix, float& intersection_distance);
+
+bool intersectsOnY(float tMin, float tMax, glm::vec3 delta,	glm::vec3 ray_direction, 
+                    glm::vec3 aabb_min, glm::vec3 aabb_max, 
+                    glm::mat4 ModelMatrix, float& intersection_distance);
+
+bool intersectsOnZ(float tMin, float tMax, glm::vec3 delta,	glm::vec3 ray_direction, 
+                    glm::vec3 aabb_min, glm::vec3 aabb_max, 
+                    glm::mat4 ModelMatrix, float& intersection_distance);
+
 // Funções da GUI
 void GenerateGUIWindows();
 void CreateAddNewInstanceWindow(ImVec2 addNewInstanceWindowSize, ImVec2 addNewInstanceWindowPosition);
@@ -339,6 +351,15 @@ int main(int argc, char* argv[])
     ObjectInstance("the_y_axis", model_origin, Y_AXIS);
     ObjectInstance("the_z_axis", model_origin, Z_AXIS);
     
+    // loop through every object instance in the map and make a map between the object isntance name and its id
+    std::map<std::string, int> g_ObjectInstanceNameToIdMap;
+
+    for (auto const& x : g_ObjectInstances)
+    {
+        g_ObjectInstanceNameToIdMap[x.second.object_name] = x.second.object_id;
+    }
+
+
     // Criação da GUI
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
@@ -493,8 +514,32 @@ int main(int argc, char* argv[])
         if (g_LeftMouseButtonPressed)
         {
             g_cursorRay = ComputeRayFromMouse(window, SceneInformation::projection, SceneInformation::view);
+            
+
+            bool intersectsSomething = false;
+
+            // Loop for each object in g_VirtualScene
+            for (auto& object : g_VirtualScene)
+            {
+                std::string object_name = object.first;
+                SceneObject sceneObject = object.second;
+                int id = g_ObjectInstanceNameToIdMap[object_name];
+                glm::mat4 model_matrix = g_ObjectInstances[id].model_matrix;
+
+                float intersection_distance;
+
+                intersectsSomething = TestRayOBBIntersection(g_cursorRay.startPoint, g_cursorRay.direction, 
+                                                             sceneObject.bbox_min, sceneObject.bbox_max, 
+                                                             model_matrix, intersection_distance);
+
+                // Check if ray intersects with object
+                if (intersectsSomething)
+                {
+                    g_ObjectInstances[id].model_matrix = g_ObjectInstances[id].model_matrix * Matrix_Scale(1.01f,1.01f,1.01f);
+                }
+            }
         }
-        
+
         DrawRay(g_cursorRay.startPoint, g_cursorRay.direction);
         
         
@@ -1305,9 +1350,6 @@ void TextRendering_ShowModelViewProjection(
 
 
 // FUNÇÕES NOVAS ======================================================================================================
-
-
-
 bool TestRayOBBIntersection(
 	glm::vec3 ray_origin,        // Ray origin, in world space
 	glm::vec3 ray_direction,     // Ray direction (NOT target position!), in world space. Must be normalize()'d.
@@ -1324,6 +1366,26 @@ bool TestRayOBBIntersection(
 
     glm::vec3 delta = OBBposition_worldspace - ray_origin;
 
+    bool xIntersection = intersectsOnX(tMin, tMax, delta, ray_direction, aabb_min, aabb_max, ModelMatrix, intersection_distance);
+    bool yIntersection = intersectsOnY(tMin, tMax, delta, ray_direction, aabb_min, aabb_max, ModelMatrix, intersection_distance);
+    bool zIntersection = intersectsOnZ(tMin, tMax, delta, ray_direction, aabb_min, aabb_max, ModelMatrix, intersection_distance);
+
+    intersection_distance = tMin;
+
+    if (xIntersection && yIntersection && zIntersection)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+bool intersectsOnX(float tMin, float tMax, glm::vec3 delta,	glm::vec3 ray_direction, 
+                    glm::vec3 aabb_min, glm::vec3 aabb_max, 
+                    glm::mat4 ModelMatrix, float& intersection_distance)
+{
     // Test intersection with the 2 planes perpendicular to the OBB's X axis
     {
         glm::vec3 xaxis(ModelMatrix[0].x, ModelMatrix[0].y, ModelMatrix[0].z);
@@ -1364,6 +1426,67 @@ bool TestRayOBBIntersection(
 
     //
 }
+
+bool intersectsOnY(float tMin, float tMax, glm::vec3 delta,	glm::vec3 ray_direction, 
+                    glm::vec3 aabb_min, glm::vec3 aabb_max, 
+                    glm::mat4 ModelMatrix, float& intersection_distance)
+{
+    glm::vec3 yaxis(ModelMatrix[1].x, ModelMatrix[1].y, ModelMatrix[1].z);
+    float e = glm::dot(yaxis, delta);
+    float f = glm::dot(ray_direction, yaxis);
+
+    if (fabs(f) > 0.001f) {
+
+        float t1 = (e + aabb_min.y) / f;
+        float t2 = (e + aabb_max.y) / f;
+
+        if (t1 > t2) {
+            std::swap(t1, t2);
+        }
+
+        if (t2 < tMax)
+            tMax = t2;
+        if (t1 > tMin)
+            tMin = t1;
+        if (tMax < tMin)
+            return false;
+
+    } else {
+        if (-e + aabb_min.y > 0.0f || -e + aabb_max.y < 0.0f)
+            return false;
+    }
+}
+
+bool intersectsOnZ(float tMin, float tMax, glm::vec3 delta,	glm::vec3 ray_direction, 
+                    glm::vec3 aabb_min, glm::vec3 aabb_max, 
+                    glm::mat4 ModelMatrix, float& intersection_distance)
+{
+    glm::vec3 zaxis(ModelMatrix[2].x, ModelMatrix[2].y, ModelMatrix[2].z);
+    float e = glm::dot(zaxis, delta);
+    float f = glm::dot(ray_direction, zaxis);
+
+    if (fabs(f) > 0.001f) {
+
+        float t1 = (e + aabb_min.z) / f;
+        float t2 = (e + aabb_max.z) / f;
+
+        if (t1 > t2) {
+            std::swap(t1, t2);
+        }
+
+        if (t2 < tMax)
+            tMax = t2;
+        if (t1 > tMin)
+            tMin = t1;
+        if (tMax < tMin)
+            return false;
+
+    } else {
+        if (-e + aabb_min.z > 0.0f || -e + aabb_max.z < 0.0f)
+            return false;
+    }
+}
+
 
 // AABB ComputeAABB(const ObjModel& model) {
 //     AABB aabb;
@@ -1681,7 +1804,7 @@ void SetupXYZAxesVAOVBOAndEBO(GLuint &VAO_X_axis, GLuint &VAO_Y_axis, GLuint &VA
     glBindVertexArray(0); // unbind
 }
 
-
+// Funções de projeção de raios ======================================================================================================
 void SetupRayVAOAndVBO()
 {
     GLuint location = 0; // "(location = 0)" em "shader_vertex.glsl"
