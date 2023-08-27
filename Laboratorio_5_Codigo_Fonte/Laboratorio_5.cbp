@@ -373,6 +373,10 @@
 		<Unit filename="src/BoundingBox.h" />
 		<Unit filename="src/Callbacks.cpp" />
 		<Unit filename="src/Callbacks.h" />
+		<Unit filename="src/CursorRay.cpp" />
+		<Unit filename="src/CursorRay.h" />
+		<Unit filename="src/GUI.cpp" />
+		<Unit filename="src/GUI.h" />
 		<Unit filename="src/ObjModel.cpp" />
 		<Unit filename="src/ObjModel.h" />
 		<Unit filename="src/ObjectInstance.cpp" />
