@@ -69,6 +69,44 @@ GLuint g_NumLoadedTextures = 0;
 int g_selectedObject = -1;
 
 // Tamanho da janela (inicializado com valores padrões)
-int g_windowWidth = 800;
-int g_windowHeight = 600;
+int g_startWindowWidth = 800;
+int g_startWindowHeight = 600;
+
+float g_actualWindowWidth;
+float g_actualWindowHeight;
+
+// Map de instâncias para seu id
+std::map<std::string, int> g_ObjectInstanceNameToIdMap;
+
+// Paths de arquivos externos a serem carregados
+std::vector<std::string> g_modelPaths = 
+{
+    "../../data/sphere.obj",
+    "../../data/bunny.obj",
+    "../../data/plane.obj",
+    "../../data/cow.obj",
+    "../../data/cube.obj",
+    "../../data/rectangle.obj"
+};
+
+std::vector<std::string> g_texturePaths = 
+{
+    "../../data/tc-earth_daymap_surface.jpg",
+    "../../data/tc-earth_nightmap_citylights.gif",
+    "../../data/brick_wall_02_diff_4k.jpg",
+    "../../data/wood_table_001_diff_4k.jpg"
+};
+
+// DEBUG
+double g_glfwLastRayCursorPosX, g_glfwLastRayCursorPosY;
+double g_NDCGlfwLastRayCursorPosX, g_NDCGlfwLastRayCursorPosY;
+glm::vec4 g_rayClip, g_rayEye, g_rayWorld, g_rayDirection;
+
+glm::vec4 g_rayStartPoint;
+float g_rayLength = 1000.0f;
+glm::vec4 g_rayEndPoint;
+glm::vec3 g_rayVertices[2];
+GLuint VBO_ray_id;
+GLuint VAO_ray_id;
+std::string g_error;
 

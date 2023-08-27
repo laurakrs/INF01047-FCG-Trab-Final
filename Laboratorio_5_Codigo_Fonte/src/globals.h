@@ -3,6 +3,7 @@
 #include <map>
 #include <stack>
 #include <string>
+#include <vector>
 #include <GLFW/glfw3.h>
 #include <glm/mat4x4.hpp>
 
@@ -29,4 +30,25 @@ extern GLint g_bbox_max_uniform;
 extern GLuint g_NumLoadedTextures;
 extern int g_selectedObject;
 
-extern int g_windowWidth, g_windowHeight;
+extern int g_startWindowWidth, g_startWindowHeight;
+extern float g_actualWindowWidth, g_actualWindowHeight;
+
+// Map de instâncias para seu id
+extern std::map<std::string, int> g_ObjectInstanceNameToIdMap;
+
+// Paths de arquivos externos a serem carregados
+extern std::vector<std::string> g_modelPaths;
+extern std::vector<std::string> g_texturePaths;
+
+// DEBUG
+extern double g_glfwLastRayCursorPosX, g_glfwLastRayCursorPosY;
+extern double g_NDCGlfwLastRayCursorPosX, g_NDCGlfwLastRayCursorPosY;
+extern glm::vec4 g_rayClip, g_rayEye, g_rayWorld, g_rayDirection;
+
+extern glm::vec4 g_rayStartPoint;
+extern float g_rayLength;
+extern glm::vec4 g_rayEndPoint;
+extern glm::vec3 g_rayVertices[2];
+extern GLuint VBO_ray_id;
+extern GLuint VAO_ray_id;
+extern std::string g_error;

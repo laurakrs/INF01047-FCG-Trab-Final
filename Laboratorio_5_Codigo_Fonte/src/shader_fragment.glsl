@@ -28,6 +28,9 @@ uniform mat4 projection;
 #define COW    6
 #define CUBE   7
 #define RECTANGLE 8
+#define X_AXIS 9
+#define Y_AXIS 10
+#define Z_AXIS 11
 
 uniform int object_id;
 
@@ -293,6 +296,26 @@ void main()
         q = 1.0;
         q_linha = 1.0;
     }
+    else if( object_id == X_AXIS )
+    {
+        color = vec4(1.0, 0.0, 0.0, 1.0);  // Vermelho
+        return;  // Exit the shader
+    }
+    else if( object_id == Y_AXIS )
+    {
+        color = vec4(0.0, 1.0, 0.0, 1.0);  // Verde
+        return;  // Exit the shader
+    }
+    else if( object_id == Z_AXIS )
+    {
+        color = vec4(0.0, 0.0, 1.0, 1.0);  // Azul
+        return;  // Exit the shader
+    }
+    //else if(isBoundingBox) 
+    //{
+    //    color = vec4(1.0, 0.0, 0.0, 1.0); // Red color for bounding box
+    //    return;
+    //}
 
 
     // Espectro da fonte de iluminação
