@@ -100,7 +100,7 @@ void TextRendering_ShowModelViewProjection(GLFWwindow* window, glm::mat4 project
 // usuário. Veja mais comentários nas definições das mesmas, abaixo.
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode);
 
-glm::vec3 ComputeRayFromMouse(GLFWwindow* window, const glm::mat4& projMatrix, const glm::mat4& viewMatrix, int windowWidth, int windowHeight);
+glm::vec4 ComputeRayFromMouse(GLFWwindow* window, const glm::mat4& projMatrix, const glm::mat4& viewMatrix);
 bool TestRayOBBIntersection(
 	glm::vec3 ray_origin,        // Ray origin, in world space
 	glm::vec3 ray_direction,     // Ray direction (NOT target position!), in world space. Must be normalize()'d.
@@ -115,6 +115,14 @@ void GenerateGUIWindows();
 void CreateAddNewInstanceWindow(ImVec2 addNewInstanceWindowSize, ImVec2 addNewInstanceWindowPosition);
 void CreateDebugWindow(ImVec2 debugWindowSize, ImVec2 debugWindowPosition);
 void CreateProjectionSettingsWindow(ImVec2 projectionWindowSize, ImVec2 projectionWindowPosition);
+
+// Criação de eixos da cena
+void SetupXYZAxesVAOVBOAndEBO(GLuint &VAO_X_axis, GLuint &VAO_Y_axis, GLuint &VAO_Z_axis, GLuint &VBO_X_axis, GLuint &VBO_Y_axis, GLuint &VBO_Z_axis);
+void DrawXYZAxes(GLuint &VAO_X_axis, GLuint &VAO_Y_axis, GLuint &VAO_Z_axis);
+
+// Debug
+void SetupRayVAOAndVBO();
+void DrawRay(glm::vec4 cameraPosition, glm::vec4 ray_direction);
 
 // CÓDIGO PRINCIPAL ===========================
 int main(int argc, char* argv[])
@@ -146,7 +154,7 @@ int main(int argc, char* argv[])
     // Criamos uma janela do sistema operacional, com 800 colunas e 600 linhas
     // de pixels, e com título "INF01047 ...".
     GLFWwindow* window;
-    window = glfwCreateWindow(g_windowWidth, g_windowHeight, "INF01047 - Trabalho Final - Laura Keidann e Matheus Sabadin", NULL, NULL);
+    window = glfwCreateWindow(g_startWindowWidth, g_startWindowHeight, "INF01047 - Trabalho Final - Laura Keidann e Matheus Sabadin", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -175,7 +183,7 @@ int main(int argc, char* argv[])
     // redimensionada, por consequência alterando o tamanho do "framebuffer"
     // (região de memória onde são armazenados os pixels da imagem).
     glfwSetFramebufferSizeCallback(window, FramebufferSizeCallback);
-    FramebufferSizeCallback(window, g_windowWidth, g_windowHeight); // Forçamos a chamada do callback acima, para definir g_ScreenRatio.
+    FramebufferSizeCallback(window, g_startWindowWidth, g_startWindowHeight); // Forçamos a chamada do callback acima, para definir g_ScreenRatio.
 
     // Imprimimos no terminal informações sobre a GPU do sistema
     const GLubyte *vendor      = glGetString(GL_VENDOR);
@@ -222,6 +230,14 @@ int main(int argc, char* argv[])
     BuildTrianglesAndAddToVirtualScene(&rectanglemodel);
 
 
+    // Modelo dos eixos XYZ
+    GLuint VAO_X_axis, VAO_Y_axis, VAO_Z_axis;
+    GLuint VBO_X_axis, VBO_Y_axis, VBO_Z_axis;
+    SetupXYZAxesVAOVBOAndEBO(VAO_X_axis, VAO_Y_axis, VAO_Z_axis, VBO_X_axis, VBO_Y_axis, VBO_Z_axis);
+
+    // Modelo do raio
+    SetupRayVAOAndVBO();
+    
     if ( argc > 1 )
     {
         ObjModel model(argv[1]);
@@ -264,6 +280,9 @@ int main(int argc, char* argv[])
     #define COW    6
     #define CUBE   7
     #define RECTANGLE 8
+    #define X_AXIS 9
+    #define Y_AXIS 10
+    #define Z_AXIS 11
 
     // Inicialização de um objeto
     glm::mat4 model = Matrix_Identity(); // Transformação identidade de modelagem
@@ -314,12 +333,18 @@ int main(int argc, char* argv[])
     model = Matrix_Translate(-3.0f,0.0f,0.7f);
     ObjectInstance("the_rectangle", model, RECTANGLE);
 
+    // Desenhamos os eixos XYZ
+    glm::mat4 model_origin = Matrix_Translate(0.0f,0.0f,0.0f);
+    ObjectInstance("the_x_axis", model_origin, X_AXIS);
+    ObjectInstance("the_y_axis", model_origin, Y_AXIS);
+    ObjectInstance("the_z_axis", model_origin, Z_AXIS);
+    
     // Criação da GUI
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
-    io.DisplaySize = ImVec2(static_cast<float>(g_windowWidth), static_cast<float>(g_windowHeight));
+    io.DisplaySize = ImVec2(static_cast<float>(g_startWindowWidth), static_cast<float>(g_startWindowHeight));
     ImGui::StyleColorsDark();
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 330");
@@ -415,6 +440,11 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(g_view_uniform       , 1 , GL_FALSE , glm::value_ptr(SceneInformation::view));
         glUniformMatrix4fv(g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(SceneInformation::projection));
 
+        // parece estar dando algum erro nesse loop quando debuga com
+        // GLenum error = glGetError();
+        // if(error != GL_NO_ERROR) {
+        //     g_error += "Error glBindVertexArray: " + std::to_string(error) + "\n";
+        // }
         // Gera as imagens dos objetos
         for (const auto& pair : g_ObjectInstances)
         {
@@ -430,8 +460,41 @@ int main(int argc, char* argv[])
 
             glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(instance.model_matrix));
             glUniform1i(g_object_id_uniform, key);
-            DrawVirtualObject(instance.object_name.c_str());
+
+            if (key == X_AXIS || key == Y_AXIS || key == Z_AXIS)
+            {
+                switch (key)
+                {
+                case X_AXIS:
+                    glBindVertexArray(VAO_X_axis);
+                    break;
+                case Y_AXIS:
+                    glBindVertexArray(VAO_Y_axis);
+                    break;
+                case Z_AXIS:
+                    glBindVertexArray(VAO_Z_axis);
+                    break;
+                default:
+                    break;
+                }
+
+                glDrawArrays(GL_LINES, 0, 2);  // 2 vertices for the X axis
+                glBindVertexArray(0);
+            }
+            else
+            {
+                glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(instance.model_matrix));
+                glUniform1i(g_object_id_uniform, key);
+                DrawVirtualObject(instance.object_name.c_str());
+            }
+
         }
+
+        
+        g_rayDirection = ComputeRayFromMouse(window, SceneInformation::projection, SceneInformation::view);
+        DrawRay(SceneInformation::camera_position_c, g_rayDirection);
+
+        // DrawXYZAxes(VAO_X_axis, VAO_Y_axis, VAO_Z_axis);
 
         // Imprimimos na tela os ângulos de Euler que controlam a rotação do
         // terceiro cubo.
@@ -1118,14 +1181,23 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
         case GLFW_KEY_5:
             g_selectedObject = 5;
             break;
-        case GLFW_KEY_6:
-            g_selectedObject = 6;
+        // case GLFW_KEY_6:
+        //     g_selectedObject = 6;
+        //     break;
+        // case GLFW_KEY_7:
+        //     g_selectedObject = 7;
+        //     break;
+        // case GLFW_KEY_8:
+        //     g_selectedObject = 8;
+        //     break;
+         case GLFW_KEY_6:
+            g_selectedObject = 9;
             break;
         case GLFW_KEY_7:
-            g_selectedObject = 7;
+            g_selectedObject = 10;
             break;
         case GLFW_KEY_8:
-            g_selectedObject = 8;
+            g_selectedObject = 11;
             break;
         default:
             break;
@@ -1140,8 +1212,14 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
             ;
         else if (action == GLFW_RELEASE)
         {
-            glm::vec3 ray_direction = ComputeRayFromMouse(window, SceneInformation::projection, 
-                                                          SceneInformation::view, g_windowWidth, g_windowHeight);
+            // glm::vec3 ray_direction = ComputeRayFromMouse(window, SceneInformation::projection, 
+            //                                               SceneInformation::view, g_windowWidth, g_windowHeight);
+
+            // float rayLength = 100.0f;
+
+            // glm::vec3 ray_direction = ComputeRayFromMouse(window, SceneInformation::projection, SceneInformation::view, g_windowWidth, g_windowHeight);
+            // glm::vec3 cameraPosition = SceneInformation::camera_position_c;
+            
 
             bool intersectsSomething = false;
 
@@ -1151,7 +1229,7 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
                 SceneObject sceneObject = object.second;
 
                 float intersection_distance;
-                intersectsSomething = TestRayOBBIntersection(SceneInformation::camera_position_c, ray_direction, sceneObject.bbox_min, sceneObject.bbox_max, 
+                intersectsSomething = TestRayOBBIntersection(SceneInformation::camera_position_c, g_rayDirection, sceneObject.bbox_min, sceneObject.bbox_max, 
                                                              Matrix_Identity(), intersection_distance);
 
                 // Check if ray intersects with object
@@ -1274,21 +1352,45 @@ void TextRendering_ShowModelViewProjection(
 
 // FUNÇÕES NOVAS ======================================================================================================
 
-glm::vec3 ComputeRayFromMouse(GLFWwindow* window, const glm::mat4& projMatrix, const glm::mat4& viewMatrix, int windowWidth, int windowHeight)
+glm::vec4 ComputeRayFromMouse(GLFWwindow* window, const glm::mat4& projMatrix, const glm::mat4& viewMatrix)
 {
     glfwGetCursorPos(window, &g_LastCursorPosX, &g_LastCursorPosY);
 
     // Convert to normalized device coordinates
-    float x = (2.0f * g_LastCursorPosX) / windowWidth - 1.0f;
-    float y = 1.0f - (2.0f * g_LastCursorPosY) / windowHeight;
+    float x = (2.0f * g_LastCursorPosX) / g_actualWindowWidth - 1.0f;
+    float y = 1.0f - (2.0f * g_LastCursorPosY) / g_actualWindowHeight;
 
     glm::vec4 rayClip = glm::vec4(x, y, -1.0f, 1.0f);
-
     glm::vec4 rayEye = glm::inverse(projMatrix) * rayClip;
-    rayEye = glm::vec4(rayEye.x, rayEye.y, -1.0f, 0.0f);
 
-    glm::vec4 rayWorld = glm::inverse(viewMatrix) * rayEye;
-    glm::vec3 rayDir = glm::normalize(glm::vec3(rayWorld));
+    glm::vec4 rayDir;
+
+    if (g_UsePerspectiveProjection)
+    {
+        
+        // For orthographic projection, the ray direction in the eye space is 
+        // always parallel to the negative z-axis
+        rayEye.z = -1.0f; // pointing forward
+        rayEye.w = 0.0f;  // represents direction, not a point
+
+        glm::vec4 rayWorld = glm::inverse(viewMatrix) * rayEye;
+        rayDir = glm::normalize(rayWorld);
+        rayDir.w = 0.0f; // Ensure the w coordinate remains zero for directions.
+    }
+    else
+    {
+        // For orthographic projection, the ray direction in the eye space is 
+        // always parallel to the negative z-axis
+        rayEye.z = -1.0f; // pointing forward
+        rayEye.w = 0.0f;  // represents direction, not a point
+
+        glm::vec4 rayWorld = glm::inverse(viewMatrix) * rayEye;
+        rayDir = glm::normalize(rayWorld);
+        rayDir.w = 0.0f; // Ensure the w coordinate remains zero for directions.
+    }
+    
+
+    
 
     return rayDir;
 }
@@ -1441,9 +1543,9 @@ void GenerateGUIWindows()
     CreateAddNewInstanceWindow(addNewInstanceWindowSize, addNewInstanceWindowPosition);
 
     // Define a posição e tamanho da janela da GUI de debug
-    float debugWindowWidth = 220.0f;
+    float debugWindowWidth = 440.0f;
     float debugWindowHeight = 150.0f;
-    ImVec2 debugWindowSize = ImVec2(addNewInstanceWindowWidth, addNewInstanceWindowHeight);
+    ImVec2 debugWindowSize = ImVec2(debugWindowWidth, debugWindowHeight);
     ImVec2 debugWindowPosition = addNewInstanceWindowPosition;
     float spacingBetweenWindows = 10.0f;
     debugWindowPosition.x += addNewInstanceWindowSize.x + spacingBetweenWindows;
@@ -1525,6 +1627,31 @@ void CreateDebugWindow(ImVec2 debugWindowSize, ImVec2 debugWindowPosition)
 
     ImGui::Begin("Debug", &show_window, window_flags);
 
+    glm::vec3 cameraPosition = SceneInformation::camera_position_c;
+
+    ImGui::Text("cameraPosition: x=%.3f, y=%.3f, z=%.3f", cameraPosition.x, cameraPosition.y, cameraPosition.z);
+    ImGui::Text("rayEndPoint: x=%.3f, y=%.3f, z=%.3f w=%.3f", g_rayEndPoint.x, g_rayEndPoint.y, g_rayEndPoint.z, g_rayEndPoint.w);
+    ImGui::Text("rayDirection: x=%.3f, y=%.3f, z=%.3f w=%.3f", g_rayDirection.x, g_rayDirection.y, g_rayDirection.z, g_rayDirection.w);
+    ImGui::Text("Window Width: %.3f", g_actualWindowWidth);
+    ImGui::Text("Window Height: %.3f", g_actualWindowHeight);
+
+    // Print all the keys, object ids and object names on std::map<int, ObjectInstance> g_ObjectInstances;
+    for (auto& object : g_ObjectInstances)
+    {
+        ImGui::Text("Object %d / id: %d - %s", object.first, object.second.object_id, object.second.object_name.c_str());
+
+        // if object id is 9, 10 or 11, print the model matrix from the object
+        if (object.second.object_id == 9 || object.second.object_id == 10 || object.second.object_id == 11)
+        {
+            ImGui::Text("%.3f %.3f %.3f %.3f", object.second.model_matrix[0][0], object.second.model_matrix[0][1], object.second.model_matrix[0][2], object.second.model_matrix[0][3]);
+            ImGui::Text("%.3f %.3f %.3f %.3f", object.second.model_matrix[1][0], object.second.model_matrix[1][1], object.second.model_matrix[1][2], object.second.model_matrix[1][3]);
+            ImGui::Text("%.3f %.3f %.3f %.3f", object.second.model_matrix[2][0], object.second.model_matrix[2][1], object.second.model_matrix[2][2], object.second.model_matrix[2][3]);
+            ImGui::Text("%.3f %.3f %.3f %.3f", object.second.model_matrix[3][0], object.second.model_matrix[3][1], object.second.model_matrix[3][2], object.second.model_matrix[3][3]);
+        }
+    }
+
+    ImGui::Text("==================================================");
+    ImGui::Text("g_error: %s", g_error.c_str());
 
     ImGui::End();
 }
@@ -1560,8 +1687,142 @@ void CreateProjectionSettingsWindow(ImVec2 projectionWindowSize, ImVec2 projecti
     ImGui::End();
 }
 
+void SetupXYZAxesVAOVBOAndEBO(GLuint &VAO_X_axis, GLuint &VAO_Y_axis, GLuint &VAO_Z_axis, GLuint &VBO_X_axis, GLuint &VBO_Y_axis, GLuint &VBO_Z_axis)
+{
+    GLuint location = 0; // "(location = 0)" em "shader_vertex.glsl"
+    GLint  number_of_dimensions = 4; // vec4 em "shader_vertex.glsl"
+
+    glm::vec4 x_axisVertices[] = {
+    glm::vec4(0.0f, 0.0f, 0.0f, 1.0f),  // Origin for X-axis
+    glm::vec4(1.0f, 0.0f, 0.0f, 1.0f),  // X-axis end
+    };
+
+    // Set up the X axis
+    glGenVertexArrays(1, &VAO_X_axis);
+    glBindVertexArray(VAO_X_axis);
+
+    glGenBuffers(1, &VBO_X_axis);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO_X_axis);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(x_axisVertices), x_axisVertices, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(location, number_of_dimensions, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(location);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    glBindVertexArray(0); // unbind
 
 
+    glm::vec4 y_axisVertices[] = {
+    glm::vec4(0.0f, 0.0f, 0.0f, 1.0f),  // Origin for Y-axis
+    glm::vec4(0.0f, 1.0f, 0.0f, 1.0f),  // Y-axis end
+    };
+
+    // Set up the Y axis
+    glGenVertexArrays(1, &VAO_Y_axis);
+    glBindVertexArray(VAO_Y_axis);
+
+    glGenBuffers(1, &VBO_Y_axis);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO_Y_axis);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(y_axisVertices), y_axisVertices, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(location, number_of_dimensions, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(location);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    glBindVertexArray(0); // unbind
+
+    glm::vec4 z_axisVertices[] = {
+    glm::vec4(0.0f, 0.0f, 0.0f, 1.0f),  // Origin for Z-axis
+    glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),  // Z-axis end
+    };
+
+    // Set up the Z axis
+    glGenVertexArrays(1, &VAO_Z_axis);
+    glBindVertexArray(VAO_Z_axis);
+
+    glGenBuffers(1, &VBO_Z_axis);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO_Z_axis);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(z_axisVertices), z_axisVertices, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(location, number_of_dimensions, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(location);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    glBindVertexArray(0); // unbind
+}
+
+void DrawXYZAxes(GLuint &VAO_X_axis, GLuint &VAO_Y_axis, GLuint &VAO_Z_axis)
+{
+    glBindVertexArray(VAO_X_axis);
+    GLenum error = glGetError();
+    if(error != GL_NO_ERROR) {
+        g_error += "Error binding VAOx: " + std::to_string(error) + "\n";
+    }
+
+    glUniform1i(9, X_AXIS); 
+    glDrawArrays(GL_LINES, 0, 2);  // 2 vertices for the X axis
+    error = glGetError();
+    if(error != GL_NO_ERROR) {
+        g_error += "Error drawing VAOx: " + std::to_string(error) + "\n";
+    }
+
+    glBindVertexArray(VAO_Y_axis);
+    error = glGetError();
+    if(error != GL_NO_ERROR) {
+        g_error += "Error binding VAOy: " + std::to_string(error) + "\n";
+    }
+
+    glUniform1i(10, Y_AXIS); 
+    glDrawArrays(GL_LINES, 0, 2);  // 2 vertices for the Y axis
+    error = glGetError();
+    if(error != GL_NO_ERROR) {
+        g_error += "Error drawing VAOy: " + std::to_string(error) + "\n";
+    }
+
+    glBindVertexArray(VAO_Z_axis);
+    error = glGetError();
+    if(error != GL_NO_ERROR) {
+        g_error += "Error binding VAOz: " + std::to_string(error) + "\n";
+    }
+
+    glUniform1i(11, Z_AXIS); 
+    glDrawArrays(GL_LINES, 0, 2);  // 2 vertices for the Z axis
+    error = glGetError();
+    if(error != GL_NO_ERROR) {
+        g_error += "Error drawing VAOz: " + std::to_string(error) + "\n";
+    }
+}
+
+
+void SetupRayVAOAndVBO()
+{
+    glGenVertexArrays(1, &VAO_ray_id);
+    glBindVertexArray(VAO_ray_id);
+    
+    glGenBuffers(1, &VBO_ray_id);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO_ray_id);
+
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+    
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0); // unbind the VAO
+}
+
+void DrawRay(glm::vec4 cameraPosition, glm::vec4 ray_direction)
+{
+    // Calculate ray end point
+    g_rayEndPoint = cameraPosition + ray_direction * g_rayLength;
+    glm::vec4 g_rayVertices[2] = {cameraPosition, g_rayEndPoint};
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO_ray_id);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(g_rayVertices), g_rayVertices, GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0); // unbind the VBO
+
+    glBindVertexArray(VAO_ray_id);
+    glDrawArrays(GL_LINES, 0, 2);
+    glBindVertexArray(0); // unbind the VAO after drawing
+}
 
 // std::vector<BoundingBox> computeAllBoundingBoxes(const ObjModel& model) {
 //     std::vector<BoundingBox> bboxes;

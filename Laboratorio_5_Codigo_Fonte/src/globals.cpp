@@ -69,6 +69,24 @@ GLuint g_NumLoadedTextures = 0;
 int g_selectedObject = -1;
 
 // Tamanho da janela (inicializado com valores padrões)
-int g_windowWidth = 800;
-int g_windowHeight = 600;
+int g_startWindowWidth = 800;
+int g_startWindowHeight = 600;
+
+float g_actualWindowWidth;
+float g_actualWindowHeight;
+
+// Eixos da origem
+GLuint g_VAO_axes, g_VBO_axes, g_EBO_axes;
+GLuint g_VAO_X_axis, g_VAO_Y_axis, g_VAO_Z_axis;
+GLuint g_VBO_X_axis, g_VBO_Y_axis, g_VBO_Z_axis;
+
+// DEBUG
+// Raio projetado com o clique do mouse
+float g_rayLength = 10.0f;
+glm::vec4 g_rayEndPoint;
+glm::vec4 g_rayDirection;
+glm::vec3 g_rayVertices[2];
+GLuint VBO_ray_id;
+GLuint VAO_ray_id;
+std::string g_error;
 

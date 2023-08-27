@@ -13,6 +13,9 @@ void FramebufferSizeCallback(GLFWwindow* window, int width, int height)
     io.DisplaySize = ImVec2(static_cast<float>(width), static_cast<float>(height));
     io.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
 
+    g_actualWindowWidth = width;
+    g_actualWindowHeight = height;
+    
     // Indicamos que queremos renderizar em toda região do framebuffer. A
     // função "glViewport" define o mapeamento das "normalized device
     // coordinates" (NDC) para "pixel coordinates".  Essa é a operação de
