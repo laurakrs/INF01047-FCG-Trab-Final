@@ -14,7 +14,7 @@ in vec4 position_model;
 in vec2 texcoords;
 
 // COR DA ESFERA (GOURAUD)
-in vec3 color_sphere;
+in vec4 color_sphere;
 
 // Matrizes computadas no código C++ e enviadas para a GPU
 uniform mat4 model;
@@ -86,7 +86,7 @@ void main()
 
     if ( object_id == SPHERE || object_id == CENTRAL_SPHERE || object_id == SPHERE2 )
     {
-        color = vec3(color_sphere.x, color_sphere.y, color_sphere.z); 
+        color = color_sphere;
     }
     else if ( object_id == BUNNY || object_id ==  BUNNY2 )
     {

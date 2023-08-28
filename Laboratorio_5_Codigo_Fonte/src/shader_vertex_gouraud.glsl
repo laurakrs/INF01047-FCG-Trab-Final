@@ -21,7 +21,7 @@ out vec4 normal;
 out vec2 texcoords;
 
 // para a esfera => Gouraud
-out vec3 color_sphere;
+out vec4 color_sphere;
 
 
 // Identificador que define qual objeto está sendo desenhado no momento
@@ -248,7 +248,7 @@ void main()
 
         // Cor final com correção gamma, considerando monitor sRGB.
         // Veja https://en.wikipedia.org/w/index.php?title=Gamma_correction&oldid=751281772#Windows.2C_Mac.2C_sRGB_and_TV.2Fvideo_standard_gammas
-        color_sphere = pow(color_sphere, vec3(1.0,1.0,1.0)/2.2);
+        color_sphere = pow(color_sphere, vec3(1.0,1.0,1.0)/2.2, 1.0);
 
 
     }
