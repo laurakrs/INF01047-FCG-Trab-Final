@@ -60,6 +60,10 @@
 #include "CursorRay.h"
 #include "GUI.h"
 
+// Inicialização do ambiente
+void InitializeGlfw();
+GLFWwindow* InitializeWindow();
+
 // Declaração de funções utilizadas para pilha de matrizes de modelagem.
 void PushMatrix(glm::mat4 M);
 void PopMatrix(glm::mat4& M);
@@ -78,17 +82,18 @@ void LoadShadersFromFiles(); // Carrega os shaders de vértice e fragmento, cria
 GLuint LoadShader_Vertex(const char* filename);   // Carrega um vertex shader
 GLuint LoadShader_Fragment(const char* filename); // Carrega um fragment shader
 void LoadShader(const char* filename, GLuint shader_id); // Função utilizada pelas duas acima
-void LoadTextureImages(const std::vector<std::string>& texturePaths); // Carrega imagens de textura
-void LoadTextureImage(const char* filename); // Função que carrega imagens de textura
 
 // Geração dos objetos
 void GenerateObjectModels(const std::vector<std::string>& modelPaths); // Constrói representações de objetos geométricos
+void ComputeNormals(ObjModel* model); // Computa normais de um ObjModel, caso não existam.
 void BuildTrianglesAndAddToVirtualScene(ObjModel*); // Constrói representação de um ObjModel como malha de triângulos para renderização
 GLuint BuildTriangles(); // Constrói triângulos para renderização
-void ComputeNormals(ObjModel* model); // Computa normais de um ObjModel, caso não existam.
-void GenerateObjectInstances(glm::vec4 camera_lookat_l); // Constrói representações de instâncias de objetos geométricos
+void SetupBoundingBoxVAOAndVBO();
+void LoadTextureImages(const std::vector<std::string>& texturePaths); // Carrega imagens de textura
+void LoadTextureImage(const char* filename); // Função que carrega imagens de textura
 
 // Criação de eixos da cena
+void GenerateObjectInstances(glm::vec4 camera_lookat_l); // Constrói representações de instâncias de objetos geométricos
 void SetupXYZAxesVAOAndVBO(GLuint &VAO_X_axis, GLuint &VAO_Y_axis, GLuint &VAO_Z_axis, GLuint &VBO_X_axis, GLuint &VBO_Y_axis, GLuint &VBO_Z_axis);
 void SetupRayVAOAndVBO();
 
@@ -125,58 +130,13 @@ bool intersectsOnZ(float tMin, float tMax, glm::vec3 delta,	glm::vec3 ray_direct
 // CÓDIGO PRINCIPAL ===========================
 int main(int argc, char* argv[])
 {
-    // Inicializamos a biblioteca GLFW, utilizada para criar uma janela do
-    // sistema operacional, onde poderemos renderizar com OpenGL.
-    int success = glfwInit();
-    if (!success)
-    {
-        fprintf(stderr, "ERROR: glfwInit() failed.\n");
-        std::exit(EXIT_FAILURE);
-    }
+    // Inicializamos o ambiente do GLFW
+    InitializeGlfw();
 
-    // Definimos o callback para impressão de erros da GLFW no terminal
-    glfwSetErrorCallback(ErrorCallback);
+    // Inicialização da janela do programa
+    GLFWwindow* window = InitializeWindow();
 
-    // Pedimos para utilizar OpenGL versão 3.3 (ou superior)
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-
-    #ifdef __APPLE__
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-    #endif
-
-    // Pedimos para utilizar o perfil "core", isto é, utilizaremos somente as
-    // funções modernas de OpenGL.
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-    // Criamos uma janela do sistema operacional, com 800 colunas e 600 linhas
-    // de pixels, e com título "INF01047 ...".
-    GLFWwindow* window;
-    window = glfwCreateWindow(g_startWindowWidth, g_startWindowHeight, "INF01047 - Trabalho Final - Laura Keidann e Matheus Sabadin", NULL, NULL);
-    if (!window)
-    {
-        glfwTerminate();
-        fprintf(stderr, "ERROR: glfwCreateWindow() failed.\n");
-        std::exit(EXIT_FAILURE);
-    }
-
-    // Seta KeyCallback, MouseButtonCallback, CursorPosCallback e ScrollCallback
-    SetCallbacks(window);
-
-    // Indicamos que as chamadas OpenGL deverão renderizar nesta janela
-    glfwMakeContextCurrent(window);
-
-    // Carregamento de todas funções definidas por OpenGL 3.3, utilizando a
-    // biblioteca GLAD.
-    gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
-
-    // Definimos a função de callback que será chamada sempre que a janela for
-    // redimensionada, por consequência alterando o tamanho do "framebuffer"
-    // (região de memória onde são armazenados os pixels da imagem).
-    glfwSetFramebufferSizeCallback(window, FramebufferSizeCallback);
-    FramebufferSizeCallback(window, g_startWindowWidth, g_startWindowHeight); // Forçamos a chamada do callback acima, para definir g_ScreenRatio.
-
-    // Inicializamos a interface gráfica GUI
+    // Inicializamos a interface gráfica GUI que fica dentro da janela
     InitializeGUI(window);
 
     // Imprime informações do sistema no console
@@ -193,26 +153,8 @@ int main(int argc, char* argv[])
     // Construímos a representação de objetos geométricos através de malhas de triângulos
     GenerateObjectModels(g_modelPaths);
 
-    // After processing all shapes in the model, but before creating VBOs for the main model:
-    for (auto& [name, obj] : g_VirtualScene) // loop through all the objects in g_VirtualScene
-    {
-        // Create a VBO for bounding box vertices
-        GLuint bbox_vbo;
-        glGenBuffers(1, &bbox_vbo);
-        glBindBuffer(GL_ARRAY_BUFFER, bbox_vbo);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(obj.bbox_vertices), obj.bbox_vertices.data(), GL_STATIC_DRAW);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-        // Create an IBO for bounding box indices
-        GLuint bbox_ibo;
-        glGenBuffers(1, &bbox_ibo);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bbox_ibo);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(obj.bbox_indices), obj.bbox_indices.data(), GL_STATIC_DRAW);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-        // obj.bbox_vbo = bbox_vbo;
-        // obj.bbox_ibo = bbox_ibo;
-    }
+    // Configuramos o VAO das bounding boxes dos elementos
+    SetupBoundingBoxVAOAndVBO();
 
     // Modelo dos eixos XYZ
     GLuint VAO_X_axis, VAO_Y_axis, VAO_Z_axis;
@@ -496,6 +438,69 @@ int main(int argc, char* argv[])
     // Fim do programa
     return 0;
 }
+
+
+
+// Inicialização do ambiente ======================================================================================================
+GLFWwindow* InitializeWindow()
+{
+    // Criamos uma janela do sistema operacional, com 800 colunas e 600 linhas
+    // de pixels, e com título "INF01047 ...".
+    GLFWwindow* window;
+    window = glfwCreateWindow(g_startWindowWidth, g_startWindowHeight, "INF01047 - Trabalho Final - Laura Keidann e Matheus Sabadin", NULL, NULL);
+    if (!window)
+    {
+        glfwTerminate();
+        fprintf(stderr, "ERROR: glfwCreateWindow() failed.\n");
+        std::exit(EXIT_FAILURE);
+    }
+
+    // Seta KeyCallback, MouseButtonCallback, CursorPosCallback e ScrollCallback
+    SetCallbacks(window);
+
+    // Indicamos que as chamadas OpenGL deverão renderizar nesta janela
+    glfwMakeContextCurrent(window);
+
+    // Carregamento de todas funções definidas por OpenGL 3.3, utilizando a
+    // biblioteca GLAD.
+    gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
+
+    // Definimos a função de callback que será chamada sempre que a janela for
+    // redimensionada, por consequência alterando o tamanho do "framebuffer"
+    // (região de memória onde são armazenados os pixels da imagem).
+    glfwSetFramebufferSizeCallback(window, FramebufferSizeCallback);
+    FramebufferSizeCallback(window, g_startWindowWidth, g_startWindowHeight); // Forçamos a chamada do callback acima, para definir g_ScreenRatio.
+
+    return window;
+}
+
+void InitializeGlfw()
+{
+    // Inicializamos a biblioteca GLFW, utilizada para criar uma janela do
+    // sistema operacional, onde poderemos renderizar com OpenGL.
+    int success = glfwInit();
+    if (!success)
+    {
+        fprintf(stderr, "ERROR: glfwInit() failed.\n");
+        std::exit(EXIT_FAILURE);
+    }
+
+    // Definimos o callback para impressão de erros da GLFW no terminal
+    glfwSetErrorCallback(ErrorCallback);
+
+    // Pedimos para utilizar OpenGL versão 3.3 (ou superior)
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+
+    #ifdef __APPLE__
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    #endif
+
+    // Pedimos para utilizar o perfil "core", isto é, utilizaremos somente as
+    // funções modernas de OpenGL.
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+}
+
 
 
 // Definição dos callbacks ======================================================================================================
@@ -789,6 +794,9 @@ void LoadShadersFromFiles()
     g_bbox_min_uniform   = glGetUniformLocation(g_GpuProgramID, "bbox_min");
     g_bbox_max_uniform   = glGetUniformLocation(g_GpuProgramID, "bbox_max");
 
+    g_is_bounding_box_vertex_uniform = glGetUniformLocation(g_GpuProgramID, "isBoundingBoxVertex");
+    g_is_bounding_box_fragment_uniform = glGetUniformLocation(g_GpuProgramID, "isBoundingBoxFragment");
+
     // Variáveis em "shader_fragment.glsl" para acesso das imagens de textura
     glUseProgram(g_GpuProgramID);
     glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage0"), 0);
@@ -918,6 +926,20 @@ void LoadShader(const char* filename, GLuint shader_id)
     delete [] log;
 }
 
+
+
+
+// Geração dos modelos ======================================================================================================
+void GenerateObjectModels(const std::vector<std::string>& modelPaths)
+{
+    for(const auto& path : modelPaths)
+    {
+        ObjModel model(path.c_str());
+        ComputeNormals(&model);
+        BuildTrianglesAndAddToVirtualScene(&model);
+    }
+}
+
 // Função que computa as normais de um ObjModel, caso elas não tenham sido
 // especificadas dentro do arquivo ".obj"
 void ComputeNormals(ObjModel* model)
@@ -984,6 +1006,7 @@ void ComputeNormals(ObjModel* model)
 // Constrói triângulos para futura renderização a partir de um ObjModel.
 void BuildTrianglesAndAddToVirtualScene(ObjModel* model)
 {
+    // Criamos um VAO para o objeto
     GLuint vertex_array_object_id;
     glGenVertexArrays(1, &vertex_array_object_id);
     glBindVertexArray(vertex_array_object_id);
@@ -1003,31 +1026,6 @@ void BuildTrianglesAndAddToVirtualScene(ObjModel* model)
 
         glm::vec3 bbox_min = glm::vec3(maxval,maxval,maxval);
         glm::vec3 bbox_max = glm::vec3(minval,minval,minval);
-
-
-
-
-        // Adição dos vértices da bounding box
-        // Create vertices for the bounding box
-        glm::vec3 bbox_vertices[8];
-        bbox_vertices[0] = bbox_min;
-        bbox_vertices[1] = glm::vec3(bbox_max.x, bbox_min.y, bbox_min.z);
-        bbox_vertices[2] = glm::vec3(bbox_max.x, bbox_max.y, bbox_min.z);
-        bbox_vertices[3] = glm::vec3(bbox_min.x, bbox_max.y, bbox_min.z);
-        bbox_vertices[4] = glm::vec3(bbox_min.x, bbox_min.y, bbox_max.z);
-        bbox_vertices[5] = glm::vec3(bbox_max.x, bbox_min.y, bbox_max.z);
-        bbox_vertices[6] = bbox_max;
-        bbox_vertices[7] = glm::vec3(bbox_min.x, bbox_max.y, bbox_max.z);
-
-        // Indices for the 12 edges of the bounding box
-        GLuint bbox_indices[24] = {
-            0, 1, 1, 2, 2, 3, 3, 0, // bottom
-            4, 5, 5, 6, 6, 7, 7, 4, // top
-            0, 4, 1, 5, 2, 6, 3, 7  // vertical edges
-        };
-
-        
-
 
         for (size_t triangle = 0; triangle < num_triangles; ++triangle)
         {
@@ -1093,11 +1091,28 @@ void BuildTrianglesAndAddToVirtualScene(ObjModel* model)
         theobject.bbox_min = bbox_min;
         theobject.bbox_max = bbox_max;
 
-        // You can save these bbox_vertices and bbox_indices in your `SceneObject` structure:
-        theobject.bbox_vertices.assign(bbox_vertices, bbox_vertices + 8);
-        theobject.bbox_indices.assign(bbox_indices, bbox_indices + 24);
+
+        // ======================
+        // Adição da bounding box
+
+        glm::vec4 v[8];
+        v[0] = glm::vec4(bbox_min.x, bbox_min.y, bbox_min.z, 1.0f);
+        v[1] = glm::vec4(bbox_max.x, bbox_min.y, bbox_min.z, 1.0f);
+        v[2] = glm::vec4(bbox_max.x, bbox_max.y, bbox_min.z, 1.0f);
+        v[3] = glm::vec4(bbox_min.x, bbox_max.y, bbox_min.z, 1.0f);
+        v[4] = glm::vec4(bbox_min.x, bbox_min.y, bbox_max.z, 1.0f);
+        v[5] = glm::vec4(bbox_max.x, bbox_min.y, bbox_max.z, 1.0f);
+        v[6] = glm::vec4(bbox_max.x, bbox_max.y, bbox_max.z, 1.0f);
+        v[7] = glm::vec4(bbox_min.x, bbox_max.y, bbox_max.z, 1.0f);
+
+        for (int i = 0; i < 8; i++) 
+        {
+            theobject.bbox_vertices[i] = v[i];
+        }
+        // ======================
 
         g_VirtualScene[model->shapes[shape].name] = theobject;
+
     }
 
     GLuint VBO_model_coefficients_id;
@@ -1154,6 +1169,59 @@ void BuildTrianglesAndAddToVirtualScene(ObjModel* model)
     glBindVertexArray(0);
 }
 
+void SetupBoundingBoxVAOAndVBO() 
+{
+    for (auto& pair : g_VirtualScene) {
+        SceneObject object = pair.second;
+        
+        // VAO for the bounding box
+        GLuint bbox_vertex_array_object_id;
+        glGenVertexArrays(1, &bbox_vertex_array_object_id);
+        glBindVertexArray(bbox_vertex_array_object_id);
+
+        // Define line pairs for the bounding box
+        std::vector<glm::vec4> lines = {
+            object.bbox_vertices[0], object.bbox_vertices[1],
+            object.bbox_vertices[1], object.bbox_vertices[2],
+            object.bbox_vertices[2], object.bbox_vertices[3],
+            object.bbox_vertices[3], object.bbox_vertices[0],
+            object.bbox_vertices[4], object.bbox_vertices[5],
+            object.bbox_vertices[5], object.bbox_vertices[6],
+            object.bbox_vertices[6], object.bbox_vertices[7],
+            object.bbox_vertices[7], object.bbox_vertices[4],
+            object.bbox_vertices[0], object.bbox_vertices[4],
+            object.bbox_vertices[1], object.bbox_vertices[5],
+            object.bbox_vertices[2], object.bbox_vertices[6],
+            object.bbox_vertices[3], object.bbox_vertices[7]
+        };
+
+        std::vector<float> bbox_coefficients;
+        for (int i = 0; i < 8; i++) {
+            bbox_coefficients.push_back(object.bbox_vertices[i].x);
+            bbox_coefficients.push_back(object.bbox_vertices[i].y);
+            bbox_coefficients.push_back(object.bbox_vertices[i].z);
+            bbox_coefficients.push_back(object.bbox_vertices[i].w);
+        }
+
+        GLuint VBO_bbox_coefficients_id;
+        glGenBuffers(1, &VBO_bbox_coefficients_id);
+        glBindBuffer(GL_ARRAY_BUFFER, VBO_bbox_coefficients_id);
+        glBufferData(GL_ARRAY_BUFFER, bbox_coefficients.size() * sizeof(float), bbox_coefficients.data(), GL_STATIC_DRAW);
+        
+        GLuint location = 3; // Assuming location 3 for bbox vertices in shader
+        GLint number_of_dimensions = 4; // vec4
+        glVertexAttribPointer(location, number_of_dimensions, GL_FLOAT, GL_FALSE, 0, 0);
+        glEnableVertexAttribArray(location);
+
+        // Assign the newly created VAO to the object
+        object.bbox_vertex_array_object_id = bbox_vertex_array_object_id;
+
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
+    }
+}
+
+// Carrega texturas de arquivos externos
 void LoadTextureImages(const std::vector<std::string>& texturePaths)
 {
     for(const auto& path : texturePaths)
@@ -1216,17 +1284,7 @@ void LoadTextureImage(const char* filename)
 
 
 
-// Geração dos modelos ======================================================================================================
-void GenerateObjectModels(const std::vector<std::string>& modelPaths)
-{
-    for(const auto& path : modelPaths)
-    {
-        ObjModel model(path.c_str());
-        ComputeNormals(&model);
-        BuildTrianglesAndAddToVirtualScene(&model);
-    }
-}
-
+// Geração das instâncias ======================================================================================================
 void GenerateObjectInstances(glm::vec4 camera_lookat_l)
 {
     // Inicialização de um objeto
@@ -1237,18 +1295,18 @@ void GenerateObjectInstances(glm::vec4 camera_lookat_l)
             * Matrix_Scale(0.05f,0.05f,0.05f);
     ObjectInstance("the_sphere", model, CENTRAL_SPHERE);
 
-    //Desenhamos o modelo da esfera
-    model = Matrix_Translate(-0.4f,0.0f,0.5f)
-            * Matrix_Scale(0.2f,0.2f,0.2f)
-            * Matrix_Rotate_Z(0.6f)
-            * Matrix_Rotate_X(0.2f)
-            * Matrix_Rotate_Y(g_AngleY + (float)glfwGetTime() * 0.1f);
-    ObjectInstance("the_sphere", model, SPHERE);
+    // //Desenhamos o modelo da esfera
+    // model = Matrix_Translate(-0.4f,0.0f,0.5f)
+    //         * Matrix_Scale(0.2f,0.2f,0.2f)
+    //         * Matrix_Rotate_Z(0.6f)
+    //         * Matrix_Rotate_X(0.2f)
+    //         * Matrix_Rotate_Y(g_AngleY + (float)glfwGetTime() * 0.1f);
+    // ObjectInstance("the_sphere", model, SPHERE);
 
-    // Desenhamos outra instancia da esfera
-    model = Matrix_Translate(-0.9f,0.3f,0.8f)
-            * Matrix_Scale(0.4f,0.4f,0.4f);
-    ObjectInstance("the_sphere", model, SPHERE2);
+    // // Desenhamos outra instancia da esfera
+    // model = Matrix_Translate(-0.9f,0.3f,0.8f)
+    //         * Matrix_Scale(0.4f,0.4f,0.4f);
+    // ObjectInstance("the_sphere", model, SPHERE2);
 
     // Desenhamos o modelo do coelho
     model = Matrix_Translate(1.0f,0.0f,0.0f)
@@ -1256,11 +1314,11 @@ void GenerateObjectInstances(glm::vec4 camera_lookat_l)
         * Matrix_Rotate_X(g_AngleX + (float)glfwGetTime() * 0.1f);
     ObjectInstance("the_bunny", model, BUNNY);
 
-    // Desenhamos outra instancia do coelho
-    model = Matrix_Translate(0.8f,-0.5f,0.5f)
-            * Matrix_Scale(0.2f,0.2f,0.2f)
-            * Matrix_Rotate_X(g_AngleX + (float)glfwGetTime() * 0.1f);
-    ObjectInstance("the_bunny", model, BUNNY2);
+    // // Desenhamos outra instancia do coelho
+    // model = Matrix_Translate(0.8f,-0.5f,0.5f)
+    //         * Matrix_Scale(0.2f,0.2f,0.2f)
+    //         * Matrix_Rotate_X(g_AngleX + (float)glfwGetTime() * 0.1f);
+    // ObjectInstance("the_bunny", model, BUNNY2);
 
     // Desenhamos o plano do chão
     model = Matrix_Translate(0.0f,-1.1f,0.0f);
@@ -1274,9 +1332,9 @@ void GenerateObjectInstances(glm::vec4 camera_lookat_l)
     model = Matrix_Translate(2.0f,0.0f,-0.7f);
     ObjectInstance("the_cube", model, CUBE);
 
-    // Desenhamos o modelo do retangulo
-    model = Matrix_Translate(-3.0f,0.0f,0.7f);
-    ObjectInstance("the_rectangle", model, RECTANGLE);
+    // // Desenhamos o modelo do retangulo
+    // model = Matrix_Translate(-3.0f,0.0f,0.7f);
+    // ObjectInstance("the_rectangle", model, RECTANGLE);
 
     // Desenhamos os eixos XYZ
     glm::mat4 model_origin = Matrix_Translate(0.0f,0.0f,0.0f);
@@ -1655,26 +1713,19 @@ void DrawVirtualObject(const char* object_name)
     // alterar o mesmo. Isso evita bugs.
     glBindVertexArray(0);
 
-
-    // Draw the bounding box
-    glBindVertexArray(g_VirtualScene[object_name].vertex_array_object_id);
-
-    // Create a buffer for bounding box vertices if you haven't done so already.
-    // For brevity, this step is omitted here but you should create and bind 
-    // vertex buffer objects (VBOs) for the bounding box vertices and indices.
-
-    // Set the shader uniforms if the bounding box requires any.
-    // Example: You might want to use a different color for the bounding box.
-
-    // Render the bounding box
-    glDrawElements(
-        GL_LINES, 
-        g_VirtualScene[object_name].bbox_indices.size(),
-        GL_UNSIGNED_INT,
-        g_VirtualScene[object_name].bbox_indices.data()
-    );
-
-    glBindVertexArray(0);
+    if (g_drawBoundingBox)
+    {
+        glUniform1i(g_is_bounding_box_vertex_uniform, GL_TRUE);    // Habilita o rendering no shader_vertex.glsl
+        glUniform1i(g_is_bounding_box_fragment_uniform, GL_TRUE);   // Habilita o rendering no shader_vertex.glsl
+        glBindVertexArray(g_VirtualScene[object_name].bbox_vertex_array_object_id);
+        glDrawArrays(GL_LINES, 0, 24);  // 24 for 12 lines * 2 vertices per line
+        glBindVertexArray(0);
+    }
+    else
+    {
+        glUniform1i(g_is_bounding_box_vertex_uniform, GL_FALSE);    // Habilita o rendering no shader_vertex.glsl
+        glUniform1i(g_is_bounding_box_fragment_uniform, GL_FALSE);   // Habilita o rendering no shader_vertex.glsl
+    }
 }
 
 void DrawRay(glm::vec4 rayStartPoint, glm::vec4 rayDirection)

@@ -743,7 +743,7 @@
 
 1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\simd\integer.h
 
-1693160814 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\main.cpp
+1693186761 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\main.cpp
 	<cmath>
 	<cstdio>
 	<cstdlib>
@@ -756,6 +756,7 @@
 	<sstream>
 	<stdexcept>
 	<algorithm>
+	<vector>
 	<glad/glad.h>
 	<GLFW/glfw3.h>
 	<glm/mat4x4.hpp>
@@ -773,10 +774,7 @@
 	"ObjectInstance.h"
 	"SceneInformation.h"
 	"CursorRay.h"
-	<vector>
-	"imgui/imgui.h"
-	"imgui/imgui_impl_glfw.h"
-	"imgui/imgui_impl_opengl3.h"
+	"GUI.h"
 
 1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\gtc\type_ptr.hpp
 	"../gtc/quaternion.hpp"
@@ -1054,10 +1052,10 @@
 	<glm/vec4.hpp>
 	"globals.h"
 
-1693169666 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\globals.cpp
+1693186723 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\globals.cpp
 	"globals.h"
 
-1693171356 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\globals.h
+1693186729 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\globals.h
 	<map>
 	<stack>
 	<string>
@@ -1077,7 +1075,7 @@
 
 1692417644 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\geometryfunctions.h
 
-1693169666 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\sceneobject.h
+1693184866 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\sceneobject.h
 	<string>
 	<map>
 	<GLFW/glfw3.h>
@@ -3491,7 +3489,7 @@
 1693169666 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\cursorray.cpp
 	"CursorRay.h"
 
-1693169666 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\gui.cpp
+1693179284 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\gui.cpp
 	"GUI.h"
 	"globals.h"
 	"SceneInformation.h"
