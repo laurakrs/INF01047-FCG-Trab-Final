@@ -168,7 +168,7 @@ void main()
         vec4 bbox_center = (bbox_min + bbox_max) / 2.0;
 
         // Slide 150 da Aula 20 - Mapeamento de Texturas
-        vec4 p = position_model - bbox_center;
+        p = position_model - bbox_center;
         float theta = atan(p.x, p.z);       // Range: [-PI, PI)
         float phi = asin(p.y / length(p));  // Range: [-PI/2, PI/2)
 
@@ -232,7 +232,7 @@ void main()
         //    suas distâncias para a câmera (desenhando primeiro objetos
         //    transparentes que estão mais longe da câmera).
         // Alpha default = 1 = 100% opaco = 0% transparente
-        color.a = 1;
+        color_sphere.a = 1;
 
         // Cor final do fragmento calculada com uma combinação dos termos difuso,
         // especular, e ambiente. Veja slide 129 do documento Aula_17_e_18_Modelos_de_Iluminacao.pdf.
