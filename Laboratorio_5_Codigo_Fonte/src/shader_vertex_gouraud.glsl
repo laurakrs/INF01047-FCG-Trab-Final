@@ -235,20 +235,20 @@ void main()
         //    suas distâncias para a câmera (desenhando primeiro objetos
         //    transparentes que estão mais longe da câmera).
         // Alpha default = 1 = 100% opaco = 0% transparente
-        //color_sphere.a = 1;
+        color_sphere.a = 1;
 
         // Cor final do fragmento calculada com uma combinação dos termos difuso,
         // especular, e ambiente. Veja slide 129 do documento Aula_17_e_18_Modelos_de_Iluminacao.pdf.
         //color.rgb = lambert_diffuse_term + ambient_term + phong_specular_term;
 
         // OU - PARA BLINN-PHONG:
-        color_sphere = lambert_diffuse_term + ambient_term + blinn_phong_specular_term;
+        color_sphere.rgb = lambert_diffuse_term + ambient_term + blinn_phong_specular_term;
 
 
 
         // Cor final com correção gamma, considerando monitor sRGB.
         // Veja https://en.wikipedia.org/w/index.php?title=Gamma_correction&oldid=751281772#Windows.2C_Mac.2C_sRGB_and_TV.2Fvideo_standard_gammas
-        color_sphere = pow(color_sphere, vec3(1.0,1.0,1.0)/2.2, 1.0);
+        color_sphere.rgb = pow(color_sphere.rgb, vec3(1.0,1.0,1.0)/2.2, 1.0);
 
 
     }

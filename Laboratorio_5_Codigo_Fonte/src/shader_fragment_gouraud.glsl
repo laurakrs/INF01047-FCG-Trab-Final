@@ -80,13 +80,91 @@ void main()
     // Vetor que define o sentido da câmera em relação ao ponto atual.
     vec4 v = normalize(camera_position - p);
 
+    // Vetor que define o sentido da reflexão especular ideal.
+    vec4 r = -l + 2 * n * dot(n, l);    // Slide 115 das Aulas 17 e 18 - Modelos de Iluminação
+
+    // Vetor no meio do caminho entre v e l (half-vector) para Blinn-Phong
+    // h = (v+l)/||v+l||
+
+    // Parâmetros que definem as propriedades espectrais da superfície
+    vec3 Kd; // Refletância difusa
+    vec3 Ks; // Refletância especular
+    vec3 Ka; // Refletância ambiente
+    float q; // Expoente especular para o modelo de iluminação de Phong
+    float q_linha; // Expoente especular para o modelo de iluminação de Blinn-Phong
+    
+
+    vec4 h = normalize(v+l);
+
     // Coordenadas de textura U e V
     float U = 0.0;
     float V = 0.0;
 
-    if ( object_id == SPHERE || object_id == CENTRAL_SPHERE || object_id == SPHERE2 )
+    if ( object_id == SPHERE || || object_id == SPHERE2 ) // INTERPOLACAO GOURAUD
     {
-        color = color_sphere;
+        color = color_sphere; // INTERPOLACAO GOURAUD
+
+    }else if (object_id == CENTRAL_SPHERE ){
+
+         // PREENCHA AQUI as coordenadas de textura da esfera, computadas com
+        // projeção esférica EM COORDENADAS DO MODELO. Utilize como referência
+        // o slides 134-150 do documento Aula_20_Mapeamento_de_Texturas.pdf.
+        // A esfera que define a projeção deve estar centrada na posição
+        // "bbox_center" definida abaixo.
+
+        // Você deve utilizar:
+        //   função 'length( )' : comprimento Euclidiano de um vetor
+        //   função 'atan( , )' : arcotangente. Veja https://en.wikipedia.org/wiki/Atan2.
+        //   função 'asin( )'   : seno inverso.
+        //   constante M_PI
+        //   variável position_model
+
+        // TEXTURA
+        vec4 bbox_center = (bbox_min + bbox_max) / 2.0;
+
+        // Slide 150 da Aula 20 - Mapeamento de Texturas
+        vec4 p = position_model - bbox_center;
+        float theta = atan(p.x, p.z);       // Range: [-PI, PI)
+        float phi = asin(p.y / length(p));  // Range: [-PI/2, PI/2)
+
+        U = (theta + M_PI) / (2 * M_PI);    // Range: [0,1)
+        V = (phi + M_PI / 2) / M_PI;        // Range: [0, 1)
+
+        vec3 Kd0 = texture(TextureImage0, vec2(U,V)).rgb; // planet
+
+        // ILUMINACAO DIFUSA
+        // Propriedades espectrais da esfera
+        Kd = vec3(0.8,0.4,0.08);        // Refletância no modelo RGB = (0.8, 0.4, 0.08)
+        Ks = vec3(0.0,0.0,0.0);         // Superfície 100% difusa
+        Ka = Kd / 2;                    // Refletância ambiente no modelo RGB = metade da refletância difusa
+        q = 1.0;                        // Expoente especular de Phong não especificado
+        q_linha = 1.0;
+
+
+        // Equação de Iluminação
+        float lambert = max(0,dot(n,l));
+
+        color.rgb = Kd0 * (lambert + 0.01);
+
+        // NOTE: Se você quiser fazer o rendering de objetos transparentes, é
+        // necessário:
+        // 1) Habilitar a operação de "blending" de OpenGL logo antes de realizar o
+        //    desenho dos objetos transparentes, com os comandos abaixo no código C++:
+        //      glEnable(GL_BLEND);
+        //      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        // 2) Realizar o desenho de todos objetos transparentes *após* ter desenhado
+        //    todos os objetos opacos; e
+        // 3) Realizar o desenho de objetos transparentes ordenados de acordo com
+        //    suas distâncias para a câmera (desenhando primeiro objetos
+        //    transparentes que estão mais longe da câmera).
+        // Alpha default = 1 = 100% opaco = 0% transparente
+        color.a = 1;
+
+        // Cor final com correção gamma, considerando monitor sRGB.
+        // Veja https://en.wikipedia.org/w/index.php?title=Gamma_correction&oldid=751281772#Windows.2C_Mac.2C_sRGB_and_TV.2Fvideo_standard_gammas
+        color.rgb = pow(color.rgb, vec3(1.0,1.0,1.0)/2.2);
+
+
     }
     else if ( object_id == BUNNY || object_id ==  BUNNY2 )
     {
@@ -108,11 +186,21 @@ void main()
         float minz = bbox_min.z;
         float maxz = bbox_max.z;
 
-        U = 0.0;
-        V = 0.0;
+        float x_range = (maxx - minx);
+        float y_range = (maxy - miny);
+
+        float relative_x_position = (position_model.x - minx);
+        float relative_y_position = (position_model.y - miny);
+
+
+        // Propriedades espectrais do coelho
+        Kd = vec3(0.08,0.4,0.8);         // Refletância difusa no modelo RGB = (0.08, 0.4, 0.8)
+        Ks = vec3(0.8,0.8,0.8);          // Refletância especular no modelo RGB = (0.8, 0.8, 0.8)
+        Ka = Kd / 2;                     // Refletância ambiente no modelo RGB = metade da refletância difusa
+        q_linha = 80.0;                      // Expoente especular de Phong = 32.0
 
         // Obtemos a refletância difusa a partir da leitura da imagem TextureImage0
-        vec3 Kd0 = texture(TextureImage0, vec2(U,V)).rgb;
+        vec3 Kd0 = texture(TextureImage4, vec2(U,V)).rgb; // white leather
 
         // Equação de Iluminação
         float lambert = max(0,dot(n,l));
@@ -140,8 +228,7 @@ void main()
     }
     else if( object_id == COW )
     {
-        // as coordenadas de textura da vaca
-        // IGUAL AO COELHO POR ENQUANTO
+         // as coordenadas de textura da vaca
         float minx = bbox_min.x;
         float maxx = bbox_max.x;
 
@@ -151,11 +238,27 @@ void main()
         float minz = bbox_min.z;
         float maxz = bbox_max.z;
 
-        U = 0.0;
-        V = 0.0;
+        float x_range = (maxx - minx);
+        float y_range = (maxy - miny);
+
+        float relative_x_position = (position_model.x - minx);
+        float relative_y_position = (position_model.y - miny);
+
+        U = relative_x_position / x_range;
+        V = relative_y_position / y_range;
+
+        Kd0 = texture(TextureImage3, vec2(U,V)).rgb; // leather
+
+        // Propriedades espectrais da vaca
+        Kd = vec3(0.08,0.4,0.8);         // Refletância difusa no modelo RGB = (0.08, 0.4, 0.8)
+        Ks = vec3(0.8,0.8,0.8);          // Refletância especular no modelo RGB = (0.8, 0.8, 0.8)
+        Ka = Kd / 2;                     // Refletância ambiente no modelo RGB = metade da refletância difusa
+        q = 32.0;                        // Expoente especular de Phong = 32.0
+        q_linha = 80.0;
+
 
         // Obtemos a refletância difusa a partir da leitura da imagem TextureImage0
-        vec3 Kd0 = texture(TextureImage0, vec2(U,V)).rgb;
+        vec3 Kd0 = texture(TextureImage3, vec2(U,V)).rgb; // brown leather
 
         // Equação de Iluminação
         float lambert = max(0,dot(n,l));
@@ -184,21 +287,27 @@ void main()
     else if( object_id == CUBE )
     {
         // as coordenadas de textura do cubo
-        // IGUAL AO COELHO POR ENQUANTO
-        float minx = bbox_min.x;
-        float maxx = bbox_max.x;
+        // IGUAL A ESFERA POR ENQUANTO
+        vec4 bbox_center = (bbox_min + bbox_max) / 2.0;
 
-        float miny = bbox_min.y;
-        float maxy = bbox_max.y;
+        // Slide 150 da Aula 20 - Mapeamento de Texturas
+        vec4 p = position_model - bbox_center;
+        float theta = atan(p.x, p.z);       // Range: [-PI, PI)
+        float phi = asin(p.y / length(p));  // Range: [-PI/2, PI/2)
 
-        float minz = bbox_min.z;
-        float maxz = bbox_max.z;
+        U = (theta + M_PI) / (2 * M_PI);    // Range: [0,1)
+        V = (phi + M_PI / 2) / M_PI;        // Range: [0, 1)
 
-        U = 0.0;
-        V = 0.0;
+       
+        // Propriedades espectrais do cubo
+        Kd = vec3(0.8,0.4,0.08);        // Refletância no modelo RGB = (0.8, 0.4, 0.08)
+        Ks = vec3(0.0,0.0,0.0);         // Superfície 100% difusa
+        Ka = Kd / 2;                    // Refletância ambiente no modelo RGB = metade da refletância difusa
+        q = 1.0;                        // Expoente especular de Phong não especificado
+        q_linha = 1.0;
 
         // Obtemos a refletância difusa a partir da leitura da imagem TextureImage0
-        vec3 Kd0 = texture(TextureImage0, vec2(U,V)).rgb;
+        vec3 Kd0 = texture(TextureImage1, vec2(U,V)).rgb; // brick wall
 
         // Equação de Iluminação
         float lambert = max(0,dot(n,l));
@@ -226,7 +335,7 @@ void main()
     }
     else if( object_id == RECTANGLE )
     {
-        // as coordenadas de textura do retangulo
+         // as coordenadas de textura do retangulo
         // IGUAL AO COELHO POR ENQUANTO
         float minx = bbox_min.x;
         float maxx = bbox_max.x;
@@ -237,12 +346,23 @@ void main()
         float minz = bbox_min.z;
         float maxz = bbox_max.z;
 
-        U = 0.0;
-        V = 0.0;
+        float x_range = (maxx - minx);
+        float y_range = (maxy - miny);
 
+        float relative_x_position = (position_model.x - minx);
+        float relative_y_position = (position_model.y - miny);
 
-         // Obtemos a refletância difusa a partir da leitura da imagem TextureImage0
-        vec3 Kd0 = texture(TextureImage0, vec2(U,V)).rgb;
+        U = relative_x_position / x_range;
+        V = relative_y_position / y_range;
+
+        vec3 Kd0 = texture(TextureImage2, vec2(U,V)).rgb; // wood table
+
+        // Propriedades espectrais do retangulo
+        Kd = vec3(0.8,0.4,0.08);        // Refletância no modelo RGB = (0.8, 0.4, 0.08)
+        Ks = vec3(0.0,0.0,0.0);         // Superfície 100% difusa
+        Ka = Kd / 2;                    // Refletância ambiente no modelo RGB = metade da refletância difusa
+        q = 1.0;                        // Expoente especular de Phong não especificado
+        q_linha = 1.0;
 
         // Equação de Iluminação
         float lambert = max(0,dot(n,l));
