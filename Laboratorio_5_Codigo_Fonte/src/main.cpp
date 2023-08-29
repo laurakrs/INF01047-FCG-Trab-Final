@@ -382,7 +382,10 @@ int main(int argc, char* argv[])
             }
         }
 
-        DrawRay(g_cursorRay.startPoint, g_cursorRay.direction);
+        if (g_drawMouseRay)
+        {
+            DrawRay(g_cursorRay.startPoint, g_cursorRay.direction);
+        }
         
         // Imprimimos na tela os ângulos de Euler que controlam a rotação do
         // terceiro cubo.
@@ -1169,10 +1172,11 @@ void BuildTrianglesAndAddToVirtualScene(ObjModel* model)
     glBindVertexArray(0);
 }
 
+// Inicializa o VAO e o VBO das bounding boxes dos elementos
 void SetupBoundingBoxVAOAndVBO() 
 {
     for (auto& pair : g_VirtualScene) {
-        SceneObject object = pair.second;
+        SceneObject &object = pair.second;
         
         // VAO for the bounding box
         GLuint bbox_vertex_array_object_id;
@@ -1195,20 +1199,14 @@ void SetupBoundingBoxVAOAndVBO()
             object.bbox_vertices[3], object.bbox_vertices[7]
         };
 
-        std::vector<float> bbox_coefficients;
-        for (int i = 0; i < 8; i++) {
-            bbox_coefficients.push_back(object.bbox_vertices[i].x);
-            bbox_coefficients.push_back(object.bbox_vertices[i].y);
-            bbox_coefficients.push_back(object.bbox_vertices[i].z);
-            bbox_coefficients.push_back(object.bbox_vertices[i].w);
-        }
-
         GLuint VBO_bbox_coefficients_id;
         glGenBuffers(1, &VBO_bbox_coefficients_id);
         glBindBuffer(GL_ARRAY_BUFFER, VBO_bbox_coefficients_id);
-        glBufferData(GL_ARRAY_BUFFER, bbox_coefficients.size() * sizeof(float), bbox_coefficients.data(), GL_STATIC_DRAW);
+
+        // Send the `lines` data to GPU
+        glBufferData(GL_ARRAY_BUFFER, lines.size() * sizeof(glm::vec4), lines.data(), GL_STATIC_DRAW);
         
-        GLuint location = 3; // Assuming location 3 for bbox vertices in shader
+        GLuint location = 0; // Assuming location 3 for bbox vertices in shader
         GLint number_of_dimensions = 4; // vec4
         glVertexAttribPointer(location, number_of_dimensions, GL_FLOAT, GL_FALSE, 0, 0);
         glEnableVertexAttribArray(location);

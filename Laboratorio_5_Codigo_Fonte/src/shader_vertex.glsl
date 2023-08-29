@@ -5,7 +5,6 @@
 layout (location = 0) in vec4 model_coefficients;
 layout (location = 1) in vec4 normal_coefficients;
 layout (location = 2) in vec2 texture_coefficients;
-layout (location = 3) in vec4 bbox_coefficients;  // Adicionado par aos vértices das bounding boxes
 
 // Matrizes computadas no código C++ e enviadas para a GPU
 uniform mat4 model;
@@ -25,11 +24,7 @@ out vec2 texcoords;
 
 void main()
 {
-    //if (isBoundingBoxVertex)
-    //{
-    //    gl_Position = projection * view * model * model_coefficients;
-    //    return;  // Exit the vertex shader early; we don't need the rest for bounding box vertices
-    //}
+    
 
     // A variável gl_Position define a posição final de cada vértice
     // OBRIGATORIAMENTE em "normalized device coordinates" (NDC), onde cada
@@ -77,6 +72,12 @@ void main()
 
     // PARA INTERPOLACAO DE GOURAUD
     // PARA GOURAUD, O QUE ESTÁ NO FRAGMENT SHADER VAI VIR PRA CÁ
+
+    if (isBoundingBoxVertex)
+    {
+        gl_Position = projection * view * model * model_coefficients;
+        return;  // Exit the vertex shader early; we don't need the rest for bounding box vertices
+    }
 }
 
 

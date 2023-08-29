@@ -46,7 +46,8 @@ bool g_ShowInfoText = true;
 // que possamos calcular quanto que o mouse se movimentou entre dois instantes
 // de tempo. Utilizadas no callback CursorPosCallback() abaixo.
 double g_LastCursorPosX, g_LastCursorPosY;
-extern bool g_drawBoundingBox = true;
+bool g_drawBoundingBox = true;
+bool g_drawMouseRay = true;
 
 
 // Pilha que guardará as matrizes de modelagem.

@@ -53,24 +53,44 @@ void GenerateGUIWindows()
     ImVec2 projectionSettingsWindowSize = ImVec2(projectionSettingsWindowWidth, projectionSettingsWindowHeight);
 
     float offsetFromScreenRightSide = -10.0f;
-    float offsetFromScreenBottom = -10.0f;
-    ImVec2 smallWindowPos = ImVec2(screenSize.x - projectionSettingsWindowSize.x + offsetFromScreenRightSide, screenSize.y - projectionSettingsWindowSize.y + offsetFromScreenBottom);
+    float offsetFromScreenBottom = 10.0f;
+    float projectionSettingsWindowXPosition = screenSize.x - projectionSettingsWindowSize.x + offsetFromScreenRightSide;
+    float projectionSettingsWindowYPosition = screenSize.y - projectionSettingsWindowSize.y - offsetFromScreenBottom;
+    ImVec2 projectionSettingsWindowPos = ImVec2(projectionSettingsWindowXPosition, projectionSettingsWindowYPosition);
     
-    CreateProjectionSettingsWindow(projectionSettingsWindowSize, smallWindowPos);
+    CreateProjectionSettingsWindow(projectionSettingsWindowSize, projectionSettingsWindowPos);
+
+    float showBoundingBoxesWindowWidth = 150.0f;
+    float showBoundingBoxesWindowHeight = 35.0f;
+    ImVec2 showBoundingBoxesWindowSize = ImVec2(showBoundingBoxesWindowWidth, showBoundingBoxesWindowHeight);
+    float offsetFromProjectionSettingsWindow = 10.0f;
+    float showBoundingBoxesWindowXPosition = projectionSettingsWindowXPosition;
+    float showBoundingBoxesWindowYPosition = projectionSettingsWindowYPosition - showBoundingBoxesWindowSize.y - offsetFromProjectionSettingsWindow;
+    ImVec2 showBoundingBoxesWindowPos = ImVec2(showBoundingBoxesWindowXPosition, showBoundingBoxesWindowYPosition);
+    CreateShowBoundingBoxesWindow(showBoundingBoxesWindowSize, showBoundingBoxesWindowPos);
+
+    float drawMouseRayWindowWidth = 150.0f;
+    float drawMouseRayWindowHeight = 35.0f;
+    ImVec2 drawMouseRayWindowSize = ImVec2(drawMouseRayWindowWidth, drawMouseRayWindowHeight);
+    float offsetFromShowBoundingBoxesWindow = 10.0f;
+    float drawMouseRayWindowXPosition = showBoundingBoxesWindowXPosition;
+    float drawMouseRayWindowYPosition = showBoundingBoxesWindowYPosition - drawMouseRayWindowSize.y - offsetFromShowBoundingBoxesWindow;
+    ImVec2 drawMouseRayWindowPos = ImVec2(drawMouseRayWindowXPosition, drawMouseRayWindowYPosition);
+    CreateDrawMouseRayWindow(drawMouseRayWindowSize, drawMouseRayWindowPos);
 
     // Renderiza a GUI
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
-void CreateAddNewInstanceWindow(ImVec2 addNewInstanceWindowSize, ImVec2 addNewInstanceWindowPosition)
+void CreateAddNewInstanceWindow(ImVec2 windowSize, ImVec2 windowPosition)
 {
-    ImGui::SetNextWindowSize(addNewInstanceWindowSize);
-    ImGui::SetNextWindowPos(addNewInstanceWindowPosition);
+    ImGui::SetNextWindowSize(windowSize);
+    ImGui::SetNextWindowPos(windowPosition);
 
     static bool show_window = true;
-    ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
-    ImGui::Begin("Adicionar itens na cena", &show_window, window_flags);
+    ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+    ImGui::Begin("Adicionar itens na cena", &show_window, windowFlags);
 
     static bool isSphereSelected = false; // Store selection state for the first selectable
     if (ImGui::Selectable("Esfera", isSphereSelected))
@@ -111,10 +131,10 @@ void CreateAddNewInstanceWindow(ImVec2 addNewInstanceWindowSize, ImVec2 addNewIn
     ImGui::End();
 }
 
-void CreateDebugWindow(ImVec2 debugWindowSize, ImVec2 debugWindowPosition)
+void CreateDebugWindow(ImVec2 windowSize, ImVec2 windowPosition)
 {
-    ImGui::SetNextWindowSize(debugWindowSize);
-    ImGui::SetNextWindowPos(debugWindowPosition);
+    ImGui::SetNextWindowSize(windowSize);
+    ImGui::SetNextWindowPos(windowPosition);
 
     static bool show_window = true;
     // ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
@@ -122,6 +142,9 @@ void CreateDebugWindow(ImVec2 debugWindowSize, ImVec2 debugWindowPosition)
     // ImGui::Begin("Debug", &show_window, window_flags);
     ImGui::Begin("Debug", &show_window);
 
+    ImGui::Text("g_is_bounding_box_vertex_uniform: %d", g_is_bounding_box_vertex_uniform);
+    ImGui::Text("g_is_bounding_box_fragment_uniform: %d", g_is_bounding_box_fragment_uniform);
+    ImGui::Text("g_drawBoundingBox: %d", g_drawBoundingBox);
 
     glm::vec3 cameraPosition = SceneInformation::camera_position_c;
 
@@ -185,14 +208,14 @@ void CreateDebugWindow(ImVec2 debugWindowSize, ImVec2 debugWindowPosition)
     ImGui::End();
 }
 
-void CreateProjectionSettingsWindow(ImVec2 projectionWindowSize, ImVec2 projectionWindowPosition)
+void CreateProjectionSettingsWindow(ImVec2 windowSize, ImVec2 windowPosition)
 {
-    ImGui::SetNextWindowSize(projectionWindowSize);
-    ImGui::SetNextWindowPos(projectionWindowPosition);
+    ImGui::SetNextWindowSize(windowSize);
+    ImGui::SetNextWindowPos(windowPosition);
 
     // Criação da janela
-    ImGuiWindowFlags projectionWindowFlags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
-    ImGui::Begin("##NoTitle", NULL, projectionWindowFlags);
+    ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+    ImGui::Begin("ProjectionSettingsWindow", NULL, windowFlags);
 
     // Inicializa o radio button
     static int radioValue = 0;
@@ -212,6 +235,34 @@ void CreateProjectionSettingsWindow(ImVec2 projectionWindowSize, ImVec2 projecti
     }
     ImGui::SameLine();
     ImGui::Text("Orthographic");
+
+    ImGui::End();
+}
+
+void CreateShowBoundingBoxesWindow(ImVec2 windowSize, ImVec2 windowPosition)
+{
+    ImGui::SetNextWindowSize(windowSize);
+    ImGui::SetNextWindowPos(windowPosition);
+
+    // Criação da janela
+    ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+    ImGui::Begin("ShowBoundingBoxesWindow", NULL, windowFlags);
+
+    ImGui::Checkbox("Show B. Boxes", &g_drawBoundingBox);
+
+    ImGui::End();
+}
+
+void CreateDrawMouseRayWindow(ImVec2 windowSize, ImVec2 windowPosition)
+{
+    ImGui::SetNextWindowSize(windowSize);
+    ImGui::SetNextWindowPos(windowPosition);
+
+    // Criação da janela
+    ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+    ImGui::Begin("DrawMouseRayWindow", NULL, windowFlags);
+
+    ImGui::Checkbox("Draw mouse ray", &g_drawMouseRay);
 
     ImGui::End();
 }

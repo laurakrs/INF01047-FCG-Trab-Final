@@ -60,8 +60,8 @@ void main()
     //if (isBoundingBoxFragment)
     //{
     //    color = vec4(1.0, 0.0, 0.0, 1.0);  // Semi-transparent pale blue
-    //    return;  // Exit the shader early; we don't need the rest for bounding box fragments
-    //}
+    //    //return;  // Exit the shader early; we don't need the rest for bounding box fragments
+    //}   
 
     // Obtemos a posição da câmera utilizando a inversa da matriz que define o
     // sistema de coordenadas da câmera.
@@ -202,7 +202,7 @@ void main()
         return;  // Exit the shader
     }
 
-
+    
 
     // Obtemos a refletância difusa a partir da leitura da imagem TextureImage0
     vec3 Kd0 = texture(TextureImage0, vec2(U,V)).rgb;

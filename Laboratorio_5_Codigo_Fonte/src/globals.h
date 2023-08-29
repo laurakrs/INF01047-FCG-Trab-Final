@@ -18,6 +18,7 @@ extern bool g_UsePerspectiveProjection;
 extern bool g_ShowInfoText;
 
 extern bool g_drawBoundingBox;
+extern bool g_drawMouseRay;
 extern double g_LastCursorPosX, g_LastCursorPosY;
 
 extern std::stack<glm::mat4> g_MatrixStack;
