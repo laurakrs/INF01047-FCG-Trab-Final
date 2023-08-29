@@ -18,6 +18,8 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
+uniform bool isBoundingBoxFragment;  // Verdadeiro para fragmentos de bounding box
+
 // Identificador que define qual objeto está sendo desenhado no momento
 #define CENTRAL_SPHERE 0
 #define SPHERE 1
@@ -55,6 +57,12 @@ out vec4 color;
 
 void main()
 {
+    //if (isBoundingBoxFragment)
+    //{
+    //    color = vec4(1.0, 0.0, 0.0, 1.0);  // Semi-transparent pale blue
+    //    //return;  // Exit the shader early; we don't need the rest for bounding box fragments
+    //}   
+
     // Obtemos a posição da câmera utilizando a inversa da matriz que define o
     // sistema de coordenadas da câmera.
     vec4 origin = vec4(0.0, 0.0, 0.0, 1.0);
@@ -193,13 +201,8 @@ void main()
         color = vec4(0.0, 0.0, 1.0, 1.0);  // Azul
         return;  // Exit the shader
     }
-    //else if(isBoundingBox) 
-    //{
-    //    color = vec4(1.0, 0.0, 0.0, 1.0); // Red color for bounding box
-    //    return;
-    //}
 
-
+    
 
     // Obtemos a refletância difusa a partir da leitura da imagem TextureImage0
     vec3 Kd0 = texture(TextureImage0, vec2(U,V)).rgb;

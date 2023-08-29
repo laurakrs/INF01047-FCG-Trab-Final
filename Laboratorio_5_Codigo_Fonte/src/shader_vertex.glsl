@@ -11,6 +11,8 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
+uniform bool isBoundingBoxVertex;  // Verdadeiro para vértices de bounding box
+
 // Atributos de vértice que serão gerados como saída ("out") pelo Vertex Shader.
 // ** Estes serão interpolados pelo rasterizador! ** gerando, assim, valores
 // para cada fragmento, os quais serão recebidos como entrada pelo Fragment
@@ -22,6 +24,8 @@ out vec2 texcoords;
 
 void main()
 {
+    
+
     // A variável gl_Position define a posição final de cada vértice
     // OBRIGATORIAMENTE em "normalized device coordinates" (NDC), onde cada
     // coeficiente estará entre -1 e 1 após divisão por w.
@@ -69,7 +73,11 @@ void main()
     // PARA INTERPOLACAO DE GOURAUD
     // PARA GOURAUD, O QUE ESTÁ NO FRAGMENT SHADER VAI VIR PRA CÁ
 
-
+    if (isBoundingBoxVertex)
+    {
+        gl_Position = projection * view * model * model_coefficients;
+        return;  // Exit the vertex shader early; we don't need the rest for bounding box vertices
+    }
 }
 
 
