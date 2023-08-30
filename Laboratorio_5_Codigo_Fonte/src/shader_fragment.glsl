@@ -137,7 +137,7 @@ void main()
         // Propriedades espectrais da esfera
         Kd = vec3(0.8,0.4,0.08);        // Refletância no modelo RGB = (0.8, 0.4, 0.08)
         Ks = vec3(0.0,0.0,0.0);         // Superfície 100% difusa
-        Ka = Kd / 2;                    // Refletância ambiente no modelo RGB = metade da refletância difusa
+        Ka = Kd0 / 2;                    // Refletância ambiente no modelo RGB = metade da refletância difusa
         q = 1.0;                        // Expoente especular de Phong não especificado
         q_linha = 1.0;
     }
@@ -177,7 +177,7 @@ void main()
         // Propriedades espectrais do coelho
         Kd = vec3(0.08,0.4,0.8);         // Refletância difusa no modelo RGB = (0.08, 0.4, 0.8)
         Ks = vec3(0.8,0.8,0.8);          // Refletância especular no modelo RGB = (0.8, 0.8, 0.8)
-        Ka = Kd / 2;                     // Refletância ambiente no modelo RGB = metade da refletância difusa
+        Ka = Kd0 / 2;                     // Refletância ambiente no modelo RGB = metade da refletância difusa
         q_linha = 80.0;                      // Expoente especular de Phong = 32.0
     }
     else if( object_id == COW )
@@ -206,7 +206,7 @@ void main()
         // Propriedades espectrais da vaca
         Kd = vec3(0.08,0.4,0.8);         // Refletância difusa no modelo RGB = (0.08, 0.4, 0.8)
         Ks = vec3(0.8,0.8,0.8);          // Refletância especular no modelo RGB = (0.8, 0.8, 0.8)
-        Ka = Kd / 2;                     // Refletância ambiente no modelo RGB = metade da refletância difusa
+        Ka = Kd0 / 2;                     // Refletância ambiente no modelo RGB = metade da refletância difusa
         q = 32.0;                        // Expoente especular de Phong = 32.0
         q_linha = 80.0;
 
@@ -231,7 +231,7 @@ void main()
         // Propriedades espectrais do cubo
         Kd = vec3(0.8,0.4,0.08);        // Refletância no modelo RGB = (0.8, 0.4, 0.08)
         Ks = vec3(0.0,0.0,0.0);         // Superfície 100% difusa
-        Ka = Kd / 2;                    // Refletância ambiente no modelo RGB = metade da refletância difusa
+        Ka = Kd0 / 2;                    // Refletância ambiente no modelo RGB = metade da refletância difusa
         q = 1.0;                        // Expoente especular de Phong não especificado
         q_linha = 1.0;
 
