@@ -275,7 +275,7 @@ void main()
         // Propriedades espectrais do retangulo
         Kd = vec3(0.8,0.4,0.08);        // Refletância no modelo RGB = (0.8, 0.4, 0.08)
         Ks = vec3(0.0,0.0,0.0);         // Superfície 100% difusa
-        Ka = Kd / 2;                    // Refletância ambiente no modelo RGB = metade da refletância difusa
+        Ka = Kd0 / 2;                    // Refletância ambiente no modelo RGB = metade da refletância difusa
         q = 1.0;                        // Expoente especular de Phong não especificado
         q_linha = 1.0;
 
