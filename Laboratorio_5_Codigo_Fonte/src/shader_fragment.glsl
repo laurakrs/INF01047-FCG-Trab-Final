@@ -286,6 +286,15 @@ void main()
         // Coordenadas de textura do plano, obtidas do arquivo OBJ.
         U = texcoords.x;
         V = texcoords.y;
+        
+        Kd0 = texture(TextureImage0, vec2(U,V)).rgb;
+
+        // Propriedades espectrais do plano
+        Kd = vec3(0.2,0.2,0.2);         // Refletância difusa no modelo RGB = (0.2, 0.2, 0.2)
+        Ks = vec3(0.3,0.3,0.3);         // Refletância especular no modelo RGB = (0.3, 0.3, 0.3)
+        Ka = vec3(0.0,0.0,0.0);         // Refletância ambiente no modelo RGB = zero.
+        q = 20.0;                       // Expoente especular de Phong = 20.0
+        q_linha = 20.00;
     }
     else if( object_id == X_AXIS )
     {
