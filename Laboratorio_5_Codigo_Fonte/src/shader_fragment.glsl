@@ -18,6 +18,8 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
+uniform bool isBoundingBoxFragment;  // Verdadeiro para fragmentos de bounding box
+
 // Identificador que define qual objeto está sendo desenhado no momento
 #define CENTRAL_SPHERE 0
 #define SPHERE 1
@@ -28,6 +30,9 @@ uniform mat4 projection;
 #define COW    6
 #define CUBE   7
 #define RECTANGLE 8
+#define X_AXIS 9
+#define Y_AXIS 10
+#define Z_AXIS 11
 
 uniform int object_id;
 
@@ -58,6 +63,12 @@ out vec4 color;
 
 void main()
 {
+    //if (isBoundingBoxFragment)
+    //{
+    //    color = vec4(1.0, 0.0, 0.0, 1.0);  // Semi-transparent pale blue
+    //    //return;  // Exit the shader early; we don't need the rest for bounding box fragments
+    //}   
+
     // Obtemos a posição da câmera utilizando a inversa da matriz que define o
     // sistema de coordenadas da câmera.
     vec4 origin = vec4(0.0, 0.0, 0.0, 1.0);
@@ -275,23 +286,21 @@ void main()
         // Coordenadas de textura do plano, obtidas do arquivo OBJ.
         U = texcoords.x;
         V = texcoords.y;
-
-        Kd0 = texture(TextureImage0, vec2(U,V)).rgb;
-
-        // Propriedades espectrais do plano
-        Kd = vec3(0.2,0.2,0.2);         // Refletância difusa no modelo RGB = (0.2, 0.2, 0.2)
-        Ks = vec3(0.3,0.3,0.3);         // Refletância especular no modelo RGB = (0.3, 0.3, 0.3)
-        Ka = vec3(0.0,0.0,0.0);         // Refletância ambiente no modelo RGB = zero.
-        q = 20.0;                       // Expoente especular de Phong = 20.0
-        q_linha = 20.00;
     }
-    else // Objeto desconhecido = preto
+    else if( object_id == X_AXIS )
     {
-        Kd = vec3(0.0,0.0,0.0);
-        Ks = vec3(0.0,0.0,0.0);
-        Ka = vec3(0.0,0.0,0.0);
-        q = 1.0;
-        q_linha = 1.0;
+        color = vec4(1.0, 0.0, 0.0, 1.0);  // Vermelho
+        return;  // Exit the shader
+    }
+    else if( object_id == Y_AXIS )
+    {
+        color = vec4(0.0, 1.0, 0.0, 1.0);  // Verde
+        return;  // Exit the shader
+    }
+    else if( object_id == Z_AXIS )
+    {
+        color = vec4(0.0, 0.0, 1.0, 1.0);  // Azul
+        return;  // Exit the shader
     }
 
 
@@ -318,7 +327,7 @@ void main()
     // Termo especular utilizando o modelo de iluminacao de Blinn-Phong:
     // Slide 150
     vec3 blinn_phong_specular_term  = Ks*I*pow(max(0,dot(n,h)),q_linha);
-
+    
 
     // ANTES - NO ARQUIVO ORIGINAL DO LAB 5
     // Obtemos a refletância difusa a partir da leitura da imagem TextureImage0
