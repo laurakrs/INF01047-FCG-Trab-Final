@@ -111,4 +111,5 @@ glm::vec3 g_rayVertices[2];
 GLuint VBO_ray_id;
 GLuint VAO_ray_id;
 std::string g_error;
+std::string g_intersectObject;
 

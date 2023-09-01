@@ -59,6 +59,7 @@
 #include "SceneInformation.h"
 #include "CursorRay.h"
 #include "GUI.h"
+#include "collisions.h"
 
 // Inicialização do ambiente
 void InitializeGlfw();
@@ -105,26 +106,6 @@ void DrawRay(glm::vec4 cameraPosition, glm::vec4 ray_direction);
 // outras informações do programa. Definidas após main().
 void TextRendering_ShowModelViewProjection(GLFWwindow* window, glm::mat4 projection, glm::mat4 view, glm::mat4 model, glm::vec4 p_model);
 
-bool TestRayOBBIntersection(
-	glm::vec3 ray_origin,        // Ray origin, in world space
-	glm::vec3 ray_direction,     // Ray direction (NOT target position!), in world space. Must be normalize()'d.
-	glm::vec3 aabb_min,          // Minimum X,Y,Z coords of the mesh when not transformed at all.
-	glm::vec3 aabb_max,          // Maximum X,Y,Z coords. Often aabb_min*-1 if your mesh is centered, but it's not always the case.
-	glm::mat4 ModelMatrix,       // Transformation applied to the mesh (which will thus be also applied to its bounding box)
-	float& intersection_distance // Output : distance between ray_origin and the intersection with the OBB
-);
-
-bool intersectsOnX(float tMin, float tMax, glm::vec3 delta,	glm::vec3 ray_direction, 
-                    glm::vec3 aabb_min, glm::vec3 aabb_max, 
-                    glm::mat4 ModelMatrix, float& intersection_distance);
-
-bool intersectsOnY(float tMin, float tMax, glm::vec3 delta,	glm::vec3 ray_direction, 
-                    glm::vec3 aabb_min, glm::vec3 aabb_max, 
-                    glm::mat4 ModelMatrix, float& intersection_distance);
-
-bool intersectsOnZ(float tMin, float tMax, glm::vec3 delta,	glm::vec3 ray_direction, 
-                    glm::vec3 aabb_min, glm::vec3 aabb_max, 
-                    glm::mat4 ModelMatrix, float& intersection_distance);
 
 
 // CÓDIGO PRINCIPAL ===========================
@@ -357,7 +338,7 @@ int main(int argc, char* argv[])
         {
             g_cursorRay = ComputeRayFromMouse(window, SceneInformation::projection, SceneInformation::view);
             
-
+            g_intersectObject = "";
             bool intersectsSomething = false;
 
             // Loop for each object in g_VirtualScene
@@ -377,6 +358,28 @@ int main(int argc, char* argv[])
                 // Check if ray intersects with object
                 if (intersectsSomething)
                 {
+                    if (object_name == "the_sphere")
+                    {
+                        glm::vec4 sphere_bb_min = sceneObject.bbox_min;
+                        glm::vec4 sphere_bb_max = sceneObject.bbox_max;
+                        glm::vec4 sphere_bb_center = (sphere_bb_min + sphere_bb_max) / 2.0f;
+                        glm::vec4 sphere_bb_size = sphere_bb_max - sphere_bb_min;
+                        float sphere_bb_radius = norm(sphere_bb_size) / 2.0f;
+
+                        intersectsSomething = RayIntersectsSphere(g_cursorRay.startPoint, g_cursorRay.direction, sphere_bb_center, sphere_bb_radius, model_matrix, intersection_distance);
+                        
+                        if (intersectsSomething)
+                        {
+                            g_intersectObject += "pegou esfera";
+                        }
+                    }
+                    
+
+                    // append the name of the intersected object to g_intersectObject
+                    g_intersectObject += object_name + "\n";
+                    
+
+
                     // g_ObjectInstances[id].model_matrix = g_ObjectInstances[id].model_matrix * Matrix_Scale(1.01f,1.01f,1.01f);
                 }
             }
@@ -1027,8 +1030,8 @@ void BuildTrianglesAndAddToVirtualScene(ObjModel* model)
         const float minval = std::numeric_limits<float>::min();
         const float maxval = std::numeric_limits<float>::max();
 
-        glm::vec3 bbox_min = glm::vec3(maxval,maxval,maxval);
-        glm::vec3 bbox_max = glm::vec3(minval,minval,minval);
+        glm::vec4 bbox_min = glm::vec4(maxval,maxval,maxval,1.0f);
+        glm::vec4 bbox_max = glm::vec4(minval,minval,minval,1.0f);
 
         for (size_t triangle = 0; triangle < num_triangles; ++triangle)
         {
@@ -1291,15 +1294,12 @@ void GenerateObjectInstances(glm::vec4 camera_lookat_l)
     // For the first sphere:
     model = Matrix_Translate(camera_lookat_l.x,camera_lookat_l.y,camera_lookat_l.z)
             * Matrix_Scale(0.05f,0.05f,0.05f);
-    ObjectInstance("the_sphere", model, CENTRAL_SPHERE);
+    // ObjectInstance("the_sphere", model, CENTRAL_SPHERE);
 
     // //Desenhamos o modelo da esfera
-    // model = Matrix_Translate(-0.4f,0.0f,0.5f)
-    //         * Matrix_Scale(0.2f,0.2f,0.2f)
-    //         * Matrix_Rotate_Z(0.6f)
-    //         * Matrix_Rotate_X(0.2f)
-    //         * Matrix_Rotate_Y(g_AngleY + (float)glfwGetTime() * 0.1f);
-    // ObjectInstance("the_sphere", model, SPHERE);
+    model = Matrix_Translate(-2.0f,0.0f,0.5f)
+            * Matrix_Scale(1.0f,1.0f,1.0f);
+    ObjectInstance("the_sphere", model, SPHERE);
 
     // // Desenhamos outra instancia da esfera
     // model = Matrix_Translate(-0.9f,0.3f,0.8f)
@@ -1322,8 +1322,13 @@ void GenerateObjectInstances(glm::vec4 camera_lookat_l)
     model = Matrix_Translate(0.0f,-1.1f,0.0f);
     ObjectInstance("the_plane", model, PLANE);
 
+    // 90 degrees in radians
+    float ninety_degrees = 1.5708f;
     // Desenhamos o modelo da vaca
-    model = Matrix_Translate(-0.4f,-0.5f,-0.6f);
+    model = Matrix_Translate(-0.4f,-0.5f,-0.6f)
+            * Matrix_Rotate_Y(ninety_degrees)
+            * Matrix_Rotate_X(1.0f)
+            * Matrix_Rotate_Z(0.7f);
     ObjectInstance("the_cow", model, COW);
 
     // Desenhamos o modelo do cubo
@@ -1427,253 +1432,6 @@ void SetupRayVAOAndVBO()
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     
     glBindVertexArray(0); // unbind the VAO
-}
-
-
-
-// Funções de colisão ======================================================================================================
-bool TestRayOBBIntersection(
-	glm::vec3 ray_origin,        // Ray origin, in world space
-	glm::vec3 ray_direction,     // Ray direction (NOT target position!), in world space. Must be normalize()'d.
-	glm::vec3 aabb_min,          // Minimum X,Y,Z coords of the mesh when not transformed at all.
-	glm::vec3 aabb_max,          // Maximum X,Y,Z coords. Often aabb_min*-1 if your mesh is centered, but it's not always the case.
-	glm::mat4 ModelMatrix,       // Transformation applied to the mesh (which will thus be also applied to its bounding box)
-	float& intersection_distance // Output : distance between ray_origin and the intersection with the OBB
-)
-{
-	// Intersection method from Real-Time Rendering and Essential Mathematics for Games
-	
-	float tMin = 0.0f;
-	float tMax = 100000.0f;
-
-	glm::vec3 OBBposition_worldspace(ModelMatrix[3].x, ModelMatrix[3].y, ModelMatrix[3].z);
-
-	glm::vec3 delta = OBBposition_worldspace - ray_origin;
-
-	// Test intersection with the 2 planes perpendicular to the OBB's X axis
-	{
-		glm::vec3 xaxis(ModelMatrix[0].x, ModelMatrix[0].y, ModelMatrix[0].z);
-		float e = glm::dot(xaxis, delta);
-		float f = glm::dot(ray_direction, xaxis);
-
-		if ( fabs(f) > 0.001f ){ // Standard case
-
-			float t1 = (e+aabb_min.x)/f; // Intersection with the "left" plane
-			float t2 = (e+aabb_max.x)/f; // Intersection with the "right" plane
-			// t1 and t2 now contain distances betwen ray origin and ray-plane intersections
-
-			// We want t1 to represent the nearest intersection, 
-			// so if it's not the case, invert t1 and t2
-			if (t1>t2){
-				float w=t1;t1=t2;t2=w; // swap t1 and t2
-			}
-
-			// tMax is the nearest "far" intersection (amongst the X,Y and Z planes pairs)
-			if ( t2 < tMax )
-				tMax = t2;
-			// tMin is the farthest "near" intersection (amongst the X,Y and Z planes pairs)
-			if ( t1 > tMin )
-				tMin = t1;
-
-			// And here's the trick :
-			// If "far" is closer than "near", then there is NO intersection.
-			// See the images in the tutorials for the visual explanation.
-			if (tMax < tMin )
-				return false;
-
-		}else{ // Rare case : the ray is almost parallel to the planes, so they don't have any "intersection"
-			if(-e+aabb_min.x > 0.0f || -e+aabb_max.x < 0.0f)
-				return false;
-		}
-	}
-
-
-	// Test intersection with the 2 planes perpendicular to the OBB's Y axis
-	// Exactly the same thing than above.
-	{
-		glm::vec3 yaxis(ModelMatrix[1].x, ModelMatrix[1].y, ModelMatrix[1].z);
-		float e = glm::dot(yaxis, delta);
-		float f = glm::dot(ray_direction, yaxis);
-
-		if ( fabs(f) > 0.001f ){
-
-			float t1 = (e+aabb_min.y)/f;
-			float t2 = (e+aabb_max.y)/f;
-
-			if (t1>t2){float w=t1;t1=t2;t2=w;}
-
-			if ( t2 < tMax )
-				tMax = t2;
-			if ( t1 > tMin )
-				tMin = t1;
-			if (tMin > tMax)
-				return false;
-
-		}else{
-			if(-e+aabb_min.y > 0.0f || -e+aabb_max.y < 0.0f)
-				return false;
-		}
-	}
-
-
-	// Test intersection with the 2 planes perpendicular to the OBB's Z axis
-	// Exactly the same thing than above.
-	{
-		glm::vec3 zaxis(ModelMatrix[2].x, ModelMatrix[2].y, ModelMatrix[2].z);
-		float e = glm::dot(zaxis, delta);
-		float f = glm::dot(ray_direction, zaxis);
-
-		if ( fabs(f) > 0.001f ){
-
-			float t1 = (e+aabb_min.z)/f;
-			float t2 = (e+aabb_max.z)/f;
-
-			if (t1>t2){float w=t1;t1=t2;t2=w;}
-
-			if ( t2 < tMax )
-				tMax = t2;
-			if ( t1 > tMin )
-				tMin = t1;
-			if (tMin > tMax)
-				return false;
-
-		}else{
-			if(-e+aabb_min.z > 0.0f || -e+aabb_max.z < 0.0f)
-				return false;
-		}
-	}
-
-	intersection_distance = tMin;
-	return true;
-
-}
-
-bool intersectsOnX(float tMin, float tMax, glm::vec3 delta,	glm::vec3 ray_direction, 
-                    glm::vec3 aabb_min, glm::vec3 aabb_max, 
-                    glm::mat4 ModelMatrix, float& intersection_distance)
-{
-    // Test intersection with the 2 planes perpendicular to the OBB's X axis
-    {
-        glm::vec3 xaxis(ModelMatrix[0].x, ModelMatrix[0].y, ModelMatrix[0].z);
-        float e = glm::dot(xaxis, delta);
-        float f = glm::dot(ray_direction, xaxis);
-
-        if (fabs(f) > 0.001f) { // Standard case
-
-            float t1 = (e + aabb_min.x) / f; // Intersection with the "left" plane
-            float t2 = (e + aabb_max.x) / f; // Intersection with the "right" plane
-            // t1 and t2 now contain distances betwen ray origin and ray-plane intersections
-
-            // We want t1 to represent the nearest intersection,
-            // so if it's not the case, invert t1 and t2
-            if (t1>t2) {
-                float w = t1; t1 = t2; t2 = w; // swap t1 and t2
-            }
-
-            // tMax is the nearest "far" intersection (amongst the X,Y and Z planes pairs)
-            if (t2 < tMax)
-                tMax = t2;
-            // tMin is the farthest "near" intersection (amongst the X,Y and Z planes pairs)
-            if (t1 > tMin)
-                tMin = t1;
-
-            // And here's the trick :
-            // If "far" is closer than "near", then there is NO intersection.
-            // See the images in the tutorials for the visual explanation.
-            if (tMax < tMin)
-                return false;
-
-        }
-        else { // Rare case : the ray is almost parallel to the planes, so they don't have any "intersection"
-            if (-e + aabb_min.x > 0.0f || -e + aabb_max.x < 0.0f)
-                return false;
-        }
-    }
-
-    //
-}
-
-bool intersectsOnY(float tMin, float tMax, glm::vec3 delta,	glm::vec3 ray_direction, 
-                    glm::vec3 aabb_min, glm::vec3 aabb_max, 
-                    glm::mat4 ModelMatrix, float& intersection_distance)
-{
-    glm::vec3 yaxis(ModelMatrix[1].x, ModelMatrix[1].y, ModelMatrix[1].z);
-    float e = glm::dot(yaxis, delta);
-    float f = glm::dot(ray_direction, yaxis);
-
-    if (fabs(f) > 0.001f) {
-
-        float t1 = (e + aabb_min.y) / f;
-        float t2 = (e + aabb_max.y) / f;
-
-        if (t1 > t2) {
-            std::swap(t1, t2);
-        }
-
-        if (t2 < tMax)
-            tMax = t2;
-        if (t1 > tMin)
-            tMin = t1;
-        if (tMax < tMin)
-            return false;
-
-    } else {
-        if (-e + aabb_min.y > 0.0f || -e + aabb_max.y < 0.0f)
-            return false;
-    }
-}
-
-bool intersectsOnZ(float tMin, float tMax, glm::vec3 delta,	glm::vec3 ray_direction, 
-                    glm::vec3 aabb_min, glm::vec3 aabb_max, 
-                    glm::mat4 ModelMatrix, float& intersection_distance)
-{
-    glm::vec3 zaxis(ModelMatrix[2].x, ModelMatrix[2].y, ModelMatrix[2].z);
-    float e = glm::dot(zaxis, delta);
-    float f = glm::dot(ray_direction, zaxis);
-
-    if (fabs(f) > 0.001f) {
-
-        float t1 = (e + aabb_min.z) / f;
-        float t2 = (e + aabb_max.z) / f;
-
-        if (t1 > t2) {
-            std::swap(t1, t2);
-        }
-
-        if (t2 < tMax)
-            tMax = t2;
-        if (t1 > tMin)
-            tMin = t1;
-        if (tMax < tMin)
-            return false;
-
-    } else {
-        if (-e + aabb_min.z > 0.0f || -e + aabb_max.z < 0.0f)
-            return false;
-    }
-}
-
-bool RayIntersectsSphere(glm::vec3 rayOrigin, glm::vec3 rayDirection, glm::vec3 sphereCenter, float sphereRadius, float& intersectionDistance)
-{
-    glm::vec3 toSphere = sphereCenter - rayOrigin;
-    float t = glm::dot(toSphere, rayDirection);
-    glm::vec3 closestPoint = rayOrigin + rayDirection * t;
-
-    float distSquared = glm::dot(toSphere, toSphere) - t * t;
-    float radiusSquared = sphereRadius * sphereRadius;
-
-    if (distSquared > radiusSquared)
-        return false; // No intersection
-
-    float dt = sqrt(radiusSquared - distSquared);
-    float t1 = t - dt;
-    float t2 = t + dt;
-
-    if (t2 < 0)
-        return false; // Object is behind the camera
-
-    intersectionDistance = (t1 < 0) ? t2 : t1; // Get the nearest intersection point in front of the camera
-    return true;
 }
 
 

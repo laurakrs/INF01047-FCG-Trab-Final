@@ -56,3 +56,4 @@ extern glm::vec3 g_rayVertices[2];
 extern GLuint VBO_ray_id;
 extern GLuint VAO_ray_id;
 extern std::string g_error;
+extern std::string g_intersectObject;
