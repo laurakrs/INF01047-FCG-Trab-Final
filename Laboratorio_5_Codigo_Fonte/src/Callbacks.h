@@ -1,6 +1,7 @@
 #ifndef CALLBACKS_H
 #define CALLBACKS_H
 
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <limits>
 #include <cstdio>
