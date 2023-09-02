@@ -62,6 +62,7 @@
 #include "GUI.h"
 #include "collisions.h"
 
+// Definição de constantes
 #define M_PI   3.14159265358979323846
 
 // Inicialização do ambiente
@@ -104,6 +105,9 @@ void SetupRayVAOAndVBO();
 // Funções de desenho
 void DrawVirtualObject(const char* object_name); // Desenha um objeto armazenado em g_VirtualScene
 void DrawRay(glm::vec4 cameraPosition, glm::vec4 ray_direction);
+
+// Funções de controle
+void SetObjectInformationWindowData();
 
 // Funções abaixo renderizam como texto na janela OpenGL algumas matrizes e
 // outras informações do programa. Definidas após main().
@@ -175,8 +179,7 @@ int main(int argc, char* argv[])
     float fixed_x = fixed_r*cos(g_CameraPhi)*sin(g_CameraTheta);
     float fixed_y = fixed_r*sin(g_CameraPhi);
     float fixed_z = fixed_r*cos(g_CameraPhi)*cos(g_CameraTheta);
-    glm::vec4 camera_lookat_l = glm::vec4(0.0f,0.0f,0.0f,1.0f);;
-    //glm::vec4 origin = glm::vec4(0.0f,0.0f,0.0f,1.0f);;
+    glm::vec4 camera_lookat_l = glm::vec4(0.0f,0.0f,0.0f,1.0f);
 
     // Inicialização dos instâncias dos objetos
     #define CENTRAL_SPHERE 0
@@ -223,7 +226,7 @@ int main(int argc, char* argv[])
         float z = r*cos(g_CameraPhi)*cos(g_CameraTheta);
         float x = r*cos(g_CameraPhi)*sin(g_CameraTheta);
 
-        bool isMovementKeyPressed = tecla_W_pressionada || tecla_A_pressionada || tecla_S_pressionada || tecla_D_pressionada;
+        bool isMovementKeyPressed = w_key_pressed || a_key_pressed || s_key_pressed || d_key_pressed;
 
         if (isMovementKeyPressed)
         {
@@ -340,7 +343,6 @@ int main(int argc, char* argv[])
         {
             g_cursorRay = ComputeRayFromMouse(window, SceneInformation::projection, SceneInformation::view);
             
-            g_intersectObject = "";
             bool intersectsSomething = false;
 
             int nearest_object = -1;
@@ -356,41 +358,35 @@ int main(int argc, char* argv[])
                 float intersection_distance;
                 
                 float nearest_intersection_distance = std::numeric_limits<float>::max();
+                
+                if (object_name == "the_sphere")
+                {
+                    glm::vec4 sphere_bb_min = sceneObject.bbox_min;
+                    glm::vec4 sphere_bb_max = sceneObject.bbox_max;
+                    glm::vec4 sphere_bb_center = (sphere_bb_min + sphere_bb_max) / 2.0f;
+                    float side_length = fabs(sphere_bb_max.x - sphere_bb_min.x);
+                    float sphere_bb_radius = side_length / 2.0f;
 
-                intersectsSomething = TestRayOBBIntersection(g_cursorRay.startPoint, g_cursorRay.direction, 
+                    intersectsSomething = RayIntersectsSphere(g_cursorRay.startPoint, g_cursorRay.direction, 
+                                                            sphere_bb_center, sphere_bb_radius, 
+                                                            model_matrix, intersection_distance);
+                }
+                else
+                {
+                    intersectsSomething = TestRayOBBIntersection(g_cursorRay.startPoint, g_cursorRay.direction, 
                                                              sceneObject.bbox_min, sceneObject.bbox_max, 
                                                              model_matrix, intersection_distance);
+                }
+
+                
 
                 if (intersectsSomething)
                 {
-                    if (object_name == "the_sphere")
-                    {
-                        glm::vec4 sphere_bb_min = sceneObject.bbox_min;
-                        glm::vec4 sphere_bb_max = sceneObject.bbox_max;
-                        glm::vec4 sphere_bb_center = (sphere_bb_min + sphere_bb_max) / 2.0f;
-                        glm::vec4 sphere_bb_size = sphere_bb_max - sphere_bb_min;
-                        float sphere_bb_radius = norm(sphere_bb_size) / 2.0f;
-
-                        intersectsSomething = RayIntersectsSphere(g_cursorRay.startPoint, g_cursorRay.direction, sphere_bb_center, sphere_bb_radius, model_matrix, intersection_distance);
-                        
-                        if (intersectsSomething)
-                        {
-                            g_intersectObject += "pegou esfera";
-                        }
-                    }
-                    
-                    // debug
-                    //std::string intersection_distance_str = std::to_string(intersection_distance);
-                    //g_intersectObject += object_name + " distance:" + intersection_distance_str + "\n";
-                    
                     if (intersection_distance < nearest_intersection_distance)
                     {
                         nearest_object = id;
                         nearest_intersection_distance = intersection_distance;
                     }
-                    
-
-                    // g_ObjectInstances[id].model_matrix = g_ObjectInstances[id].model_matrix * Matrix_Scale(1.01f,1.01f,1.01f);
                 }
             }
 
@@ -399,7 +395,7 @@ int main(int argc, char* argv[])
                 g_selectedObject = nearest_object;
                 g_animateSelectedObject = true;
                 g_animationStartTime = (float)glfwGetTime();
-                g_objectStartModelMatrix = g_ObjectInstances[g_selectedObject].model_matrix;
+                g_objectAnimationStartModelMatrix = g_ObjectInstances[g_selectedObject].model_matrix;
             }
             else
             {
@@ -408,6 +404,10 @@ int main(int argc, char* argv[])
             
         }
 
+        // Atualiza as informações do objeto selecionado
+        SetObjectInformationWindowData();
+
+        // Desenha um raio a partir do mouse
         if (g_drawMouseRay)
         {
             DrawRay(g_cursorRay.startPoint, g_cursorRay.direction);
@@ -428,16 +428,16 @@ int main(int argc, char* argv[])
         prev_time = current_time;
 
         // Realiza movimentação de objetos
-        if (tecla_W_pressionada)
+        if (w_key_pressed)
             // Movimenta câmera para frente
             SceneInformation::camera_movement += -vetor_w * speed * delta_t;
-        if (tecla_A_pressionada)
+        if (a_key_pressed)
             // Movimenta câmera para esquerda
             SceneInformation::camera_movement += -vetor_u * speed * delta_t;
-        if (tecla_S_pressionada)
+        if (s_key_pressed)
             // Movimenta câmera para trás
             SceneInformation::camera_movement += vetor_w * speed * delta_t;
-        if (tecla_D_pressionada)
+        if (d_key_pressed)
             // Movimenta câmera para direita
             SceneInformation::camera_movement += vetor_u * speed * delta_t;
 
@@ -460,7 +460,7 @@ int main(int argc, char* argv[])
             }
             else if (elapsed_time < 1.8f)
             {
-                g_ObjectInstances[g_selectedObject].model_matrix = g_objectStartModelMatrix;
+                g_ObjectInstances[g_selectedObject].model_matrix = g_objectAnimationStartModelMatrix;
                 g_animateSelectedObject = false;
             }
         }
@@ -647,10 +647,10 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
     {
         if (action == GLFW_PRESS)
             // Usuário apertou a tecla W, então atualizamos o estado para pressionada
-            tecla_W_pressionada = true;
+            w_key_pressed = true;
         else if (action == GLFW_RELEASE)
             // Usuário largou a tecla W, então atualizamos o estado para NÃO pressionada
-            tecla_W_pressionada = false;
+            w_key_pressed = false;
         else if (action == GLFW_REPEAT)
             // Usuário está segurando a tecla W e o sistema operacional está
             // disparando eventos de repetição. Neste caso, não precisamos
@@ -662,10 +662,10 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
     {
         if (action == GLFW_PRESS)
             // Usuário apertou a tecla A, então atualizamos o estado para pressionada
-            tecla_A_pressionada = true;
+            a_key_pressed = true;
         else if (action == GLFW_RELEASE)
             // Usuário largou a tecla A, então atualizamos o estado para NÃO pressionada
-            tecla_A_pressionada = false;
+            a_key_pressed = false;
         else if (action == GLFW_REPEAT)
             // Usuário está segurando a tecla A e o sistema operacional está
             // disparando eventos de repetição. Neste caso, não precisamos
@@ -677,10 +677,10 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
     {
         if (action == GLFW_PRESS)
             // Usuário apertou a tecla S, então atualizamos o estado para pressionada
-            tecla_S_pressionada = true;
+            s_key_pressed = true;
         else if (action == GLFW_RELEASE)
             // Usuário largou a tecla S, então atualizamos o estado para NÃO pressionada
-            tecla_S_pressionada = false;
+            s_key_pressed = false;
         else if (action == GLFW_REPEAT)
             // Usuário está segurando a tecla S e o sistema operacional está
             // disparando eventos de repetição. Neste caso, não precisamos
@@ -692,10 +692,10 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
     {
         if (action == GLFW_PRESS)
             // Usuário apertou a tecla D, então atualizamos o estado para pressionada
-            tecla_D_pressionada = true;
+            d_key_pressed = true;
         else if (action == GLFW_RELEASE)
             // Usuário largou a tecla D, então atualizamos o estado para NÃO pressionada
-            tecla_D_pressionada = false;
+            d_key_pressed = false;
         else if (action == GLFW_REPEAT)
             // Usuário está segurando a tecla D e o sistema operacional está
             // disparando eventos de repetição. Neste caso, não precisamos
@@ -1405,7 +1405,7 @@ void GenerateObjectInstances(glm::vec4 camera_lookat_l)
     ObjectInstance("the_sphere", model, SPHERE);
 
     // Desenhamos outra instancia da esfera
-    model = Matrix_Translate(-0.9f,0.3f,0.8f)
+    model = Matrix_Translate(-2.0f,-2.0f,0.0f)
             * Matrix_Scale(0.4f,0.4f,0.4f);
     ObjectInstance("the_sphere", model, SPHERE2);
 
@@ -1602,6 +1602,41 @@ void DrawRay(glm::vec4 rayStartPoint, glm::vec4 rayDirection)
     glBindVertexArray(0); // unbind the VAO after drawing
 }
 
+
+// Funções de controle ======================================================================================================
+void SetObjectInformationWindowData()
+{
+    if (g_selectedObject != -1)
+    {
+        // Pega o nome do objeto selecionado
+        std::string object_name = g_ObjectInstances[g_selectedObject].object_name;
+        g_selectedObjectName = object_name;
+
+        // Pega o centro do objeto selecionado
+        SceneObject sceneObject = g_VirtualScene[object_name];
+        glm::vec4 sceneObject_bb_min = sceneObject.bbox_min;
+        glm::vec4 sceneObject_bb_max = sceneObject.bbox_max;
+        glm::vec4 sceneObject_center = (sceneObject_bb_min + sceneObject_bb_max) / 2.0f;
+        g_selectedObjectCenter = g_ObjectInstances[g_selectedObject].model_matrix * sceneObject_center;
+
+        // PEga a escala do objeto selecionado
+        g_selectedObjectScale.x = norm(glm::vec4(g_ObjectInstances[g_selectedObject].model_matrix[0]));
+        g_selectedObjectScale.y = norm(glm::vec4(g_ObjectInstances[g_selectedObject].model_matrix[1]));
+        g_selectedObjectScale.z = norm(glm::vec4(g_ObjectInstances[g_selectedObject].model_matrix[2]));
+
+        // Pega a rotação do objeto selecionado
+        glm::quat rotationQuat = glm::quat_cast(g_ObjectInstances[g_selectedObject].model_matrix);
+        glm::vec3 eulerAngles = glm::eulerAngles(rotationQuat);
+        g_selectedObjectRotation = glm::vec4(glm::degrees(eulerAngles), 0.0f);
+    }
+    else
+    {
+        g_selectedObjectName = "NO OBJECT SELECTED";
+        g_selectedObjectCenter = glm::vec4(0.0f,0.0f,0.0f,1.0f);
+        g_selectedObjectScale = glm::vec4(0.0f,0.0f,0.0f,0.0f);
+        g_selectedObjectRotation = glm::vec4(0.0f,0.0f,0.0f,0.0f);
+    }
+}
 
 
 // ??????????? ======================================================================================================

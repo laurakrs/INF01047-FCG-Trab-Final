@@ -15,10 +15,10 @@ bool g_RightMouseButtonPressed = false; // Análogo para botão direito do mouse
 bool g_MiddleMouseButtonPressed = false; // Análogo para botão do meio do mouse
 
 // Variaveis para as teclas que movimentam a camera. " = true" se pressionada
-bool tecla_W_pressionada = false;
-bool tecla_A_pressionada = false;
-bool tecla_S_pressionada = false;
-bool tecla_D_pressionada = false;
+bool w_key_pressed = false;
+bool a_key_pressed = false;
+bool s_key_pressed = false;
+bool d_key_pressed = false;
 
 // Variáveis que definem a câmera em coordenadas esféricas, controladas pelo
 // usuário através do mouse (veja função CursorPosCallback()). A posição
@@ -48,7 +48,7 @@ bool g_ShowInfoText = true;
 double g_LastCursorPosX, g_LastCursorPosY;
 bool g_drawBoundingBox = true;
 bool g_drawMouseRay = true;
-bool g_pickAnimation = true;
+bool g_pickAnimation = false;
 
 
 // Pilha que guardará as matrizes de modelagem.
@@ -68,11 +68,13 @@ GLint g_is_bounding_box_fragment_uniform;
 // Número de texturas carregadas pela função LoadTextureImage()
 GLuint g_NumLoadedTextures = 0;
 
-// Step 1: Create a variable to keep track of the currently selected object
+// Variáveis de seleção de objeto e animação
 int g_selectedObject = -1;
 bool g_animateSelectedObject = false;
 float g_animationStartTime;
-glm::mat4 g_objectStartModelMatrix;
+glm::mat4 g_objectAnimationStartModelMatrix;
+glm::vec4 g_selectedObjectCenter, g_selectedObjectScale, g_selectedObjectRotation;
+std::string g_selectedObjectName;
 
 // Tamanho da janela (inicializado com valores padrões)
 int g_startWindowWidth = 800;
@@ -104,18 +106,19 @@ std::vector<std::string> g_texturePaths =
     "../../data/leather_white_diff_4k.jpg"
 };
 
-// DEBUG
-double g_glfwLastRayCursorPosX, g_glfwLastRayCursorPosY;
-double g_NDCGlfwLastRayCursorPosX, g_NDCGlfwLastRayCursorPosY;
-glm::vec4 g_rayClip, g_rayEye, g_rayWorld, g_rayDirection;
-
-glm::vec4 g_rayStartPoint;
+// Variáveis para o raio
 float g_rayLength = 1000.0f;
-glm::vec4 g_rayEndPoint;
-glm::vec3 g_rayVertices[2];
 GLuint VBO_ray_id;
 GLuint VAO_ray_id;
-std::string g_error;
-std::string g_intersectObject;
-float g_intersectObjectDistance;
+
+// DEBUG
+float g_distSquared, g_radiusSquared, g_t1, g_t2, g_t;
+glm::vec3 g_toSphere, g_closestPoint, g_centerToPoint;
+bool g_isScaleEqualOnAllDirections;
+glm::vec3 g_rayOrigin, g_rayDirection;
+
+
+
+
+
 
