@@ -339,26 +339,30 @@ int main(int argc, char* argv[])
 
         // BEZIER CURVE DENTRO DO LOOP:
         float time_Bezier = 0.0f;
+        float prev_time_bezier = 0.0f;
         float current_time_Bezier = (float)glfwGetTime();
         float delta_t_Bezier = current_time_Bezier - prev_time;
         prev_time = current_time_Bezier;
+        float speed_bezier = 0.5f;
 
-        time_Bezier += speed * delta_t_Bezier;
+        time_Bezier += speed_bezier * delta_t_Bezier;
 
-        glm::vec4 originBezier = glm::vec4(0.0, 0.0, 0.0, 1.0);
-        glm::vec4 startPoint = glm::vec4(-15.0f, 0.0f, -15.0f, 1.0f); 
-        glm::vec4 endPoint = glm::vec4(15.0f, 0.0f, 15.0f, 1.0f); 
-        glm::vec4 control1 = glm::vec4(-15.0f, 0.0f, 30.0f, 1.0f); 
-        glm::vec4 control2 = glm::vec4(15.0f, 0.0f, -30.0f, 1.0f); 
+
+       //  vec4 l = normalize(vec4(1.0,1.0,0.5,0.0));
+        glm::vec3 originBezier = glm::vec3(0.0, 0.0, 0.0);
+        glm::vec3 startPoint = glm::vec3(-10.0f, 0.0f, 0.0f);
+        glm::vec3 endPoint = glm::vec3(10.0f, 0.0f, 0.0f);
+        glm::vec3 control1 = glm::vec3(-5.0f, 5.0f, 0.0f);
+        glm::vec3 control2 = glm::vec3(5.0f, 5.0f, 0.0f);
 
          // Ensure 't' stays within the range [0, 1]
         if (time_Bezier > 1.0f) {
             time_Bezier = 0.0f; // Reset to the beginning of the curve
         }
 
-        glm::vec4 currentPoint = bezierCurve(time_Bezier, startPoint, control1, control2, endPoint);
+        glm::vec3 currentPoint = bezierCurve(time_Bezier, startPoint, control1, control2, endPoint);
 
-        glm::vec4 sentidoL = currentPoint - originBezier;
+        glm::vec3 sentidoL = currentPoint - originBezier;
         
         
         if (g_LeftMouseButtonPressed)
