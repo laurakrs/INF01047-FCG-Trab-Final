@@ -1669,4 +1669,3 @@ void TextRendering_ShowModelViewProjection(
 
 // set makeprg=cd\ ..\ &&\ make\ run\ >/dev/null
 // vim: set spell spelllang=pt_br :
-
