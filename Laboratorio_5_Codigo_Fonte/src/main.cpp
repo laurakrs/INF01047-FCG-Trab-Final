@@ -1439,7 +1439,7 @@ void GenerateObjectInstances(glm::vec4 camera_lookat_l)
     ObjectInstance("the_cube", model, CUBE);
 
     // // Desenhamos o modelo do retangulo
-    model = Matrix_Translate(-3.0f,0.0f,0.7f);
+    model = Matrix_Translate(-3.0f,0.0f,-1.5f);
     ObjectInstance("the_rectangle", model, RECTANGLE);
 
     // Desenhamos os eixos XYZ
