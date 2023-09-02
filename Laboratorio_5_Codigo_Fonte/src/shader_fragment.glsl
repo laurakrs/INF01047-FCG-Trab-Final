@@ -437,6 +437,12 @@ void main()
         // Espectro da fonte de iluminação
         vec3 I = vec3(1.0,1.0,1.0); // PREENCHA AQUI o espectro da fonte de luz
 
+        // Espectro da luz ambiente
+        vec3 Ia = vec3(0.2,0.2,0.2); // PREENCHA AQUI o espectro da luz ambiente
+
+        // Termo ambiente
+        // Slide 103
+        vec3 ambient_term = Ka*Ia; // PREENCHA AQUI o termo ambiente
 
         // Termo difuso utilizando a lei dos cossenos de Lambert
         // Aula 17 e 18 - Modelos de Iluminação - Slide 103
@@ -450,7 +456,7 @@ void main()
 
         // LAMBERT
         //ou
-        color.rgb = lambert_diffuse_term;
+        color.rgb = lambert_diffuse_term + ambient_term;
 
         //color.rgb = Kd0 * (lambert + 0.01);
 
@@ -498,7 +504,12 @@ void main()
         vec3 I = vec3(1.0,1.0,1.0); // PREENCHA AQUI o espectro da fonte de luz
 
         // Espectro da luz ambiente
-        //vec3 Ia = vec3(0.2,0.2,0.2); // PREENCHA AQUI o espectro da luz ambiente
+        vec3 Ia = vec3(0.2,0.2,0.2); // PREENCHA AQUI o espectro da luz ambiente
+
+        // Termo ambiente
+        // Slide 103
+        vec3 ambient_term = Ka*Ia; // PREENCHA AQUI o termo ambiente
+
 
         // Termo difuso utilizando a lei dos cossenos de Lambert
         // Aula 17 e 18 - Modelos de Iluminação - Slide 103
@@ -548,7 +559,7 @@ void main()
         //color.rgb = lambert_diffuse_term + ambient_term + phong_specular_term;
 
         // OU - PARA BLINN-PHONG:
-        color.rgb = lambert_diffuse_term;
+        color.rgb = lambert_diffuse_term + ambient_term;
 
 
         // Cor final com correção gamma, considerando monitor sRGB.
