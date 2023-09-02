@@ -19,7 +19,7 @@ CRITERIOS TECNICOS (RESUMO):
 - Camera Livre e Camera Look-at - ok 
 - Instancias de objetos - ok
 - Tres tipos de testes de interseccao
-- Modelos de Iluminacao Difusa e Blinn-Phong - +/-
+- Modelos de Iluminacao Difusa e Blinn-Phong - ok 
 - Modelos de Interpolacao de Phong e Gouraud
 - Mapeamento de texturas em todos os objetos - ok 
 - Movimentacao com curva Bezier cubica
@@ -45,7 +45,7 @@ Requisitos minimos - explicacao:
     - Três (min) tipos de teste de intersecção (por exemplo, um teste cubo-cubo, um teste cubo-plano, e um teste ponto-esfera).
     - com propósito 
 - Modelos de iluminação de objetos geométricos:
-    - Modelos de iluminação: difusa (Lambert) e Blinn-Phong.
+    - Modelos de iluminação: difusa (Lambert) (cube, rectangle, plane) e Blinn-Phong (spheres, bunny, cow).
     - Modelos de interpolação para iluminação:
         - Modelo de Gouraud: o modelo de iluminação é avaliado para cada vértice usando suas normais, gerando uma cor, a qual é interpolada para cada pixel durante a rasterização.
         - Modelo de Phong: as normais de cada vértice são interpoladas para cada pixel durante a rasterização, e o modelo de iluminação é avaliado para cada pixel, utilizando estas normais interpoladas.

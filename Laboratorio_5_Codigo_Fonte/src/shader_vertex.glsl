@@ -171,11 +171,7 @@ void main()
         // Termo ambiente
         // Slide 103
         vec3 ambient_term = Ka*Ia; // PREENCHA AQUI o termo ambiente
-
-        // Termo especular utilizando o modelo de iluminação de Phong
-        // Slide 128
-        vec3 phong_specular_term  = Ks*I*pow(max(0,dot(r,v)),q); // PREENCHA AQUI o termo especular de Phong
-
+        
         // MODELO DE BLINN-PHONG - DIFERENTE:
         // Termo especular utilizando o modelo de iluminacao de Blinn-Phong:
         // Slide 150
@@ -205,7 +201,7 @@ void main()
 
         // Cor final com correção gamma, considerando monitor sRGB.
         // Veja https://en.wikipedia.org/w/index.php?title=Gamma_correction&oldid=751281772#Windows.2C_Mac.2C_sRGB_and_TV.2Fvideo_standard_gammas
-        color_bunny.rgb = pow(color.rgb, vec3(1.0,1.0,1.0)/2.2);  
+        color_bunny.rgb = pow(color_bunny.rgb, vec3(1.0,1.0,1.0)/2.2);  
     }
 
 
