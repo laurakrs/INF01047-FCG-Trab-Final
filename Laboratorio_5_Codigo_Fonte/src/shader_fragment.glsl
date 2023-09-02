@@ -657,7 +657,21 @@ void main()
     {
         color = vec4(0.0, 0.0, 1.0, 1.0);  // Azul
         return;  // Exit the shader
+    }  
+    //else if(isBoundingBox) 
+    //{
+    //    color = vec4(1.0, 0.0, 0.0, 1.0); // Red color for bounding box
+    //    return;
+    //}
+    else // Objeto desconhecido = preto
+    {
+        Kd = vec3(0.0,0.0,0.0);
+        Ks = vec3(0.0,0.0,0.0);
+        Ka = vec3(0.0,0.0,0.0);
+        q = 1.0;
+        q_linha = 1.0;
     }
+   
 
 
 }
