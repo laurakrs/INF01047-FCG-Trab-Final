@@ -1,6 +1,7 @@
 #pragma once
 
-#include <glm/glm.hpp>
+#include "globals.h"
+#include "SceneInformation.h"
 
 bool TestRayOBBIntersection(
 	glm::vec3 ray_origin,        // Ray origin, in world space
@@ -12,9 +13,9 @@ bool TestRayOBBIntersection(
 );
 
 bool RayIntersectsSphere(
-    glm::vec3 rayOrigin, 
-    glm::vec3 rayDirection, 
-    glm::vec3 sphereCenter, 
-    float sphereRadius, 
-    glm::mat4 modelMatrix, 
+    glm::vec3 rayOrigin,
+    glm::vec3 rayDirection,
+    glm::vec4 originalSphereCenter,
+    float originalSphereRadius,
+    glm::mat4 modelMatrix,
     float& intersectionDistance);
