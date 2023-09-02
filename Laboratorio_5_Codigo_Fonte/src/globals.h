@@ -19,6 +19,7 @@ extern bool g_ShowInfoText;
 
 extern bool g_drawBoundingBox;
 extern bool g_drawMouseRay;
+extern bool g_pickAnimation;
 extern double g_LastCursorPosX, g_LastCursorPosY;
 
 extern std::stack<glm::mat4> g_MatrixStack;
@@ -33,6 +34,9 @@ extern GLint g_is_bounding_box_vertex_uniform;
 extern GLint g_is_bounding_box_fragment_uniform;
 extern GLuint g_NumLoadedTextures;
 extern int g_selectedObject;
+extern bool g_animateSelectedObject;
+extern float g_animationStartTime;
+extern glm::mat4 g_objectStartModelMatrix;
 
 extern int g_startWindowWidth, g_startWindowHeight;
 extern float g_actualWindowWidth, g_actualWindowHeight;
@@ -56,3 +60,5 @@ extern glm::vec3 g_rayVertices[2];
 extern GLuint VBO_ray_id;
 extern GLuint VAO_ray_id;
 extern std::string g_error;
+extern std::string g_intersectObject;
+extern float g_intersectObjectDistance;
