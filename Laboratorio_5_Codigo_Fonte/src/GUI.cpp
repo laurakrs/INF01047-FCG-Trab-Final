@@ -78,6 +78,15 @@ void GenerateGUIWindows()
     ImVec2 drawMouseRayWindowPos = ImVec2(drawMouseRayWindowXPosition, drawMouseRayWindowYPosition);
     CreateDrawMouseRayWindow(drawMouseRayWindowSize, drawMouseRayWindowPos);
 
+    float pickAnimationWindowWidth = 150.0f;
+    float pickAnimationWindowHeight = 35.0f;
+    ImVec2 pickAnimationWindowSize = ImVec2(pickAnimationWindowWidth, pickAnimationWindowHeight);
+    float offsetFromDrawMouseRayWindow = 10.0f;
+    float pickAnimationWindowXPosition = drawMouseRayWindowXPosition;
+    float pickAnimationWindowYPosition = drawMouseRayWindowYPosition - pickAnimationWindowSize.y - offsetFromDrawMouseRayWindow;
+    ImVec2 pickAnimationWindowPos = ImVec2(pickAnimationWindowXPosition, pickAnimationWindowYPosition);
+    CreatePickAnimationWindow(pickAnimationWindowSize, pickAnimationWindowPos);
+
     // Renderiza a GUI
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -279,6 +288,20 @@ void CreateDrawMouseRayWindow(ImVec2 windowSize, ImVec2 windowPosition)
     ImGui::Begin("DrawMouseRayWindow", NULL, windowFlags);
 
     ImGui::Checkbox("Draw mouse ray", &g_drawMouseRay);
+
+    ImGui::End();
+}
+
+void CreatePickAnimationWindow(ImVec2 windowSize, ImVec2 windowPosition)
+{
+    ImGui::SetNextWindowSize(windowSize);
+    ImGui::SetNextWindowPos(windowPosition);
+
+    // Criação da janela
+    ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+    ImGui::Begin("PickAnimationWindow", NULL, windowFlags);
+
+    ImGui::Checkbox("Pick animation", &g_pickAnimation);
 
     ImGui::End();
 }

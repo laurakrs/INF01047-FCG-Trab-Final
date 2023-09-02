@@ -61,6 +61,8 @@
 #include "GUI.h"
 #include "collisions.h"
 
+#define M_PI   3.14159265358979323846
+
 // Inicialização do ambiente
 void InitializeGlfw();
 GLFWwindow* InitializeWindow();
@@ -172,9 +174,8 @@ int main(int argc, char* argv[])
     float fixed_x = fixed_r*cos(g_CameraPhi)*sin(g_CameraTheta);
     float fixed_y = fixed_r*sin(g_CameraPhi);
     float fixed_z = fixed_r*cos(g_CameraPhi)*cos(g_CameraTheta);
-    glm::vec4 camera_movement = glm::vec4(0.0f,0.0f,0.0f,0.0f);;
     glm::vec4 camera_lookat_l = glm::vec4(0.0f,0.0f,0.0f,1.0f);;
-    glm::vec4 origin = glm::vec4(0.0f,0.0f,0.0f,1.0f);;
+    //glm::vec4 origin = glm::vec4(0.0f,0.0f,0.0f,1.0f);;
 
     // Inicialização dos instâncias dos objetos
     #define CENTRAL_SPHERE 0
@@ -226,8 +227,8 @@ int main(int argc, char* argv[])
         if (isMovementKeyPressed)
         {
             // Modo free camera
-            SceneInformation::camera_position_c = glm::vec4(x,y,z,1.0f) + camera_movement;
-            camera_lookat_l = origin + camera_movement;
+            SceneInformation::camera_position_c = glm::vec4(x,y,z,1.0f) + SceneInformation::camera_movement;
+            camera_lookat_l = SceneInformation::origin + SceneInformation::camera_movement;
             x = SceneInformation::camera_position_c.x;
             y = SceneInformation::camera_position_c.y;
             z = SceneInformation::camera_position_c.z;
@@ -235,7 +236,7 @@ int main(int argc, char* argv[])
         else
         {
             // Modo lookat camera
-            SceneInformation::camera_position_c  = glm::vec4(x,y,z,1.0f) + camera_movement; // Ponto "c", centro da câmera
+            SceneInformation::camera_position_c  = glm::vec4(x,y,z,1.0f) + SceneInformation::camera_movement; // Ponto "c", centro da câmera
             SceneInformation::camera_view_vector = camera_lookat_l - SceneInformation::camera_position_c; // Vetor "view", sentido para onde a câmera está virada
         }
 
@@ -253,7 +254,7 @@ int main(int argc, char* argv[])
         // Note que, no sistema de coordenadas da câmera, os planos near e far
         // estão no sentido negativo! Veja slides 176-204 do documento Aula_09_Projecoes.pdf.
         float nearplane = -0.1f;  // Posição do "near plane"
-        float farplane  = -10.0f; // Posição do "far plane"
+        float farplane  = -100.0f; // Posição do "far plane"
 
         if (g_UsePerspectiveProjection)
         {
@@ -341,6 +342,8 @@ int main(int argc, char* argv[])
             g_intersectObject = "";
             bool intersectsSomething = false;
 
+            int nearest_object = -1;
+
             // Loop for each object in g_VirtualScene
             for (auto& object : g_VirtualScene)
             {
@@ -350,12 +353,13 @@ int main(int argc, char* argv[])
                 glm::mat4 model_matrix = g_ObjectInstances[id].model_matrix;
 
                 float intersection_distance;
+                
+                float nearest_intersection_distance = std::numeric_limits<float>::max();
 
                 intersectsSomething = TestRayOBBIntersection(g_cursorRay.startPoint, g_cursorRay.direction, 
                                                              sceneObject.bbox_min, sceneObject.bbox_max, 
                                                              model_matrix, intersection_distance);
 
-                // Check if ray intersects with object
                 if (intersectsSomething)
                 {
                     if (object_name == "the_sphere")
@@ -374,15 +378,33 @@ int main(int argc, char* argv[])
                         }
                     }
                     
-
-                    // append the name of the intersected object to g_intersectObject
-                    g_intersectObject += object_name + "\n";
+                    // debug
+                    //std::string intersection_distance_str = std::to_string(intersection_distance);
+                    //g_intersectObject += object_name + " distance:" + intersection_distance_str + "\n";
                     
-
+                    if (intersection_distance < nearest_intersection_distance)
+                    {
+                        nearest_object = id;
+                        nearest_intersection_distance = intersection_distance;
+                    }
+                    
 
                     // g_ObjectInstances[id].model_matrix = g_ObjectInstances[id].model_matrix * Matrix_Scale(1.01f,1.01f,1.01f);
                 }
             }
+
+            if (nearest_object != -1)
+            {
+                g_selectedObject = nearest_object;
+                g_animateSelectedObject = true;
+                g_animationStartTime = (float)glfwGetTime();
+                g_objectStartModelMatrix = g_ObjectInstances[g_selectedObject].model_matrix;
+            }
+            else
+            {
+                g_selectedObject = -1;
+            }
+            
         }
 
         if (g_drawMouseRay)
@@ -407,16 +429,41 @@ int main(int argc, char* argv[])
         // Realiza movimentação de objetos
         if (tecla_W_pressionada)
             // Movimenta câmera para frente
-            camera_movement += -vetor_w * speed * delta_t;
+            SceneInformation::camera_movement += -vetor_w * speed * delta_t;
         if (tecla_A_pressionada)
             // Movimenta câmera para esquerda
-            camera_movement += -vetor_u * speed * delta_t;
+            SceneInformation::camera_movement += -vetor_u * speed * delta_t;
         if (tecla_S_pressionada)
             // Movimenta câmera para trás
-            camera_movement += vetor_w * speed * delta_t;
+            SceneInformation::camera_movement += vetor_w * speed * delta_t;
         if (tecla_D_pressionada)
             // Movimenta câmera para direita
-            camera_movement += vetor_u * speed * delta_t;
+            SceneInformation::camera_movement += vetor_u * speed * delta_t;
+
+        if (g_animateSelectedObject && g_pickAnimation)
+        {
+            float elapsed_time = current_time - g_animationStartTime;
+
+            glm::mat4 current_model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Translate(0.0f,1.0f,0.0f);
+            if (elapsed_time < 0.5f)
+            {
+                g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Translate(0.0f,delta_t,0.0f);
+            }
+            else if (elapsed_time < 1.0f)
+            {
+                g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Rotate_Y(delta_t * M_PI * 4);
+            }
+            else if (elapsed_time < 1.5f)
+            {
+                g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Translate(0.0f,-delta_t,0.0f);
+            }
+            else if (elapsed_time < 1.8f)
+            {
+                g_ObjectInstances[g_selectedObject].model_matrix = g_objectStartModelMatrix;
+                g_animateSelectedObject = false;
+            }
+        }
+        
 
         GenerateGUIWindows();
 
