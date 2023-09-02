@@ -1397,17 +1397,17 @@ void GenerateObjectInstances(glm::vec4 camera_lookat_l)
     // For the first sphere:
     model = Matrix_Translate(camera_lookat_l.x,camera_lookat_l.y,camera_lookat_l.z)
             * Matrix_Scale(0.05f,0.05f,0.05f);
-    // ObjectInstance("the_sphere", model, CENTRAL_SPHERE);
+    ObjectInstance("the_sphere", model, CENTRAL_SPHERE);
 
     // //Desenhamos o modelo da esfera
     model = Matrix_Translate(-2.0f,0.0f,0.5f)
             * Matrix_Scale(1.0f,1.0f,1.0f);
     ObjectInstance("the_sphere", model, SPHERE);
 
-    // // Desenhamos outra instancia da esfera
-    // model = Matrix_Translate(-0.9f,0.3f,0.8f)
-    //         * Matrix_Scale(0.4f,0.4f,0.4f);
-    // ObjectInstance("the_sphere", model, SPHERE2);
+    // Desenhamos outra instancia da esfera
+    model = Matrix_Translate(-0.9f,0.3f,0.8f)
+            * Matrix_Scale(0.4f,0.4f,0.4f);
+    ObjectInstance("the_sphere", model, SPHERE2);
 
     // Desenhamos o modelo do coelho
     model = Matrix_Translate(1.0f,0.0f,0.0f)
@@ -1415,11 +1415,11 @@ void GenerateObjectInstances(glm::vec4 camera_lookat_l)
         * Matrix_Rotate_X(g_AngleX + (float)glfwGetTime() * 0.1f);
     ObjectInstance("the_bunny", model, BUNNY);
 
-    // // Desenhamos outra instancia do coelho
-    // model = Matrix_Translate(0.8f,-0.5f,0.5f)
-    //         * Matrix_Scale(0.2f,0.2f,0.2f)
-    //         * Matrix_Rotate_X(g_AngleX + (float)glfwGetTime() * 0.1f);
-    // ObjectInstance("the_bunny", model, BUNNY2);
+    // Desenhamos outra instancia do coelho
+    model = Matrix_Translate(0.8f,-0.5f,0.5f)
+            * Matrix_Scale(0.2f,0.2f,0.2f)
+            * Matrix_Rotate_X(g_AngleX + (float)glfwGetTime() * 0.1f);
+    ObjectInstance("the_bunny", model, BUNNY2);
 
     // Desenhamos o plano do chão
     model = Matrix_Translate(0.0f,-1.1f,0.0f);
@@ -1439,8 +1439,8 @@ void GenerateObjectInstances(glm::vec4 camera_lookat_l)
     ObjectInstance("the_cube", model, CUBE);
 
     // // Desenhamos o modelo do retangulo
-    // model = Matrix_Translate(-3.0f,0.0f,0.7f);
-    // ObjectInstance("the_rectangle", model, RECTANGLE);
+    model = Matrix_Translate(-3.0f,0.0f,0.7f);
+    ObjectInstance("the_rectangle", model, RECTANGLE);
 
     // Desenhamos os eixos XYZ
     glm::mat4 model_origin = Matrix_Translate(0.0f,0.0f,0.0f);

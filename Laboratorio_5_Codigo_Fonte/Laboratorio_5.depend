@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1692394304 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\glad.c
+1693666224 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\glad.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -7,7 +7,7 @@
 	<windows.h>
 	<dlfcn.h>
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glad\glad.h
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glad\glad.h
 	<windows.h>
 	<stddef.h>
 	<KHR/khrplatform.h>
@@ -18,16 +18,16 @@
 	<stdint.h>
 	<inttypes.h>
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\khr\khrplatform.h
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\khr\khrplatform.h
 	<sys/cdefs.h>
 	<stdint.h>
 	<inttypes.h>
 	<stdint.h>
 
-1692394304 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\stb_image.cpp
+1693666224 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\stb_image.cpp
 	"stb_image.h"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\stb_image.h
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\stb_image.h
 	"stb_image.h"
 	<stdio.h>
 	<stdarg.h>
@@ -43,12 +43,12 @@
 	<intrin.h>
 	<arm_neon.h>
 
-1692452987 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\textrendering.cpp
+1693666224 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\textrendering.cpp
 	"textrendering.h"
 	"utils.h"
 	"dejavufont.h"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glfw\glfw3.h
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glfw\glfw3.h
 	<stddef.h>
 	<stdint.h>
 	<OpenGL/gl3.h>
@@ -69,39 +69,39 @@
 	<GL/glext.h>
 	<GL/glu.h>
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\mat4x4.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\mat4x4.hpp
 	"./ext/matrix_double4x4.hpp"
 	"./ext/matrix_double4x4_precision.hpp"
 	"./ext/matrix_float4x4.hpp"
 	"./ext/matrix_float4x4_precision.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_double4x4.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_double4x4.hpp
 	"../detail/type_mat4x4.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_mat4x4.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_mat4x4.hpp
 	"type_vec4.hpp"
 	<limits>
 	<cstddef>
 	"type_mat4x4.inl"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_vec4.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_vec4.hpp
 	"qualifier.hpp"
 	"_swizzle.hpp"
 	"_swizzle_func.hpp"
 	<cstddef>
 	"type_vec4.inl"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\qualifier.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\qualifier.hpp
 	"setup.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\setup.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\setup.hpp
 	<cassert>
 	<cstddef>
 	"../simd/platform.h"
 	<cstdint>
 	<type_traits>
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\simd\platform.h
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\simd\platform.h
 	<cuda.h>
 	<immintrin.h>
 	<immintrin.h>
@@ -112,25 +112,25 @@
 	<pmmintrin.h>
 	<emmintrin.h>
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\_swizzle.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\_swizzle.hpp
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\_swizzle_func.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\_swizzle_func.hpp
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_vec4.inl
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_vec4.inl
 	"compute_vector_relational.hpp"
 	"type_vec4_simd.inl"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\compute_vector_relational.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\compute_vector_relational.hpp
 	"setup.hpp"
 	<limits>
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_vec4_simd.inl
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_vec4_simd.inl
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_mat4x4.inl
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_mat4x4.inl
 	"../matrix.hpp"
 	"type_mat4x4_simd.inl"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\matrix.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\matrix.hpp
 	"detail/qualifier.hpp"
 	"detail/setup.hpp"
 	"vec2.hpp"
@@ -147,7 +147,7 @@
 	"mat4x4.hpp"
 	"detail/func_matrix.inl"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\vec2.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\vec2.hpp
 	"./ext/vector_bool2.hpp"
 	"./ext/vector_bool2_precision.hpp"
 	"./ext/vector_float2.hpp"
@@ -159,47 +159,47 @@
 	"./ext/vector_uint2.hpp"
 	"./ext/vector_uint2_precision.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_bool2.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_bool2.hpp
 	"../detail/type_vec2.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_vec2.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_vec2.hpp
 	"qualifier.hpp"
 	"_swizzle.hpp"
 	"_swizzle_func.hpp"
 	<cstddef>
 	"type_vec2.inl"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_vec2.inl
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_vec2.inl
 	"./compute_vector_relational.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_bool2_precision.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_bool2_precision.hpp
 	"../detail/type_vec2.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_float2.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_float2.hpp
 	"../detail/type_vec2.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_float2_precision.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_float2_precision.hpp
 	"../detail/type_vec2.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_double2.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_double2.hpp
 	"../detail/type_vec2.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_double2_precision.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_double2_precision.hpp
 	"../detail/type_vec2.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_int2.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_int2.hpp
 	"../detail/type_vec2.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_int2_precision.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_int2_precision.hpp
 	"../detail/type_vec2.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_uint2.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_uint2.hpp
 	"../detail/type_vec2.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_uint2_precision.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_uint2_precision.hpp
 	"../detail/type_vec2.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\vec3.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\vec3.hpp
 	"./ext/vector_bool3.hpp"
 	"./ext/vector_bool3_precision.hpp"
 	"./ext/vector_float3.hpp"
@@ -211,47 +211,47 @@
 	"./ext/vector_uint3.hpp"
 	"./ext/vector_uint3_precision.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_bool3.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_bool3.hpp
 	"../detail/type_vec3.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_vec3.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_vec3.hpp
 	"qualifier.hpp"
 	"_swizzle.hpp"
 	"_swizzle_func.hpp"
 	<cstddef>
 	"type_vec3.inl"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_vec3.inl
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_vec3.inl
 	"compute_vector_relational.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_bool3_precision.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_bool3_precision.hpp
 	"../detail/type_vec3.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_float3.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_float3.hpp
 	"../detail/type_vec3.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_float3_precision.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_float3_precision.hpp
 	"../detail/type_vec3.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_double3.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_double3.hpp
 	"../detail/type_vec3.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_double3_precision.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_double3_precision.hpp
 	"../detail/type_vec3.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_int3.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_int3.hpp
 	"../detail/type_vec3.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_int3_precision.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_int3_precision.hpp
 	"../detail/type_vec3.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_uint3.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_uint3.hpp
 	"../detail/type_vec3.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_uint3_precision.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_uint3_precision.hpp
 	"../detail/type_vec3.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\vec4.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\vec4.hpp
 	"./ext/vector_bool4.hpp"
 	"./ext/vector_bool4_precision.hpp"
 	"./ext/vector_float4.hpp"
@@ -263,268 +263,268 @@
 	"./ext/vector_uint4.hpp"
 	"./ext/vector_uint4_precision.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_bool4.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_bool4.hpp
 	"../detail/type_vec4.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_bool4_precision.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_bool4_precision.hpp
 	"../detail/type_vec4.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_float4.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_float4.hpp
 	"../detail/type_vec4.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_float4_precision.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_float4_precision.hpp
 	"../detail/type_vec4.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_double4.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_double4.hpp
 	"../detail/type_vec4.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_double4_precision.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_double4_precision.hpp
 	"../detail/setup.hpp"
 	"../detail/type_vec4.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_int4.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_int4.hpp
 	"../detail/type_vec4.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_int4_precision.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_int4_precision.hpp
 	"../detail/type_vec4.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_uint4.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_uint4.hpp
 	"../detail/type_vec4.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_uint4_precision.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_uint4_precision.hpp
 	"../detail/type_vec4.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\mat2x2.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\mat2x2.hpp
 	"./ext/matrix_double2x2.hpp"
 	"./ext/matrix_double2x2_precision.hpp"
 	"./ext/matrix_float2x2.hpp"
 	"./ext/matrix_float2x2_precision.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_double2x2.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_double2x2.hpp
 	"../detail/type_mat2x2.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_mat2x2.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_mat2x2.hpp
 	"type_vec2.hpp"
 	<limits>
 	<cstddef>
 	"type_mat2x2.inl"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_mat2x2.inl
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_mat2x2.inl
 	"../matrix.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_double2x2_precision.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_double2x2_precision.hpp
 	"../detail/type_mat2x2.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_float2x2.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_float2x2.hpp
 	"../detail/type_mat2x2.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_float2x2_precision.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_float2x2_precision.hpp
 	"../detail/type_mat2x2.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\mat2x3.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\mat2x3.hpp
 	"./ext/matrix_double2x3.hpp"
 	"./ext/matrix_double2x3_precision.hpp"
 	"./ext/matrix_float2x3.hpp"
 	"./ext/matrix_float2x3_precision.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_double2x3.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_double2x3.hpp
 	"../detail/type_mat2x3.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_mat2x3.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_mat2x3.hpp
 	"type_vec2.hpp"
 	"type_vec3.hpp"
 	<limits>
 	<cstddef>
 	"type_mat2x3.inl"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_mat2x3.inl
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_mat2x3.inl
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_double2x3_precision.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_double2x3_precision.hpp
 	"../detail/type_mat2x3.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_float2x3.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_float2x3.hpp
 	"../detail/type_mat2x3.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_float2x3_precision.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_float2x3_precision.hpp
 	"../detail/type_mat2x3.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\mat2x4.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\mat2x4.hpp
 	"./ext/matrix_double2x4.hpp"
 	"./ext/matrix_double2x4_precision.hpp"
 	"./ext/matrix_float2x4.hpp"
 	"./ext/matrix_float2x4_precision.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_double2x4.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_double2x4.hpp
 	"../detail/type_mat2x4.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_mat2x4.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_mat2x4.hpp
 	"type_vec2.hpp"
 	"type_vec4.hpp"
 	<limits>
 	<cstddef>
 	"type_mat2x4.inl"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_mat2x4.inl
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_mat2x4.inl
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_double2x4_precision.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_double2x4_precision.hpp
 	"../detail/type_mat2x4.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_float2x4.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_float2x4.hpp
 	"../detail/type_mat2x4.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_float2x4_precision.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_float2x4_precision.hpp
 	"../detail/type_mat2x4.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\mat3x2.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\mat3x2.hpp
 	"./ext/matrix_double3x2.hpp"
 	"./ext/matrix_double3x2_precision.hpp"
 	"./ext/matrix_float3x2.hpp"
 	"./ext/matrix_float3x2_precision.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_double3x2.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_double3x2.hpp
 	"../detail/type_mat3x2.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_mat3x2.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_mat3x2.hpp
 	"type_vec2.hpp"
 	"type_vec3.hpp"
 	<limits>
 	<cstddef>
 	"type_mat3x2.inl"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_mat3x2.inl
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_mat3x2.inl
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_double3x2_precision.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_double3x2_precision.hpp
 	"../detail/type_mat3x2.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_float3x2.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_float3x2.hpp
 	"../detail/type_mat3x2.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_float3x2_precision.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_float3x2_precision.hpp
 	"../detail/type_mat3x2.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\mat3x3.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\mat3x3.hpp
 	"./ext/matrix_double3x3.hpp"
 	"./ext/matrix_double3x3_precision.hpp"
 	"./ext/matrix_float3x3.hpp"
 	"./ext/matrix_float3x3_precision.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_double3x3.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_double3x3.hpp
 	"../detail/type_mat3x3.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_mat3x3.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_mat3x3.hpp
 	"type_vec3.hpp"
 	<limits>
 	<cstddef>
 	"type_mat3x3.inl"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_mat3x3.inl
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_mat3x3.inl
 	"../matrix.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_double3x3_precision.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_double3x3_precision.hpp
 	"../detail/type_mat3x3.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_float3x3.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_float3x3.hpp
 	"../detail/type_mat3x3.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_float3x3_precision.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_float3x3_precision.hpp
 	"../detail/type_mat3x3.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\mat3x4.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\mat3x4.hpp
 	"./ext/matrix_double3x4.hpp"
 	"./ext/matrix_double3x4_precision.hpp"
 	"./ext/matrix_float3x4.hpp"
 	"./ext/matrix_float3x4_precision.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_double3x4.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_double3x4.hpp
 	"../detail/type_mat3x4.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_mat3x4.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_mat3x4.hpp
 	"type_vec3.hpp"
 	"type_vec4.hpp"
 	<limits>
 	<cstddef>
 	"type_mat3x4.inl"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_mat3x4.inl
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_mat3x4.inl
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_double3x4_precision.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_double3x4_precision.hpp
 	"../detail/type_mat3x4.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_float3x4.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_float3x4.hpp
 	"../detail/type_mat3x4.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_float3x4_precision.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_float3x4_precision.hpp
 	"../detail/type_mat3x4.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\mat4x2.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\mat4x2.hpp
 	"./ext/matrix_double4x2.hpp"
 	"./ext/matrix_double4x2_precision.hpp"
 	"./ext/matrix_float4x2.hpp"
 	"./ext/matrix_float4x2_precision.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_double4x2.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_double4x2.hpp
 	"../detail/type_mat4x2.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_mat4x2.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_mat4x2.hpp
 	"type_vec2.hpp"
 	"type_vec4.hpp"
 	<limits>
 	<cstddef>
 	"type_mat4x2.inl"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_mat4x2.inl
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_mat4x2.inl
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_double4x2_precision.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_double4x2_precision.hpp
 	"../detail/type_mat4x2.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_float4x2.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_float4x2.hpp
 	"../detail/type_mat4x2.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_float4x2_precision.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_float4x2_precision.hpp
 	"../detail/type_mat2x2.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\mat4x3.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\mat4x3.hpp
 	"./ext/matrix_double4x3.hpp"
 	"./ext/matrix_double4x3_precision.hpp"
 	"./ext/matrix_float4x3.hpp"
 	"./ext/matrix_float4x3_precision.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_double4x3.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_double4x3.hpp
 	"../detail/type_mat4x3.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_mat4x3.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_mat4x3.hpp
 	"type_vec3.hpp"
 	"type_vec4.hpp"
 	<limits>
 	<cstddef>
 	"type_mat4x3.inl"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_mat4x3.inl
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_mat4x3.inl
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_double4x3_precision.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_double4x3_precision.hpp
 	"../detail/type_mat4x3.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_float4x3.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_float4x3.hpp
 	"../detail/type_mat4x3.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_float4x3_precision.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_float4x3_precision.hpp
 	"../detail/type_mat4x3.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\func_matrix.inl
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\func_matrix.inl
 	"../geometric.hpp"
 	<limits>
 	"func_matrix_simd.inl"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\geometric.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\geometric.hpp
 	"detail/type_vec3.hpp"
 	"detail/func_geometric.inl"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\func_geometric.inl
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\func_geometric.inl
 	"../exponential.hpp"
 	"../common.hpp"
 	"func_geometric_simd.inl"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\exponential.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\exponential.hpp
 	"detail/type_vec1.hpp"
 	"detail/type_vec2.hpp"
 	"detail/type_vec3.hpp"
@@ -532,17 +532,17 @@
 	<cmath>
 	"detail/func_exponential.inl"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_vec1.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_vec1.hpp
 	"qualifier.hpp"
 	"_swizzle.hpp"
 	"_swizzle_func.hpp"
 	<cstddef>
 	"type_vec1.inl"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_vec1.inl
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_vec1.inl
 	"./compute_vector_relational.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\func_exponential.inl
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\func_exponential.inl
 	"../vector_relational.hpp"
 	"_vectorize.hpp"
 	<limits>
@@ -550,33 +550,33 @@
 	<cassert>
 	"func_exponential_simd.inl"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\vector_relational.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\vector_relational.hpp
 	"detail/qualifier.hpp"
 	"detail/setup.hpp"
 	"detail/func_vector_relational.inl"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\func_vector_relational.inl
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\func_vector_relational.inl
 	"func_vector_relational_simd.inl"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\func_vector_relational_simd.inl
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\func_vector_relational_simd.inl
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\_vectorize.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\_vectorize.hpp
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\func_exponential_simd.inl
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\func_exponential_simd.inl
 	"../simd/exponential.h"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\simd\exponential.h
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\simd\exponential.h
 	"platform.h"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\common.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\common.hpp
 	"detail/qualifier.hpp"
 	"detail/_fixes.hpp"
 	"detail/func_common.inl"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\_fixes.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\_fixes.hpp
 	<cmath>
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\func_common.inl
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\func_common.inl
 	"../vector_relational.hpp"
 	"compute_common.hpp"
 	"type_vec1.hpp"
@@ -587,54 +587,54 @@
 	<limits>
 	"func_common_simd.inl"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\compute_common.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\compute_common.hpp
 	"setup.hpp"
 	<limits>
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\func_common_simd.inl
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\func_common_simd.inl
 	"../simd/common.h"
 	<immintrin.h>
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\simd\common.h
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\simd\common.h
 	"platform.h"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\func_geometric_simd.inl
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\func_geometric_simd.inl
 	"../simd/geometric.h"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\simd\geometric.h
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\simd\geometric.h
 	"common.h"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\func_matrix_simd.inl
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\func_matrix_simd.inl
 	"type_mat4x4.hpp"
 	"../geometric.hpp"
 	"../simd/matrix.h"
 	<cstring>
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\simd\matrix.h
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\simd\matrix.h
 	"geometric.h"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_mat4x4_simd.inl
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_mat4x4_simd.inl
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_double4x4_precision.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_double4x4_precision.hpp
 	"../detail/type_mat4x4.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_float4x4.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_float4x4.hpp
 	"../detail/type_mat4x4.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_float4x4_precision.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_float4x4_precision.hpp
 	"../detail/type_mat4x4.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\utils.h
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\utils.h
 	<cstdio>
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\dejavufont.h
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\dejavufont.h
 	<stddef.h>
 	<stdint.h>
 
-1692394304 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\tiny_obj_loader.cpp
+1693666224 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\tiny_obj_loader.cpp
 	"tiny_obj_loader.h"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\tiny_obj_loader.h
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\tiny_obj_loader.h
 	<map>
 	<string>
 	<vector>
@@ -652,16 +652,16 @@
 	<array>
 	"mapbox/earcut.hpp"
 
-1692452987 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\boundingbox.cpp
+1693666224 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\boundingbox.cpp
 	"BoundingBox.h"
 
-1692452987 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\boundingbox.h
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\boundingbox.h
 	<vector>
 	<limits>
 	<tiny_obj_loader.h>
 	<glm/glm.hpp>
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\glm.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\glm.hpp
 	"detail/_fixes.hpp"
 	"detail/setup.hpp"
 	<cmath>
@@ -691,62 +691,63 @@
 	"vector_relational.hpp"
 	"integer.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\fwd.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\fwd.hpp
 	"detail/qualifier.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\trigonometric.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\trigonometric.hpp
 	"detail/setup.hpp"
 	"detail/qualifier.hpp"
 	"detail/func_trigonometric.inl"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\func_trigonometric.inl
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\func_trigonometric.inl
 	"_vectorize.hpp"
 	<cmath>
 	<limits>
 	"func_trigonometric_simd.inl"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\func_trigonometric_simd.inl
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\func_trigonometric_simd.inl
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\packing.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\packing.hpp
 	"./ext/vector_uint2.hpp"
 	"./ext/vector_float2.hpp"
 	"./ext/vector_float4.hpp"
 	"detail/func_packing.inl"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\func_packing.inl
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\func_packing.inl
 	"../common.hpp"
 	"type_half.hpp"
 	"func_packing_simd.inl"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_half.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_half.hpp
 	"setup.hpp"
 	"type_half.inl"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_half.inl
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_half.inl
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\func_packing_simd.inl
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\func_packing_simd.inl
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\integer.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\integer.hpp
 	"detail/qualifier.hpp"
 	"common.hpp"
 	"vector_relational.hpp"
 	"detail/func_integer.inl"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\func_integer.inl
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\func_integer.inl
 	"_vectorize.hpp"
 	<intrin.h>
 	<limits>
 	"func_integer_simd.inl"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\func_integer_simd.inl
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\func_integer_simd.inl
 	"../simd/integer.h"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\simd\integer.h
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\simd\integer.h
 
-1693626075 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\main.cpp
+1693666224 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\main.cpp
 	<cmath>
 	<cstdio>
 	<cstdlib>
+	<set>
 	<map>
 	<stack>
 	<string>
@@ -777,7 +778,7 @@
 	"GUI.h"
 	"collisions.h"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\gtc\type_ptr.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\gtc\type_ptr.hpp
 	"../gtc/quaternion.hpp"
 	"../gtc/vec1.hpp"
 	"../vec2.hpp"
@@ -795,7 +796,7 @@
 	<cstring>
 	"type_ptr.inl"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\gtc\quaternion.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\gtc\quaternion.hpp
 	"../gtc/constants.hpp"
 	"../gtc/matrix_transform.hpp"
 	"../ext/vector_relational.hpp"
@@ -814,20 +815,20 @@
 	"../detail/type_vec4.hpp"
 	"quaternion.inl"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\gtc\constants.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\gtc\constants.hpp
 	"../ext/scalar_constants.hpp"
 	"constants.inl"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\scalar_constants.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\scalar_constants.hpp
 	"../detail/setup.hpp"
 	"scalar_constants.inl"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\scalar_constants.inl
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\scalar_constants.inl
 	<limits>
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\gtc\constants.inl
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\gtc\constants.inl
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\gtc\matrix_transform.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\gtc\matrix_transform.hpp
 	"../mat4x4.hpp"
 	"../vec2.hpp"
 	"../vec3.hpp"
@@ -837,51 +838,51 @@
 	"../ext/matrix_transform.hpp"
 	"matrix_transform.inl"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_projection.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_projection.hpp
 	"../gtc/constants.hpp"
 	"../geometric.hpp"
 	"../trigonometric.hpp"
 	"../matrix.hpp"
 	"matrix_projection.inl"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_projection.inl
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_projection.inl
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_clip_space.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_clip_space.hpp
 	"../ext/scalar_constants.hpp"
 	"../geometric.hpp"
 	"../trigonometric.hpp"
 	"matrix_clip_space.inl"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_clip_space.inl
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_clip_space.inl
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_transform.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_transform.hpp
 	"../gtc/constants.hpp"
 	"../geometric.hpp"
 	"../trigonometric.hpp"
 	"../matrix.hpp"
 	"matrix_transform.inl"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_transform.inl
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\matrix_transform.inl
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\gtc\matrix_transform.inl
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\gtc\matrix_transform.inl
 	"../geometric.hpp"
 	"../trigonometric.hpp"
 	"../matrix.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_relational.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_relational.hpp
 	"../detail/qualifier.hpp"
 	"vector_relational.inl"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_relational.inl
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_relational.inl
 	"../vector_relational.hpp"
 	"../common.hpp"
 	"../detail/qualifier.hpp"
 	"../detail/type_float.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_float.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_float.hpp
 	"setup.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\quaternion_common.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\quaternion_common.hpp
 	"../ext/scalar_constants.hpp"
 	"../ext/quaternion_geometric.hpp"
 	"../common.hpp"
@@ -890,23 +891,23 @@
 	<limits>
 	"quaternion_common.inl"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\quaternion_geometric.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\quaternion_geometric.hpp
 	"../geometric.hpp"
 	"../exponential.hpp"
 	"../ext/vector_relational.hpp"
 	"quaternion_geometric.inl"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\quaternion_geometric.inl
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\quaternion_geometric.inl
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\quaternion_common.inl
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\quaternion_common.inl
 	"quaternion_common_simd.inl"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\quaternion_common_simd.inl
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\quaternion_common_simd.inl
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\quaternion_float.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\quaternion_float.hpp
 	"../detail/type_quat.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_quat.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_quat.hpp
 	"../detail/type_mat3x3.hpp"
 	"../detail/type_mat4x4.hpp"
 	"../detail/type_vec3.hpp"
@@ -917,31 +918,31 @@
 	"../gtc/matrix_transform.hpp"
 	"type_quat.inl"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\quaternion_relational.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\quaternion_relational.hpp
 	"../vector_relational.hpp"
 	"quaternion_relational.inl"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\quaternion_relational.inl
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\quaternion_relational.inl
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_quat.inl
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_quat.inl
 	"../trigonometric.hpp"
 	"../exponential.hpp"
 	"../ext/quaternion_geometric.hpp"
 	<limits>
 	"type_quat_simd.inl"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_quat_simd.inl
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\detail\type_quat_simd.inl
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\quaternion_float_precision.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\quaternion_float_precision.hpp
 	"../detail/type_quat.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\quaternion_double.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\quaternion_double.hpp
 	"../detail/type_quat.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\quaternion_double_precision.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\quaternion_double_precision.hpp
 	"../detail/type_quat.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\quaternion_trigonometric.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\quaternion_trigonometric.hpp
 	"../trigonometric.hpp"
 	"../exponential.hpp"
 	"scalar_constants.hpp"
@@ -949,17 +950,17 @@
 	<limits>
 	"quaternion_trigonometric.inl"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\quaternion_trigonometric.inl
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\quaternion_trigonometric.inl
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\quaternion_transform.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\quaternion_transform.hpp
 	"../common.hpp"
 	"../trigonometric.hpp"
 	"../geometric.hpp"
 	"quaternion_transform.inl"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\quaternion_transform.inl
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\quaternion_transform.inl
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\gtc\quaternion.inl
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\gtc\quaternion.inl
 	"../trigonometric.hpp"
 	"../geometric.hpp"
 	"../exponential.hpp"
@@ -967,18 +968,18 @@
 	<limits>
 	"quaternion_simd.inl"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\gtc\epsilon.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\gtc\epsilon.hpp
 	"../detail/setup.hpp"
 	"../detail/qualifier.hpp"
 	"epsilon.inl"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\gtc\epsilon.inl
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\gtc\epsilon.inl
 	"../vector_relational.hpp"
 	"../common.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\gtc\quaternion_simd.inl
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\gtc\quaternion_simd.inl
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\gtc\vec1.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\gtc\vec1.hpp
 	"../ext/vector_bool1.hpp"
 	"../ext/vector_bool1_precision.hpp"
 	"../ext/vector_float1.hpp"
@@ -990,51 +991,51 @@
 	"../ext/vector_uint1.hpp"
 	"../ext/vector_uint1_precision.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_bool1.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_bool1.hpp
 	"../detail/type_vec1.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_bool1_precision.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_bool1_precision.hpp
 	"../detail/type_vec1.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_float1.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_float1.hpp
 	"../detail/type_vec1.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_float1_precision.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_float1_precision.hpp
 	"../detail/type_vec1.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_double1.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_double1.hpp
 	"../detail/type_vec1.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_double1_precision.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_double1_precision.hpp
 	"../detail/type_vec1.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_int1.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_int1.hpp
 	"../detail/type_vec1.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_int1_precision.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_int1_precision.hpp
 	"../detail/type_vec1.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_uint1.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_uint1.hpp
 	"../detail/type_vec1.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_uint1_precision.hpp
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\ext\vector_uint1_precision.hpp
 	"../detail/type_vec1.hpp"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\gtc\type_ptr.inl
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\gtc\type_ptr.inl
 	<cstring>
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\matrices.h
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\matrices.h
 	<cstdio>
 	<cstdlib>
 	<glm/mat4x4.hpp>
 	<glm/vec4.hpp>
 	<glm/gtc/matrix_transform.hpp>
 
-1692936377 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\objmodel.h
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\objmodel.h
 	<vector>
 	<tiny_obj_loader.h>
 
-1692452987 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\objmodel.cpp
+1693666224 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\objmodel.cpp
 	"ObjModel.h"
 	<stdexcept>
 	<string>
@@ -1045,7 +1046,7 @@
 
 1692413683 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\projectinforendering.cpp
 
-1692452987 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\textrendering.h
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\textrendering.h
 	<string>
 	<glad/glad.h>
 	<GLFW/glfw3.h>
@@ -1053,10 +1054,10 @@
 	<glm/vec4.hpp>
 	"globals.h"
 
-1693625283 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\globals.cpp
+1693666409 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\globals.cpp
 	"globals.h"
 
-1693625277 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\globals.h
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\globals.h
 	<map>
 	<stack>
 	<string>
@@ -1064,26 +1065,26 @@
 	<GLFW/glfw3.h>
 	<glm/mat4x4.hpp>
 
-1692938684 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\callbacks.h
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\callbacks.h
 	<GLFW/glfw3.h>
 	<limits>
 	<cstdio>
 	"globals.h"
 	"imgui/imgui_impl_glfw.h"
 
-1693169666 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\callbacks.cpp
+1693666224 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\callbacks.cpp
 	"Callbacks.h"
 
 1692417644 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\geometryfunctions.h
 
-1693535144 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\sceneobject.h
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\sceneobject.h
 	<string>
 	<map>
 	<GLFW/glfw3.h>
 	<glm/glm.hpp>
 	<vector>
 
-1692452987 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\sceneobject.cpp
+1693666224 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\sceneobject.cpp
 	"SceneObject.h"
 
 1692546165 source:d:\eugenio\desktop\inf01047-fcg-trab-final-laura\laboratorio_5_codigo_fonte\src\boundingbox.cpp
@@ -3230,14 +3231,14 @@
 1692546165 source:d:\eugenio\desktop\inf01047-fcg-trab-final-laura\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\tiny_obj_loader.cpp
 	"tiny_obj_loader.h"
 
-1692938684 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\objectinstance.h
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\objectinstance.h
 	<string>
 	<map>
 	<glm/glm.hpp>
 	<vector>
 	"SceneObject.h"
 
-1692938684 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\objectinstance.cpp
+1693666224 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\objectinstance.cpp
 	"ObjectInstance.h"
 
 1692924818 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\imgui\imgui.cpp
@@ -3326,7 +3327,7 @@
 	<stdint.h>
 	"imstb_textedit.h"
 
-1692938684 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\imgui\imgui.cpp
+1693666224 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\imgui\imgui.cpp
 	"imgui.h"
 	"imgui_internal.h"
 	<stdio.h>
@@ -3339,7 +3340,7 @@
 	<imm.h>
 	"imgui_user.inl"
 
-1692938684 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\imgui\imgui.h
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\imgui\imgui.h
 	"imconfig.h"
 	<float.h>
 	<stdarg.h>
@@ -3348,9 +3349,9 @@
 	<assert.h>
 	"imgui_user.h"
 
-1692938684 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\imgui\imconfig.h
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\imgui\imconfig.h
 
-1692938684 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\imgui\imgui_internal.h
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\imgui\imgui_internal.h
 	"imgui_internal.h"
 	"imgui.h"
 	<stdio.h>
@@ -3360,10 +3361,10 @@
 	<immintrin.h>
 	"imstb_textedit.h"
 
-1692938684 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\imgui\imstb_textedit.h
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\imgui\imstb_textedit.h
 	<string.h>
 
-1692938684 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\imgui\imgui_demo.cpp
+1693666224 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\imgui\imgui_demo.cpp
 	"imgui.h"
 	<ctype.h>
 	<limits.h>
@@ -3372,7 +3373,7 @@
 	<stdlib.h>
 	<stdint.h>
 
-1692938684 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\imgui\imgui_draw.cpp
+1693666224 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\imgui\imgui_draw.cpp
 	"imgui.h"
 	"imgui_internal.h"
 	"misc/freetype/imgui_freetype.h"
@@ -3383,11 +3384,11 @@
 1692924818 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\imgui\misc\freetype\imgui_freetype.h
 	"imgui.h"
 
-1692938684 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\imgui\imstb_rectpack.h
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\imgui\imstb_rectpack.h
 	<stdlib.h>
 	<assert.h>
 
-1692938684 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\imgui\imstb_truetype.h
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\imgui\imstb_truetype.h
 	"stb_truetype.h"
 	<stdio.h>
 	"stb_truetype.h"
@@ -3401,12 +3402,12 @@
 	<string.h>
 	<string.h>
 
-1692938684 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\imgui\imgui_tables.cpp
+1693666224 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\imgui\imgui_tables.cpp
 	"imgui.h"
 	"imgui_internal.h"
 	<stdint.h>
 
-1692938684 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\imgui\imgui_widgets.cpp
+1693666224 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\imgui\imgui_widgets.cpp
 	"imgui.h"
 	"imgui_internal.h"
 	<stdint.h>
@@ -3418,7 +3419,7 @@
 	<stdlib.h>
 	<assert.h>
 
-1692938684 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\imgui\imgui_impl_glfw.cpp
+1693666224 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\imgui\imgui_impl_glfw.cpp
 	"imgui.h"
 	"imgui_impl_glfw.h"
 	<GLFW/glfw3.h>
@@ -3427,10 +3428,10 @@
 	<emscripten.h>
 	<emscripten/html5.h>
 
-1692938684 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\imgui\imgui_impl_glfw.h
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\imgui\imgui_impl_glfw.h
 	"imgui.h"
 
-1692394304 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glfw\glfw3native.h
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glfw\glfw3native.h
 	<windows.h>
 	<ApplicationServices/ApplicationServices.h>
 	<X11/Xlib.h>
@@ -3440,7 +3441,7 @@
 	<GL/glx.h>
 	<EGL/egl.h>
 
-1692938684 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\imgui\imgui_impl_opengl3.cpp
+1693666224 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\imgui\imgui_impl_opengl3.cpp
 	"imgui.h"
 	"imgui_impl_opengl3.h"
 	<stdio.h>
@@ -3454,11 +3455,11 @@
 	"imgui_impl_opengl3_loader.h"
 	<stdio.h>
 
-1692938684 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\imgui\imgui_impl_opengl3.h
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\imgui\imgui_impl_opengl3.h
 	"imgui.h"
 	<TargetConditionals.h>
 
-1692938684 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\imgui\imgui_impl_opengl3_loader.h
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\imgui\imgui_impl_opengl3_loader.h
 	<stdint.h>
 	<windows.h>
 	<stdlib.h>
@@ -3466,20 +3467,20 @@
 	<dlfcn.h>
 	<dlfcn.h>
 
-1692938684 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\imgui\imgui_stdlib.cpp
+1693666224 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\imgui\imgui_stdlib.cpp
 	"imgui.h"
 	"imgui_stdlib.h"
 
-1692938684 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\imgui\imgui_stdlib.h
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\imgui\imgui_stdlib.h
 	<string>
 
-1693623573 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\sceneinformation.cpp
+1693666224 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\sceneinformation.cpp
 	"SceneInformation.h"
 
-1693623542 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\sceneinformation.h
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\sceneinformation.h
 	<glm/glm.hpp>
 
-1693169666 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\cursorray.h
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\cursorray.h
 	<glm/glm.hpp>
 	"globals.h"
 	"SceneInformation.h"
@@ -3487,23 +3488,23 @@
 	<glm/vec4.hpp>
 	<glm/gtc/type_ptr.hpp>
 
-1693169666 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\cursorray.cpp
+1693666224 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\cursorray.cpp
 	"CursorRay.h"
 
-1693622315 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\gui.cpp
+1693666224 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\gui.cpp
 	"GUI.h"
 	"globals.h"
 	"SceneInformation.h"
 	"ObjectInstance.h"
 
-1693622237 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\gui.h
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\gui.h
 	"imgui/imgui.h"
 	"imgui/imgui_impl_glfw.h"
 	"imgui/imgui_impl_opengl3.h"
 
-1693536219 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\collisions.cpp
+1693666224 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\collisions.cpp
 	"collisions.h"
 
-1693535934 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\collisions.h
+1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\collisions.h
 	<glm/glm.hpp>
 
