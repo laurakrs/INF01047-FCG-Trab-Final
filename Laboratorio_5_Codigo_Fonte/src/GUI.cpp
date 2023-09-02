@@ -78,6 +78,15 @@ void GenerateGUIWindows()
     ImVec2 drawMouseRayWindowPos = ImVec2(drawMouseRayWindowXPosition, drawMouseRayWindowYPosition);
     CreateDrawMouseRayWindow(drawMouseRayWindowSize, drawMouseRayWindowPos);
 
+    float pickAnimationWindowWidth = 150.0f;
+    float pickAnimationWindowHeight = 35.0f;
+    ImVec2 pickAnimationWindowSize = ImVec2(pickAnimationWindowWidth, pickAnimationWindowHeight);
+    float offsetFromDrawMouseRayWindow = 10.0f;
+    float pickAnimationWindowXPosition = drawMouseRayWindowXPosition;
+    float pickAnimationWindowYPosition = drawMouseRayWindowYPosition - pickAnimationWindowSize.y - offsetFromDrawMouseRayWindow;
+    ImVec2 pickAnimationWindowPos = ImVec2(pickAnimationWindowXPosition, pickAnimationWindowYPosition);
+    CreatePickAnimationWindow(pickAnimationWindowSize, pickAnimationWindowPos);
+
     // Renderiza a GUI
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -145,6 +154,7 @@ void CreateDebugWindow(ImVec2 windowSize, ImVec2 windowPosition)
     ImGui::Text("g_is_bounding_box_vertex_uniform: %d", g_is_bounding_box_vertex_uniform);
     ImGui::Text("g_is_bounding_box_fragment_uniform: %d", g_is_bounding_box_fragment_uniform);
     ImGui::Text("g_drawBoundingBox: %d", g_drawBoundingBox);
+    ImGui::Text("g_intersectObject: %s", g_intersectObject.c_str());
 
     glm::vec3 cameraPosition = SceneInformation::camera_position_c;
 
@@ -172,21 +182,36 @@ void CreateDebugWindow(ImVec2 windowSize, ImVec2 windowPosition)
     // ImGui::Text("Window Height: %.3f", g_actualWindowHeight);
 
     // loop through each SceneObject in g_VirtualScene and prijnt its bbox_min and bbox_max and its bbox_vertices
-    for (auto& object : g_VirtualScene)
-    {
-        ImGui::Text("Object %s", object.first.c_str());
-        ImGui::Text("bbox_min: x=%.3f, y=%.3f, z=%.3f", object.second.bbox_min.x, object.second.bbox_min.y, object.second.bbox_min.z);
-        ImGui::Text("bbox_max: x=%.3f, y=%.3f, z=%.3f", object.second.bbox_max.x, object.second.bbox_max.y, object.second.bbox_max.z);
+    // for (auto& object : g_VirtualScene)
+    // {
+    //     if (object.first == "the_bunny" || object.first == "the_sphere" || object.first == "the_rectangle")
+    //     //if (object.first == "the_cow" || object.first == "the_cube" || object.first == "the_plane")
+    //     {
+    //         ImGui::Text("Object %s", object.first.c_str());
+    //         ImGui::Text("bbox_min: x=%.3f, y=%.3f, z=%.3f", object.second.bbox_min.x, object.second.bbox_min.y, object.second.bbox_min.z);
+    //         ImGui::Text("bbox_max: x=%.3f, y=%.3f, z=%.3f", object.second.bbox_max.x, object.second.bbox_max.y, object.second.bbox_max.z);
 
-        ImGui::Text("bbox_vertices[0]: x=%.3f, y=%.3f, z=%.3f", object.second.bbox_vertices[0].x, object.second.bbox_vertices[0].y, object.second.bbox_vertices[0].z);
-        ImGui::Text("bbox_vertices[1]: x=%.3f, y=%.3f, z=%.3f", object.second.bbox_vertices[1].x, object.second.bbox_vertices[1].y, object.second.bbox_vertices[1].z);
-        ImGui::Text("bbox_vertices[2]: x=%.3f, y=%.3f, z=%.3f", object.second.bbox_vertices[2].x, object.second.bbox_vertices[2].y, object.second.bbox_vertices[2].z);
-        ImGui::Text("bbox_vertices[3]: x=%.3f, y=%.3f, z=%.3f", object.second.bbox_vertices[3].x, object.second.bbox_vertices[3].y, object.second.bbox_vertices[3].z);
-        ImGui::Text("bbox_vertices[4]: x=%.3f, y=%.3f, z=%.3f", object.second.bbox_vertices[4].x, object.second.bbox_vertices[4].y, object.second.bbox_vertices[4].z);
-        ImGui::Text("bbox_vertices[5]: x=%.3f, y=%.3f, z=%.3f", object.second.bbox_vertices[5].x, object.second.bbox_vertices[5].y, object.second.bbox_vertices[5].z);
-        ImGui::Text("bbox_vertices[6]: x=%.3f, y=%.3f, z=%.3f", object.second.bbox_vertices[6].x, object.second.bbox_vertices[6].y, object.second.bbox_vertices[6].z);
-        ImGui::Text("bbox_vertices[7]: x=%.3f, y=%.3f, z=%.3f", object.second.bbox_vertices[7].x, object.second.bbox_vertices[7].y, object.second.bbox_vertices[7].z);
-    }
+    //         ImGui::Text("bbox_vertices[0]: x=%.3f, y=%.3f, z=%.3f", object.second.bbox_vertices[0].x, object.second.bbox_vertices[0].y, object.second.bbox_vertices[0].z);
+    //         ImGui::Text("bbox_vertices[1]: x=%.3f, y=%.3f, z=%.3f", object.second.bbox_vertices[1].x, object.second.bbox_vertices[1].y, object.second.bbox_vertices[1].z);
+    //         ImGui::Text("bbox_vertices[2]: x=%.3f, y=%.3f, z=%.3f", object.second.bbox_vertices[2].x, object.second.bbox_vertices[2].y, object.second.bbox_vertices[2].z);
+    //         ImGui::Text("bbox_vertices[3]: x=%.3f, y=%.3f, z=%.3f", object.second.bbox_vertices[3].x, object.second.bbox_vertices[3].y, object.second.bbox_vertices[3].z);
+    //         ImGui::Text("bbox_vertices[4]: x=%.3f, y=%.3f, z=%.3f", object.second.bbox_vertices[4].x, object.second.bbox_vertices[4].y, object.second.bbox_vertices[4].z);
+    //         ImGui::Text("bbox_vertices[5]: x=%.3f, y=%.3f, z=%.3f", object.second.bbox_vertices[5].x, object.second.bbox_vertices[5].y, object.second.bbox_vertices[5].z);
+    //         ImGui::Text("bbox_vertices[6]: x=%.3f, y=%.3f, z=%.3f", object.second.bbox_vertices[6].x, object.second.bbox_vertices[6].y, object.second.bbox_vertices[6].z);
+    //         ImGui::Text("bbox_vertices[7]: x=%.3f, y=%.3f, z=%.3f", object.second.bbox_vertices[7].x, object.second.bbox_vertices[7].y, object.second.bbox_vertices[7].z);
+
+    //         int id = g_ObjectInstanceNameToIdMap[object.first];
+    //         glm::mat4 model_matrix = g_ObjectInstances[id].model_matrix;
+
+    //         // print the model_matrix of the object
+    //         ImGui::Text("model_matrix: %.3f %.3f %.3f %.3f", model_matrix[0][0], model_matrix[0][1], model_matrix[0][2], model_matrix[0][3]);
+    //         ImGui::Text("model_matrix: %.3f %.3f %.3f %.3f", model_matrix[1][0], model_matrix[1][1], model_matrix[1][2], model_matrix[1][3]);
+    //         ImGui::Text("model_matrix: %.3f %.3f %.3f %.3f", model_matrix[2][0], model_matrix[2][1], model_matrix[2][2], model_matrix[2][3]);
+    //         ImGui::Text("model_matrix: %.3f %.3f %.3f %.3f", model_matrix[3][0], model_matrix[3][1], model_matrix[3][2], model_matrix[3][3]);
+    //     }
+        
+        
+    // }
     // Print all the keys, object ids and object names on std::map<int, ObjectInstance> g_ObjectInstances;
     // for (auto& object : g_ObjectInstances)
     // {
@@ -263,6 +288,20 @@ void CreateDrawMouseRayWindow(ImVec2 windowSize, ImVec2 windowPosition)
     ImGui::Begin("DrawMouseRayWindow", NULL, windowFlags);
 
     ImGui::Checkbox("Draw mouse ray", &g_drawMouseRay);
+
+    ImGui::End();
+}
+
+void CreatePickAnimationWindow(ImVec2 windowSize, ImVec2 windowPosition)
+{
+    ImGui::SetNextWindowSize(windowSize);
+    ImGui::SetNextWindowPos(windowPosition);
+
+    // Criação da janela
+    ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+    ImGui::Begin("PickAnimationWindow", NULL, windowFlags);
+
+    ImGui::Checkbox("Pick animation", &g_pickAnimation);
 
     ImGui::End();
 }

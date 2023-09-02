@@ -48,6 +48,7 @@ bool g_ShowInfoText = true;
 double g_LastCursorPosX, g_LastCursorPosY;
 bool g_drawBoundingBox = true;
 bool g_drawMouseRay = true;
+bool g_pickAnimation = true;
 
 
 // Pilha que guardará as matrizes de modelagem.
@@ -69,6 +70,9 @@ GLuint g_NumLoadedTextures = 0;
 
 // Step 1: Create a variable to keep track of the currently selected object
 int g_selectedObject = -1;
+bool g_animateSelectedObject = false;
+float g_animationStartTime;
+glm::mat4 g_objectStartModelMatrix;
 
 // Tamanho da janela (inicializado com valores padrões)
 int g_startWindowWidth = 800;
@@ -111,4 +115,6 @@ glm::vec3 g_rayVertices[2];
 GLuint VBO_ray_id;
 GLuint VAO_ray_id;
 std::string g_error;
+std::string g_intersectObject;
+float g_intersectObjectDistance;
 
