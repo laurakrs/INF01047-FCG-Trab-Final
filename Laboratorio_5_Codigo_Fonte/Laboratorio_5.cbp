@@ -385,6 +385,8 @@
 		<Unit filename="src/SceneInformation.h" />
 		<Unit filename="src/SceneObject.cpp" />
 		<Unit filename="src/SceneObject.h" />
+		<Unit filename="src/collisions.cpp" />
+		<Unit filename="src/collisions.h" />
 		<Unit filename="src/glad.c">
 			<Option compilerVar="CC" />
 		</Unit>
