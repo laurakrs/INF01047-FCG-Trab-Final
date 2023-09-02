@@ -46,7 +46,8 @@ bool g_ShowInfoText = true;
 // que possamos calcular quanto que o mouse se movimentou entre dois instantes
 // de tempo. Utilizadas no callback CursorPosCallback() abaixo.
 double g_LastCursorPosX, g_LastCursorPosY;
-
+bool g_drawBoundingBox = true;
+bool g_drawMouseRay = true;
 
 
 // Pilha que guardará as matrizes de modelagem.
@@ -60,7 +61,8 @@ GLint g_projection_uniform;
 GLint g_object_id_uniform;
 GLint g_bbox_min_uniform;
 GLint g_bbox_max_uniform;
-
+GLint g_is_bounding_box_vertex_uniform;
+GLint g_is_bounding_box_fragment_uniform;
 
 // Número de texturas carregadas pela função LoadTextureImage()
 GLuint g_NumLoadedTextures = 0;

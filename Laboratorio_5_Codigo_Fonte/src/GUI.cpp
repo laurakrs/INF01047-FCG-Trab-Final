@@ -38,11 +38,11 @@ void GenerateGUIWindows()
 
     // Define a posição e tamanho da janela da GUI de debug
     float debugWindowWidth = 440.0f;
-    float debugWindowHeight = 150.0f;
+    float debugWindowHeight = 700.0f;
     ImVec2 debugWindowSize = ImVec2(debugWindowWidth, debugWindowHeight);
     ImVec2 debugWindowPosition = addNewInstanceWindowPosition;
     float spacingBetweenWindows = 10.0f;
-    debugWindowPosition.x += addNewInstanceWindowSize.x + spacingBetweenWindows;
+    debugWindowPosition.y += addNewInstanceWindowSize.y + spacingBetweenWindows;
 
     CreateDebugWindow(debugWindowSize, debugWindowPosition);
 
@@ -53,24 +53,44 @@ void GenerateGUIWindows()
     ImVec2 projectionSettingsWindowSize = ImVec2(projectionSettingsWindowWidth, projectionSettingsWindowHeight);
 
     float offsetFromScreenRightSide = -10.0f;
-    float offsetFromScreenBottom = -10.0f;
-    ImVec2 smallWindowPos = ImVec2(screenSize.x - projectionSettingsWindowSize.x + offsetFromScreenRightSide, screenSize.y - projectionSettingsWindowSize.y + offsetFromScreenBottom);
+    float offsetFromScreenBottom = 10.0f;
+    float projectionSettingsWindowXPosition = screenSize.x - projectionSettingsWindowSize.x + offsetFromScreenRightSide;
+    float projectionSettingsWindowYPosition = screenSize.y - projectionSettingsWindowSize.y - offsetFromScreenBottom;
+    ImVec2 projectionSettingsWindowPos = ImVec2(projectionSettingsWindowXPosition, projectionSettingsWindowYPosition);
     
-    CreateProjectionSettingsWindow(projectionSettingsWindowSize, smallWindowPos);
+    CreateProjectionSettingsWindow(projectionSettingsWindowSize, projectionSettingsWindowPos);
+
+    float showBoundingBoxesWindowWidth = 150.0f;
+    float showBoundingBoxesWindowHeight = 35.0f;
+    ImVec2 showBoundingBoxesWindowSize = ImVec2(showBoundingBoxesWindowWidth, showBoundingBoxesWindowHeight);
+    float offsetFromProjectionSettingsWindow = 10.0f;
+    float showBoundingBoxesWindowXPosition = projectionSettingsWindowXPosition;
+    float showBoundingBoxesWindowYPosition = projectionSettingsWindowYPosition - showBoundingBoxesWindowSize.y - offsetFromProjectionSettingsWindow;
+    ImVec2 showBoundingBoxesWindowPos = ImVec2(showBoundingBoxesWindowXPosition, showBoundingBoxesWindowYPosition);
+    CreateShowBoundingBoxesWindow(showBoundingBoxesWindowSize, showBoundingBoxesWindowPos);
+
+    float drawMouseRayWindowWidth = 150.0f;
+    float drawMouseRayWindowHeight = 35.0f;
+    ImVec2 drawMouseRayWindowSize = ImVec2(drawMouseRayWindowWidth, drawMouseRayWindowHeight);
+    float offsetFromShowBoundingBoxesWindow = 10.0f;
+    float drawMouseRayWindowXPosition = showBoundingBoxesWindowXPosition;
+    float drawMouseRayWindowYPosition = showBoundingBoxesWindowYPosition - drawMouseRayWindowSize.y - offsetFromShowBoundingBoxesWindow;
+    ImVec2 drawMouseRayWindowPos = ImVec2(drawMouseRayWindowXPosition, drawMouseRayWindowYPosition);
+    CreateDrawMouseRayWindow(drawMouseRayWindowSize, drawMouseRayWindowPos);
 
     // Renderiza a GUI
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
-void CreateAddNewInstanceWindow(ImVec2 addNewInstanceWindowSize, ImVec2 addNewInstanceWindowPosition)
+void CreateAddNewInstanceWindow(ImVec2 windowSize, ImVec2 windowPosition)
 {
-    ImGui::SetNextWindowSize(addNewInstanceWindowSize);
-    ImGui::SetNextWindowPos(addNewInstanceWindowPosition);
+    ImGui::SetNextWindowSize(windowSize);
+    ImGui::SetNextWindowPos(windowPosition);
 
     static bool show_window = true;
-    ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
-    ImGui::Begin("Adicionar itens na cena", &show_window, window_flags);
+    ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+    ImGui::Begin("Adicionar itens na cena", &show_window, windowFlags);
 
     static bool isSphereSelected = false; // Store selection state for the first selectable
     if (ImGui::Selectable("Esfera", isSphereSelected))
@@ -111,70 +131,91 @@ void CreateAddNewInstanceWindow(ImVec2 addNewInstanceWindowSize, ImVec2 addNewIn
     ImGui::End();
 }
 
-void CreateDebugWindow(ImVec2 debugWindowSize, ImVec2 debugWindowPosition)
+void CreateDebugWindow(ImVec2 windowSize, ImVec2 windowPosition)
 {
-    ImGui::SetNextWindowSize(debugWindowSize);
-    ImGui::SetNextWindowPos(debugWindowPosition);
+    ImGui::SetNextWindowSize(windowSize);
+    ImGui::SetNextWindowPos(windowPosition);
 
     static bool show_window = true;
-    ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+    // ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
 
-    ImGui::Begin("Debug", &show_window, window_flags);
+    // ImGui::Begin("Debug", &show_window, window_flags);
+    ImGui::Begin("Debug", &show_window);
+
+    ImGui::Text("g_is_bounding_box_vertex_uniform: %d", g_is_bounding_box_vertex_uniform);
+    ImGui::Text("g_is_bounding_box_fragment_uniform: %d", g_is_bounding_box_fragment_uniform);
+    ImGui::Text("g_drawBoundingBox: %d", g_drawBoundingBox);
 
     glm::vec3 cameraPosition = SceneInformation::camera_position_c;
 
     // show g_glfwLastRayCursorPosX
-    ImGui::Text("==================================================");
-    ImGui::Text("g_glfwLastRayCursorPosX: %.3f", g_glfwLastRayCursorPosX);
-    ImGui::Text("g_NDCGlfwLastRayCursorPosX: %.3f", g_NDCGlfwLastRayCursorPosX);
-    ImGui::Text("--------------------------------------------------");
-    ImGui::Text("g_glfwLastRayCursorPosY: %.3f", g_glfwLastRayCursorPosY);
-    ImGui::Text("g_NDCGlfwLastRayCursorPosY: %.3f", g_NDCGlfwLastRayCursorPosY);
-    ImGui::Text("==================================================");
+    // ImGui::Text("==================================================");
+    // ImGui::Text("g_glfwLastRayCursorPosX: %.3f", g_glfwLastRayCursorPosX);
+    // ImGui::Text("g_NDCGlfwLastRayCursorPosX: %.3f", g_NDCGlfwLastRayCursorPosX);
+    // ImGui::Text("--------------------------------------------------");
+    // ImGui::Text("g_glfwLastRayCursorPosY: %.3f", g_glfwLastRayCursorPosY);
+    // ImGui::Text("g_NDCGlfwLastRayCursorPosY: %.3f", g_NDCGlfwLastRayCursorPosY);
+    // ImGui::Text("==================================================");
 
-    // print g_rayClip, g_rayEye, g_rayWorld, g_rayDirection
-    ImGui::Text("rayClip: x=%.3f, y=%.3f, z=%.3f w=%.3f", g_rayClip.x, g_rayClip.y, g_rayClip.z, g_rayClip.w);
-    ImGui::Text("rayEye: x=%.3f, y=%.3f, z=%.3f w=%.3f", g_rayEye.x, g_rayEye.y, g_rayEye.z, g_rayEye.w);
-    ImGui::Text("rayWorld: x=%.3f, y=%.3f, z=%.3f w=%.3f", g_rayWorld.x, g_rayWorld.y, g_rayWorld.z, g_rayWorld.w);
-    ImGui::Text("rayDirection: x=%.3f, y=%.3f, z=%.3f w=%.3f", g_rayDirection.x, g_rayDirection.y, g_rayDirection.z, g_rayDirection.w);
-
-
+    // // print g_rayClip, g_rayEye, g_rayWorld, g_rayDirection
+    // ImGui::Text("rayClip: x=%.3f, y=%.3f, z=%.3f w=%.3f", g_rayClip.x, g_rayClip.y, g_rayClip.z, g_rayClip.w);
+    // ImGui::Text("rayEye: x=%.3f, y=%.3f, z=%.3f w=%.3f", g_rayEye.x, g_rayEye.y, g_rayEye.z, g_rayEye.w);
+    // ImGui::Text("rayWorld: x=%.3f, y=%.3f, z=%.3f w=%.3f", g_rayWorld.x, g_rayWorld.y, g_rayWorld.z, g_rayWorld.w);
+    // ImGui::Text("rayDirection: x=%.3f, y=%.3f, z=%.3f w=%.3f", g_rayDirection.x, g_rayDirection.y, g_rayDirection.z, g_rayDirection.w);
 
 
-    ImGui::Text("cameraPosition: x=%.3f, y=%.3f, z=%.3f", cameraPosition.x, cameraPosition.y, cameraPosition.z);
-    ImGui::Text("rayEndPoint: x=%.3f, y=%.3f, z=%.3f w=%.3f", g_rayEndPoint.x, g_rayEndPoint.y, g_rayEndPoint.z, g_rayEndPoint.w);
-    ImGui::Text("Window Width: %.3f", g_actualWindowWidth);
-    ImGui::Text("Window Height: %.3f", g_actualWindowHeight);
 
-    // Print all the keys, object ids and object names on std::map<int, ObjectInstance> g_ObjectInstances;
-    for (auto& object : g_ObjectInstances)
+
+    // ImGui::Text("cameraPosition: x=%.3f, y=%.3f, z=%.3f", cameraPosition.x, cameraPosition.y, cameraPosition.z);
+    // ImGui::Text("rayEndPoint: x=%.3f, y=%.3f, z=%.3f w=%.3f", g_rayEndPoint.x, g_rayEndPoint.y, g_rayEndPoint.z, g_rayEndPoint.w);
+    // ImGui::Text("Window Width: %.3f", g_actualWindowWidth);
+    // ImGui::Text("Window Height: %.3f", g_actualWindowHeight);
+
+    // loop through each SceneObject in g_VirtualScene and prijnt its bbox_min and bbox_max and its bbox_vertices
+    for (auto& object : g_VirtualScene)
     {
-        ImGui::Text("Object %d / id: %d - %s", object.first, object.second.object_id, object.second.object_name.c_str());
+        ImGui::Text("Object %s", object.first.c_str());
+        ImGui::Text("bbox_min: x=%.3f, y=%.3f, z=%.3f", object.second.bbox_min.x, object.second.bbox_min.y, object.second.bbox_min.z);
+        ImGui::Text("bbox_max: x=%.3f, y=%.3f, z=%.3f", object.second.bbox_max.x, object.second.bbox_max.y, object.second.bbox_max.z);
 
-        // if object id is 9, 10 or 11, print the model matrix from the object
-        if (object.second.object_id == 9 || object.second.object_id == 10 || object.second.object_id == 11)
-        {
-            ImGui::Text("%.3f %.3f %.3f %.3f", object.second.model_matrix[0][0], object.second.model_matrix[0][1], object.second.model_matrix[0][2], object.second.model_matrix[0][3]);
-            ImGui::Text("%.3f %.3f %.3f %.3f", object.second.model_matrix[1][0], object.second.model_matrix[1][1], object.second.model_matrix[1][2], object.second.model_matrix[1][3]);
-            ImGui::Text("%.3f %.3f %.3f %.3f", object.second.model_matrix[2][0], object.second.model_matrix[2][1], object.second.model_matrix[2][2], object.second.model_matrix[2][3]);
-            ImGui::Text("%.3f %.3f %.3f %.3f", object.second.model_matrix[3][0], object.second.model_matrix[3][1], object.second.model_matrix[3][2], object.second.model_matrix[3][3]);
-        }
+        ImGui::Text("bbox_vertices[0]: x=%.3f, y=%.3f, z=%.3f", object.second.bbox_vertices[0].x, object.second.bbox_vertices[0].y, object.second.bbox_vertices[0].z);
+        ImGui::Text("bbox_vertices[1]: x=%.3f, y=%.3f, z=%.3f", object.second.bbox_vertices[1].x, object.second.bbox_vertices[1].y, object.second.bbox_vertices[1].z);
+        ImGui::Text("bbox_vertices[2]: x=%.3f, y=%.3f, z=%.3f", object.second.bbox_vertices[2].x, object.second.bbox_vertices[2].y, object.second.bbox_vertices[2].z);
+        ImGui::Text("bbox_vertices[3]: x=%.3f, y=%.3f, z=%.3f", object.second.bbox_vertices[3].x, object.second.bbox_vertices[3].y, object.second.bbox_vertices[3].z);
+        ImGui::Text("bbox_vertices[4]: x=%.3f, y=%.3f, z=%.3f", object.second.bbox_vertices[4].x, object.second.bbox_vertices[4].y, object.second.bbox_vertices[4].z);
+        ImGui::Text("bbox_vertices[5]: x=%.3f, y=%.3f, z=%.3f", object.second.bbox_vertices[5].x, object.second.bbox_vertices[5].y, object.second.bbox_vertices[5].z);
+        ImGui::Text("bbox_vertices[6]: x=%.3f, y=%.3f, z=%.3f", object.second.bbox_vertices[6].x, object.second.bbox_vertices[6].y, object.second.bbox_vertices[6].z);
+        ImGui::Text("bbox_vertices[7]: x=%.3f, y=%.3f, z=%.3f", object.second.bbox_vertices[7].x, object.second.bbox_vertices[7].y, object.second.bbox_vertices[7].z);
     }
+    // Print all the keys, object ids and object names on std::map<int, ObjectInstance> g_ObjectInstances;
+    // for (auto& object : g_ObjectInstances)
+    // {
+    //     ImGui::Text("Object %d / id: %d - %s", object.first, object.second.object_id, object.second.object_name.c_str());
 
-    ImGui::Text("==================================================");
-    ImGui::Text("g_error: %s", g_error.c_str());
+    //     // if object id is 9, 10 or 11, print the model matrix from the object
+    //     if (object.second.object_id == 9 || object.second.object_id == 10 || object.second.object_id == 11)
+    //     {
+    //         ImGui::Text("%.3f %.3f %.3f %.3f", object.second.model_matrix[0][0], object.second.model_matrix[0][1], object.second.model_matrix[0][2], object.second.model_matrix[0][3]);
+    //         ImGui::Text("%.3f %.3f %.3f %.3f", object.second.model_matrix[1][0], object.second.model_matrix[1][1], object.second.model_matrix[1][2], object.second.model_matrix[1][3]);
+    //         ImGui::Text("%.3f %.3f %.3f %.3f", object.second.model_matrix[2][0], object.second.model_matrix[2][1], object.second.model_matrix[2][2], object.second.model_matrix[2][3]);
+    //         ImGui::Text("%.3f %.3f %.3f %.3f", object.second.model_matrix[3][0], object.second.model_matrix[3][1], object.second.model_matrix[3][2], object.second.model_matrix[3][3]);
+    //     }
+    // }
+
+    // ImGui::Text("==================================================");
+    // ImGui::Text("g_error: %s", g_error.c_str());
 
     ImGui::End();
 }
 
-void CreateProjectionSettingsWindow(ImVec2 projectionWindowSize, ImVec2 projectionWindowPosition)
+void CreateProjectionSettingsWindow(ImVec2 windowSize, ImVec2 windowPosition)
 {
-    ImGui::SetNextWindowSize(projectionWindowSize);
-    ImGui::SetNextWindowPos(projectionWindowPosition);
+    ImGui::SetNextWindowSize(windowSize);
+    ImGui::SetNextWindowPos(windowPosition);
 
     // Criação da janela
-    ImGuiWindowFlags projectionWindowFlags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
-    ImGui::Begin("##NoTitle", NULL, projectionWindowFlags);
+    ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+    ImGui::Begin("ProjectionSettingsWindow", NULL, windowFlags);
 
     // Inicializa o radio button
     static int radioValue = 0;
@@ -194,6 +235,34 @@ void CreateProjectionSettingsWindow(ImVec2 projectionWindowSize, ImVec2 projecti
     }
     ImGui::SameLine();
     ImGui::Text("Orthographic");
+
+    ImGui::End();
+}
+
+void CreateShowBoundingBoxesWindow(ImVec2 windowSize, ImVec2 windowPosition)
+{
+    ImGui::SetNextWindowSize(windowSize);
+    ImGui::SetNextWindowPos(windowPosition);
+
+    // Criação da janela
+    ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+    ImGui::Begin("ShowBoundingBoxesWindow", NULL, windowFlags);
+
+    ImGui::Checkbox("Show B. Boxes", &g_drawBoundingBox);
+
+    ImGui::End();
+}
+
+void CreateDrawMouseRayWindow(ImVec2 windowSize, ImVec2 windowPosition)
+{
+    ImGui::SetNextWindowSize(windowSize);
+    ImGui::SetNextWindowPos(windowPosition);
+
+    // Criação da janela
+    ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+    ImGui::Begin("DrawMouseRayWindow", NULL, windowFlags);
+
+    ImGui::Checkbox("Draw mouse ray", &g_drawMouseRay);
 
     ImGui::End();
 }
