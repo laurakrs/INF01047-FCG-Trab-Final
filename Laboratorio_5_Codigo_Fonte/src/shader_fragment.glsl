@@ -55,11 +55,12 @@ out vec4 color;
 #define M_PI   3.14159265358979323846
 #define M_PI_2 1.57079632679489661923
 
-// deve incluir objetos com os seguintes modelos de iluminação: difusa (Lambert) e Blinn-Phong.
+// Deve incluir objetos com os seguintes modelos de iluminação: difusa (Lambert) e Blinn-Phong.
+// Difusa: O PLANE, o cubo e o cuboide
+// Blinn-phong:  o resto
 
-// No mínimo um objeto com modelo de Gouraud
-
-// No mínimo um objeto com modelo de Phong
+// No mínimo um objeto com modelo de interpolacao de Gouraud: COELHO 
+// No mínimo um objeto com modelo de Phong: O RESTO
 
 void main()
 {
