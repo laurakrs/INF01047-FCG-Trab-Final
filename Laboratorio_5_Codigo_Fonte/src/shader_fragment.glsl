@@ -55,11 +55,12 @@ out vec4 color;
 #define M_PI   3.14159265358979323846
 #define M_PI_2 1.57079632679489661923
 
-// deve incluir objetos com os seguintes modelos de iluminação: difusa (Lambert) e Blinn-Phong.
+// Deve incluir objetos com os seguintes modelos de iluminação: difusa (Lambert) e Blinn-Phong.
+// Difusa: O PLANE, o cubo e o cuboide
+// Blinn-phong:  o resto
 
-// No mínimo um objeto com modelo de Gouraud
-
-// No mínimo um objeto com modelo de Phong
+// No mínimo um objeto com modelo de interpolacao de Gouraud: COELHO 
+// No mínimo um objeto com modelo de Phong: O RESTO
 
 void main()
 {
@@ -102,6 +103,7 @@ void main()
 
     // Parâmetros que definem as propriedades espectrais da superfície
     vec3 Kd; // Refletância difusa
+    vec3 Kd0; // Refletancia da textura
     vec3 Ks; // Refletância especular
     vec3 Ka; // Refletância ambiente
     float q; // Expoente especular para o modelo de iluminação de Phong
@@ -113,10 +115,7 @@ void main()
     float V = 0.0;
 
 
-    vec3 Kd0 = texture(TextureImage0, vec2(U,V)).rgb;
-
-
-    if ( object_id == SPHERE || object_id == CENTRAL_SPHERE || object_id == SPHERE2 )
+    if ( object_id == SPHERE || object_id == CENTRAL_SPHERE || object_id == SPHERE2 ) // BLINN-PHONG
     {
         // PREENCHA AQUI as coordenadas de textura da esfera, computadas com
         // projeção esférica EM COORDENADAS DO MODELO. Utilize como referência
@@ -148,11 +147,65 @@ void main()
         // Propriedades espectrais da esfera
         Kd = vec3(0.8,0.4,0.08);        // Refletância no modelo RGB = (0.8, 0.4, 0.08)
         Ks = vec3(0.0,0.0,0.0);         // Superfície 100% difusa
-        Ka = Kd / 2;                    // Refletância ambiente no modelo RGB = metade da refletância difusa
+        Ka = Kd0 / 2;                    // Refletância ambiente no modelo RGB = metade da refletância difusa
         q = 1.0;                        // Expoente especular de Phong não especificado
         q_linha = 1.0;
+
+        // Espectro da fonte de iluminação
+        vec3 I = vec3(1.0,1.0,1.0); // PREENCHA AQUI o espectro da fonte de luz
+
+        // Espectro da luz ambiente
+        vec3 Ia = vec3(0.2,0.2,0.2); // PREENCHA AQUI o espectro da luz ambiente
+
+        // Termo difuso utilizando a lei dos cossenos de Lambert
+        // Aula 17 e 18 - Modelos de Iluminação - Slide 103
+        // SUBSTITUI O Kd pelo Kd0 da textura
+        vec3 lambert_diffuse_term = Kd0*I*max(0,dot(n,l)); // PREENCHA AQUI o termo difuso de Lambert
+
+        // Termo ambiente
+        // Slide 103
+        vec3 ambient_term = Ka*Ia; // PREENCHA AQUI o termo ambiente
+
+        // Termo especular utilizando o modelo de iluminação de Phong
+        // Slide 128
+        vec3 phong_specular_term  = Ks*I*pow(max(0,dot(r,v)),q); // PREENCHA AQUI o termo especular de Phong
+
+        // MODELO DE BLINN-PHONG - DIFERENTE:
+        // Termo especular utilizando o modelo de iluminacao de Blinn-Phong:
+        // Slide 150
+        vec3 blinn_phong_specular_term  = Ks*I*pow(max(0,dot(n,h)),q_linha);
+        
+
+        // color.rgb = Kd0 * (lambert + 0.01);
+
+        // NOTE: Se você quiser fazer o rendering de objetos transparentes, é
+        // necessário:
+        // 1) Habilitar a operação de "blending" de OpenGL logo antes de realizar o
+        //    desenho dos objetos transparentes, com os comandos abaixo no código C++:
+        //      glEnable(GL_BLEND);
+        //      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        // 2) Realizar o desenho de todos objetos transparentes *após* ter desenhado
+        //    todos os objetos opacos; e
+        // 3) Realizar o desenho de objetos transparentes ordenados de acordo com
+        //    suas distâncias para a câmera (desenhando primeiro objetos
+        //    transparentes que estão mais longe da câmera).
+        // Alpha default = 1 = 100% opaco = 0% transparente
+        color.a = 1;
+
+        // Cor final do fragmento calculada com uma combinação dos termos difuso,
+        // especular, e ambiente. Veja slide 129 do documento Aula_17_e_18_Modelos_de_Iluminacao.pdf.
+        //color.rgb = lambert_diffuse_term + ambient_term + phong_specular_term;
+
+        // OU - PARA BLINN-PHONG:
+        color.rgb = lambert_diffuse_term + ambient_term + blinn_phong_specular_term;
+
+
+        // Cor final com correção gamma, considerando monitor sRGB.
+        // Veja https://en.wikipedia.org/w/index.php?title=Gamma_correction&oldid=751281772#Windows.2C_Mac.2C_sRGB_and_TV.2Fvideo_standard_gammas
+        color.rgb = pow(color.rgb, vec3(1.0,1.0,1.0)/2.2);
+        return;
     }
-    else if ( object_id == BUNNY || object_id ==  BUNNY2 ){
+    else if ( object_id == BUNNY || object_id ==  BUNNY2 ){ // BLINN-PHONG (DEPOIS VAI PRA GOURAUD)
     
     
         // BLINN-PHONG
@@ -183,15 +236,69 @@ void main()
         float relative_x_position = (position_model.x - minx);
         float relative_y_position = (position_model.y - miny);
 
+        U = relative_x_position / x_range;
+        V = relative_y_position / y_range;
+
         Kd0 = texture(TextureImage4, vec2(U,V)).rgb; // white 
 
         // Propriedades espectrais do coelho
         Kd = vec3(0.08,0.4,0.8);         // Refletância difusa no modelo RGB = (0.08, 0.4, 0.8)
         Ks = vec3(0.8,0.8,0.8);          // Refletância especular no modelo RGB = (0.8, 0.8, 0.8)
-        Ka = Kd / 2;                     // Refletância ambiente no modelo RGB = metade da refletância difusa
+        Ka = Kd0 / 2;                     // Refletância ambiente no modelo RGB = metade da refletância difusa
         q_linha = 80.0;                      // Expoente especular de Phong = 32.0
+
+        // Espectro da fonte de iluminação
+        vec3 I = vec3(1.0,1.0,1.0); // PREENCHA AQUI o espectro da fonte de luz
+
+        // Espectro da luz ambiente
+        vec3 Ia = vec3(0.2,0.2,0.2); // PREENCHA AQUI o espectro da luz ambiente
+
+        // Termo difuso utilizando a lei dos cossenos de Lambert
+        // Aula 17 e 18 - Modelos de Iluminação - Slide 103
+        // SUBSTITUI O Kd pelo Kd0 da textura
+        vec3 lambert_diffuse_term = Kd0*I*max(0,dot(n,l)); // PREENCHA AQUI o termo difuso de Lambert
+
+        // Termo ambiente
+        // Slide 103
+        vec3 ambient_term = Ka*Ia; // PREENCHA AQUI o termo ambiente
+
+        // Termo especular utilizando o modelo de iluminação de Phong
+        // Slide 128
+        vec3 phong_specular_term  = Ks*I*pow(max(0,dot(r,v)),q); // PREENCHA AQUI o termo especular de Phong
+
+        // MODELO DE BLINN-PHONG - DIFERENTE:
+        // Termo especular utilizando o modelo de iluminacao de Blinn-Phong:
+        // Slide 150
+        vec3 blinn_phong_specular_term  = Ks*I*pow(max(0,dot(n,h)),q_linha);
+        
+        // NOTE: Se você quiser fazer o rendering de objetos transparentes, é
+        // necessário:
+        // 1) Habilitar a operação de "blending" de OpenGL logo antes de realizar o
+        //    desenho dos objetos transparentes, com os comandos abaixo no código C++:
+        //      glEnable(GL_BLEND);
+        //      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        // 2) Realizar o desenho de todos objetos transparentes *após* ter desenhado
+        //    todos os objetos opacos; e
+        // 3) Realizar o desenho de objetos transparentes ordenados de acordo com
+        //    suas distâncias para a câmera (desenhando primeiro objetos
+        //    transparentes que estão mais longe da câmera).
+        // Alpha default = 1 = 100% opaco = 0% transparente
+        color.a = 1;
+
+        // Cor final do fragmento calculada com uma combinação dos termos difuso,
+        // especular, e ambiente. Veja slide 129 do documento Aula_17_e_18_Modelos_de_Iluminacao.pdf.
+        //color.rgb = lambert_diffuse_term + ambient_term + phong_specular_term;
+
+        // OU - PARA BLINN-PHONG:
+        color.rgb = lambert_diffuse_term + ambient_term + blinn_phong_specular_term;
+
+
+        // Cor final com correção gamma, considerando monitor sRGB.
+        // Veja https://en.wikipedia.org/w/index.php?title=Gamma_correction&oldid=751281772#Windows.2C_Mac.2C_sRGB_and_TV.2Fvideo_standard_gammas
+        color.rgb = pow(color.rgb, vec3(1.0,1.0,1.0)/2.2);
+        return;
     }
-    else if( object_id == COW )
+    else if( object_id == COW ) // blinn-phong
     {
         // as coordenadas de textura da vaca
         float minx = bbox_min.x;
@@ -217,16 +324,57 @@ void main()
         // Propriedades espectrais da vaca
         Kd = vec3(0.08,0.4,0.8);         // Refletância difusa no modelo RGB = (0.08, 0.4, 0.8)
         Ks = vec3(0.8,0.8,0.8);          // Refletância especular no modelo RGB = (0.8, 0.8, 0.8)
-        Ka = Kd / 2;                     // Refletância ambiente no modelo RGB = metade da refletância difusa
+        Ka = Kd0 / 2;                     // Refletância ambiente no modelo RGB = metade da refletância difusa
         q = 32.0;                        // Expoente especular de Phong = 32.0
         q_linha = 80.0;
 
+        // Espectro da fonte de iluminação
+        vec3 I = vec3(1.0,1.0,1.0); // PREENCHA AQUI o espectro da fonte de luz
+
+        // Espectro da luz ambiente
+        vec3 Ia = vec3(0.2,0.2,0.2); // PREENCHA AQUI o espectro da luz ambiente
+
+        // Termo difuso utilizando a lei dos cossenos de Lambert
+        // Aula 17 e 18 - Modelos de Iluminação - Slide 103
+        // SUBSTITUI O Kd pelo Kd0 da textura
+        vec3 lambert_diffuse_term = Kd0*I*max(0,dot(n,l)); // PREENCHA AQUI o termo difuso de Lambert
+
+        // Termo ambiente
+        // Slide 103
+        vec3 ambient_term = Ka*Ia; // PREENCHA AQUI o termo ambiente
+
+        // Termo especular utilizando o modelo de iluminação de Phong
+        // Slide 128
+        vec3 phong_specular_term  = Ks*I*pow(max(0,dot(r,v)),q); // PREENCHA AQUI o termo especular de Phong
+
+        // MODELO DE BLINN-PHONG - DIFERENTE:
+        // Termo especular utilizando o modelo de iluminacao de Blinn-Phong:
+        // Slide 150
+        vec3 blinn_phong_specular_term  = Ks*I*pow(max(0,dot(n,h)),q_linha);
+        
+        color.a = 1;
+
+        // Cor final do fragmento calculada com uma combinação dos termos difuso,
+        // especular, e ambiente. Veja slide 129 do documento Aula_17_e_18_Modelos_de_Iluminacao.pdf.
+
+        // OU - PARA BLINN-PHONG:
+        color.rgb = lambert_diffuse_term + ambient_term + blinn_phong_specular_term;
+
+
+        // Cor final com correção gamma, considerando monitor sRGB.
+        // Veja https://en.wikipedia.org/w/index.php?title=Gamma_correction&oldid=751281772#Windows.2C_Mac.2C_sRGB_and_TV.2Fvideo_standard_gammas
+        color.rgb = pow(color.rgb, vec3(1.0,1.0,1.0)/2.2);
+        return;
+
     }
-    else if( object_id == CUBE )
+    else if( object_id == CUBE ) // DIFUSA LAMBERT
     {
     
-        // as coordenadas de textura do cubo
-        // IGUAL A ESFERA POR ENQUANTO
+        
+        // PROJECAO ESFERICA
+        // TEXTURA
+
+        // TEXTURA
         vec4 bbox_center = (bbox_min + bbox_max) / 2.0;
 
         // Slide 150 da Aula 20 - Mapeamento de Texturas
@@ -240,18 +388,48 @@ void main()
         Kd0 = texture(TextureImage1, vec2(U,V)).rgb; // brick wall
 
         // Propriedades espectrais do cubo
-        Kd = vec3(0.8,0.4,0.08);        // Refletância no modelo RGB = (0.8, 0.4, 0.08)
-        Ks = vec3(0.0,0.0,0.0);         // Superfície 100% difusa
-        Ka = Kd / 2;                    // Refletância ambiente no modelo RGB = metade da refletância difusa
-        q = 1.0;                        // Expoente especular de Phong não especificado
-        q_linha = 1.0;
+        //Kd = vec3(0.8,0.4,0.08);        // Refletância no modelo RGB = (0.8, 0.4, 0.08)
+        //Ks = vec3(0.0,0.0,0.0);         // Superfície 100% difusa
+        Ka = Kd0 / 2;                    // Refletância ambiente no modelo RGB = metade da refletância difusa
+        //q = 1.0;                        // Expoente especular de Phong não especificado
+        //q_linha = 1.0;
+
+        // Espectro da fonte de iluminação
+        vec3 I = vec3(1.0,1.0,1.0); // PREENCHA AQUI o espectro da fonte de luz
+
+        // Espectro da luz ambiente
+        vec3 Ia = vec3(0.2,0.2,0.2); // PREENCHA AQUI o espectro da luz ambiente
+
+        // Termo ambiente
+        // Slide 103
+        vec3 ambient_term = Ka*Ia; // PREENCHA AQUI o termo ambiente
+
+        // Termo difuso utilizando a lei dos cossenos de Lambert
+        // Aula 17 e 18 - Modelos de Iluminação - Slide 103
+        // SUBSTITUI O Kd pelo Kd0 da textura
+        vec3 lambert_diffuse_term = Kd0*I*max(0,dot(n,l)); // PREENCHA AQUI o termo difuso de Lambert
+
+        //float lambert = max(0,dot(n,l));
+
+        color.a = 1;
+
+        // LAMBERT
+        //ou
+        color.rgb = lambert_diffuse_term + ambient_term;
+
+        //color.rgb = Kd0 * (lambert + 0.01);
+
+
+        // Cor final com correção gamma, considerando monitor sRGB.
+        // Veja https://en.wikipedia.org/w/index.php?title=Gamma_correction&oldid=751281772#Windows.2C_Mac.2C_sRGB_and_TV.2Fvideo_standard_gammas
+        color.rgb = pow(color.rgb, vec3(1.0,1.0,1.0)/2.2);
+        return;
 
     }
     else if( object_id == RECTANGLE )
     {
     
         // as coordenadas de textura do retangulo
-        // IGUAL AO COELHO POR ENQUANTO
         float minx = bbox_min.x;
         float maxx = bbox_max.x;
 
@@ -274,27 +452,131 @@ void main()
 
         // Propriedades espectrais do retangulo
         Kd = vec3(0.8,0.4,0.08);        // Refletância no modelo RGB = (0.8, 0.4, 0.08)
-        Ks = vec3(0.0,0.0,0.0);         // Superfície 100% difusa
-        Ka = Kd / 2;                    // Refletância ambiente no modelo RGB = metade da refletância difusa
-        q = 1.0;                        // Expoente especular de Phong não especificado
-        q_linha = 1.0;
+       // Ks = vec3(0.0,0.0,0.0);         // Superfície 100% difusa
+        Ka = Kd0 / 2;                    // Refletância ambiente no modelo RGB = metade da refletância difusa
+        //q = 1.0;                        // Expoente especular de Phong não especificado
+        //q_linha = 1.0;
 
+
+        // Espectro da fonte de iluminação
+        vec3 I = vec3(1.0,1.0,1.0); // PREENCHA AQUI o espectro da fonte de luz
+
+        // Espectro da luz ambiente
+        vec3 Ia = vec3(0.2,0.2,0.2); // PREENCHA AQUI o espectro da luz ambiente
+
+        // Termo ambiente
+        // Slide 103
+        vec3 ambient_term = Ka*Ia; // PREENCHA AQUI o termo ambiente
+
+
+        // Termo difuso utilizando a lei dos cossenos de Lambert
+        // Aula 17 e 18 - Modelos de Iluminação - Slide 103
+        // SUBSTITUI O Kd pelo Kd0 da textura
+        vec3 lambert_diffuse_term = Kd0*I*max(0,dot(n,l)); // PREENCHA AQUI o termo difuso de Lambert
+
+
+        // MODELO DE BLINN-PHONG - DIFERENTE:
+        // Termo especular utilizando o modelo de iluminacao de Blinn-Phong:
+        // Slide 150
+        //vec3 blinn_phong_specular_term  = Ks*I*pow(max(0,dot(n,h)),q_linha);
+    
+
+        // NOTE: Se você quiser fazer o rendering de objetos transparentes, é
+        // necessário:
+        // 1) Habilitar a operação de "blending" de OpenGL logo antes de realizar o
+        //    desenho dos objetos transparentes, com os comandos abaixo no código C++:
+        //      glEnable(GL_BLEND);
+        //      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        // 2) Realizar o desenho de todos objetos transparentes *após* ter desenhado
+        //    todos os objetos opacos; e
+        // 3) Realizar o desenho de objetos transparentes ordenados de acordo com
+        //    suas distâncias para a câmera (desenhando primeiro objetos
+        //    transparentes que estão mais longe da câmera).
+        // Alpha default = 1 = 100% opaco = 0% transparente
+        color.a = 1;
+
+        // Cor final do fragmento calculada com uma combinação dos termos difuso,
+        // especular, e ambiente. Veja slide 129 do documento Aula_17_e_18_Modelos_de_Iluminacao.pdf.
+        //color.rgb = lambert_diffuse_term + ambient_term + phong_specular_term;
+
+        // OU - PARA BLINN-PHONG:
+        color.rgb = lambert_diffuse_term + ambient_term;
+
+
+        // Cor final com correção gamma, considerando monitor sRGB.
+        // Veja https://en.wikipedia.org/w/index.php?title=Gamma_correction&oldid=751281772#Windows.2C_Mac.2C_sRGB_and_TV.2Fvideo_standard_gammas
+        color.rgb = pow(color.rgb, vec3(1.0,1.0,1.0)/2.2);
+        return;
         
     }
-    else if ( object_id == PLANE )
+    else if ( object_id == PLANE ) // ILUMINACAO DIFUSA DE LAMBERT
     {
         // Coordenadas de textura do plano, obtidas do arquivo OBJ.
         U = texcoords.x;
         V = texcoords.y;
-
+        
         Kd0 = texture(TextureImage0, vec2(U,V)).rgb;
 
         // Propriedades espectrais do plano
-        Kd = vec3(0.2,0.2,0.2);         // Refletância difusa no modelo RGB = (0.2, 0.2, 0.2)
-        Ks = vec3(0.3,0.3,0.3);         // Refletância especular no modelo RGB = (0.3, 0.3, 0.3)
-        Ka = vec3(0.0,0.0,0.0);         // Refletância ambiente no modelo RGB = zero.
-        q = 20.0;                       // Expoente especular de Phong = 20.0
-        q_linha = 20.00;
+        //Kd = vec3(0.2,0.2,0.2);         // Refletância difusa no modelo RGB = (0.2, 0.2, 0.2)
+        ///Ks = vec3(0.3,0.3,0.3);         // Refletância especular no modelo RGB = (0.3, 0.3, 0.3)
+        //Ka = vec3(0.0,0.0,0.0);         // Refletância ambiente no modelo RGB = zero.
+        //q = 20.0;                       // Expoente especular de Phong = 20.0
+        //q_linha = 20.00;
+
+
+        
+        // Espectro da fonte de iluminação
+        vec3 I = vec3(1.0,1.0,1.0); // PREENCHA AQUI o espectro da fonte de luz
+
+        // Espectro da luz ambiente
+        //vec3 Ia = vec3(0.2,0.2,0.2); // PREENCHA AQUI o espectro da luz ambiente
+
+        // Termo difuso utilizando a lei dos cossenos de Lambert
+        // Aula 17 e 18 - Modelos de Iluminação - Slide 103
+        // SUBSTITUI O Kd pelo Kd0 da textura
+        vec3 lambert_diffuse_term = Kd0*I*max(0,dot(n,l)); // PREENCHA AQUI o termo difuso de Lambert
+
+        // Termo ambiente
+        // Slide 103
+        //vec3 ambient_term = Ka*Ia; // PREENCHA AQUI o termo ambiente
+
+        // Termo especular utilizando o modelo de iluminação de Phong
+        // Slide 128
+        //vec3 phong_specular_term  = Ks*I*pow(max(0,dot(r,v)),q); // PREENCHA AQUI o termo especular de Phong
+
+        // MODELO DE BLINN-PHONG - DIFERENTE:
+        // Termo especular utilizando o modelo de iluminacao de Blinn-Phong:
+        // Slide 150
+        //vec3 blinn_phong_specular_term  = Ks*I*pow(max(0,dot(n,h)),q_linha);
+        
+
+        // NOTE: Se você quiser fazer o rendering de objetos transparentes, é
+        // necessário:
+        // 1) Habilitar a operação de "blending" de OpenGL logo antes de realizar o
+        //    desenho dos objetos transparentes, com os comandos abaixo no código C++:
+        //      glEnable(GL_BLEND);
+        //      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        // 2) Realizar o desenho de todos objetos transparentes *após* ter desenhado
+        //    todos os objetos opacos; e
+        // 3) Realizar o desenho de objetos transparentes ordenados de acordo com
+        //    suas distâncias para a câmera (desenhando primeiro objetos
+        //    transparentes que estão mais longe da câmera).
+        // Alpha default = 1 = 100% opaco = 0% transparente
+        color.a = 1;
+
+        // Cor final do fragmento calculada com uma combinação dos termos difuso,
+        // especular, e ambiente. Veja slide 129 do documento Aula_17_e_18_Modelos_de_Iluminacao.pdf.
+        //color.rgb = lambert_diffuse_term + ambient_term + phong_specular_term;
+
+        // OU - PARA BLINN-PHONG:
+        color.rgb = lambert_diffuse_term;
+
+
+        // Cor final com correção gamma, considerando monitor sRGB.
+        // Veja https://en.wikipedia.org/w/index.php?title=Gamma_correction&oldid=751281772#Windows.2C_Mac.2C_sRGB_and_TV.2Fvideo_standard_gammas
+        color.rgb = pow(color.rgb, vec3(1.0,1.0,1.0)/2.2);
+        return;
     }
     else if( object_id == X_AXIS )
     {
@@ -310,7 +592,7 @@ void main()
     {
         color = vec4(0.0, 0.0, 1.0, 1.0);  // Azul
         return;  // Exit the shader
-    }
+    }  
     //else if(isBoundingBox) 
     //{
     //    color = vec4(1.0, 0.0, 0.0, 1.0); // Red color for bounding box
@@ -324,68 +606,7 @@ void main()
         q = 1.0;
         q_linha = 1.0;
     }
-   
 
-
-    // Espectro da fonte de iluminação
-    vec3 I = vec3(1.0,1.0,1.0); // PREENCHA AQUI o espectro da fonte de luz
-
-    // Espectro da luz ambiente
-    vec3 Ia = vec3(0.2,0.2,0.2); // PREENCHA AQUI o espectro da luz ambiente
-
-    // Termo difuso utilizando a lei dos cossenos de Lambert
-    // Aula 17 e 18 - Modelos de Iluminação - Slide 103
-    // SUBSTITUI O Kd pelo Kd0 da textura
-    vec3 lambert_diffuse_term = Kd0*I*max(0,dot(n,l)); // PREENCHA AQUI o termo difuso de Lambert
-
-    // Termo ambiente
-    // Slide 103
-    vec3 ambient_term = Ka*Ia; // PREENCHA AQUI o termo ambiente
-
-    // Termo especular utilizando o modelo de iluminação de Phong
-    // Slide 128
-    vec3 phong_specular_term  = Ks*I*pow(max(0,dot(r,v)),q); // PREENCHA AQUI o termo especular de Phong
-
-    // MODELO DE BLINN-PHONG - DIFERENTE:
-    // Termo especular utilizando o modelo de iluminacao de Blinn-Phong:
-    // Slide 150
-    vec3 blinn_phong_specular_term  = Ks*I*pow(max(0,dot(n,h)),q_linha);
-
-
-    // ANTES - NO ARQUIVO ORIGINAL DO LAB 5
-    // Obtemos a refletância difusa a partir da leitura da imagem TextureImage0
-    // vec3 Kd0 = texture(TextureImage0, vec2(U,V)).rgb;
-
-    // Equação de Iluminação
-    // float lambert = max(0,dot(n,l));
-
-    // color.rgb = Kd0 * (lambert + 0.01);
-
-    // NOTE: Se você quiser fazer o rendering de objetos transparentes, é
-    // necessário:
-    // 1) Habilitar a operação de "blending" de OpenGL logo antes de realizar o
-    //    desenho dos objetos transparentes, com os comandos abaixo no código C++:
-    //      glEnable(GL_BLEND);
-    //      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    // 2) Realizar o desenho de todos objetos transparentes *após* ter desenhado
-    //    todos os objetos opacos; e
-    // 3) Realizar o desenho de objetos transparentes ordenados de acordo com
-    //    suas distâncias para a câmera (desenhando primeiro objetos
-    //    transparentes que estão mais longe da câmera).
-    // Alpha default = 1 = 100% opaco = 0% transparente
-    color.a = 1;
-
-    // Cor final do fragmento calculada com uma combinação dos termos difuso,
-    // especular, e ambiente. Veja slide 129 do documento Aula_17_e_18_Modelos_de_Iluminacao.pdf.
-    //color.rgb = lambert_diffuse_term + ambient_term + phong_specular_term;
-
-    // OU - PARA BLINN-PHONG:
-    color.rgb = lambert_diffuse_term + ambient_term + blinn_phong_specular_term;
-
-
-    // Cor final com correção gamma, considerando monitor sRGB.
-    // Veja https://en.wikipedia.org/w/index.php?title=Gamma_correction&oldid=751281772#Windows.2C_Mac.2C_sRGB_and_TV.2Fvideo_standard_gammas
-    color.rgb = pow(color.rgb, vec3(1.0,1.0,1.0)/2.2);
 }
 
 
