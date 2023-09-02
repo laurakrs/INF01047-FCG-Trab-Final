@@ -414,23 +414,16 @@ void main()
         // PROJECAO PLANAR
         // TEXTURA
 
-        float minx = bbox_min.x;
-        float maxx = bbox_max.x;
+        // TEXTURA
+        vec4 bbox_center = (bbox_min + bbox_max) / 2.0;
 
-        float miny = bbox_min.y;
-        float maxy = bbox_max.y;
+        // Slide 150 da Aula 20 - Mapeamento de Texturas
+        vec4 p = position_model - bbox_center;
+        float theta = atan(p.x, p.z);       // Range: [-PI, PI)
+        float phi = asin(p.y / length(p));  // Range: [-PI/2, PI/2)
 
-        float minz = bbox_min.z;
-        float maxz = bbox_max.z;
-
-        float x_range = (maxx - minx);
-        float y_range = (maxy - miny);
-
-        float relative_x_position = (position_model.x - minx);
-        float relative_y_position = (position_model.y - miny);
-       
-        U = relative_x_position / x_range;
-        V = relative_y_position / y_range;
+        U = (theta + M_PI) / (2 * M_PI);    // Range: [0,1)
+        V = (phi + M_PI / 2) / M_PI;        // Range: [0, 1)
 
         Kd0 = texture(TextureImage1, vec2(U,V)).rgb; // brick wall
 
@@ -450,7 +443,7 @@ void main()
         // SUBSTITUI O Kd pelo Kd0 da textura
         vec3 lambert_diffuse_term = Kd0*I*max(0,dot(n,l)); // PREENCHA AQUI o termo difuso de Lambert
 
-        float lambert = max(0,dot(n,l));
+        //float lambert = max(0,dot(n,l));
     
        
         color.a = 1;
