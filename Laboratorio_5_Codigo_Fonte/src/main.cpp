@@ -61,6 +61,7 @@
 #include "CursorRay.h"
 #include "GUI.h"
 #include "collisions.h"
+#include "bezier.h"
 
 #define M_PI   3.14159265358979323846
 
@@ -335,6 +336,30 @@ int main(int argc, char* argv[])
             }
 
         }
+
+        // BEZIER CURVE DENTRO DO LOOP:
+        float time_Bezier = 0.0f;
+        float current_time_Bezier = (float)glfwGetTime();
+        float delta_t_Bezier = current_time_Bezier - prev_time;
+        prev_time = current_time_Bezier;
+
+        time_Bezier += speed * delta_t_Bezier;
+
+        glm::vec4 originBezier = glm::vec4(0.0, 0.0, 0.0, 1.0);
+        glm::vec4 startPoint = glm::vec4(-15.0f, 0.0f, -15.0f, 1.0f); 
+        glm::vec4 endPoint = glm::vec4(15.0f, 0.0f, 15.0f, 1.0f); 
+        glm::vec4 control1 = glm::vec4(-15.0f, 0.0f, 30.0f, 1.0f); 
+        glm::vec4 control2 = glm::vec4(15.0f, 0.0f, -30.0f, 1.0f); 
+
+         // Ensure 't' stays within the range [0, 1]
+        if (time_Bezier > 1.0f) {
+            time_Bezier = 0.0f; // Reset to the beginning of the curve
+        }
+
+        glm::vec4 currentPoint = bezierCurve(time_Bezier, startPoint, control1, control2, endPoint);
+
+        glm::vec4 sentidoL = currentPoint - originBezier;
+        
         
         if (g_LeftMouseButtonPressed)
         {
