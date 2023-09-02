@@ -13,6 +13,9 @@ in vec4 position_model;
 // Coordenadas de textura obtidas do arquivo OBJ (se existirem!)
 in vec2 texcoords;
 
+// COR DO COELHO (GOURAUD)
+in vec4 color_bunny;
+
 // Matrizes computadas no código C++ e enviadas para a GPU
 uniform mat4 model;
 uniform mat4 view;
@@ -205,7 +208,11 @@ void main()
         color.rgb = pow(color.rgb, vec3(1.0,1.0,1.0)/2.2);
         return;
     }
-    else if ( object_id == BUNNY || object_id ==  BUNNY2 ){ // BLINN-PHONG (DEPOIS VAI PRA GOURAUD)
+    else if (object_id == BUNNY){ // INTERPOLACAO DE GOURAUD
+        color = color_bunny;
+        return;
+    }
+    else if ( object_id ==  BUNNY2 ){ // BLINN-PHONG (DEPOIS VAI PRA GOURAUD)
     
     
         // BLINN-PHONG
