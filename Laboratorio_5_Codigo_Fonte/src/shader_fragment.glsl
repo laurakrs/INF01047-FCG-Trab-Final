@@ -282,7 +282,7 @@ void main()
 
         
     }
-    else if ( object_id == PLANE )
+    else if ( object_id == PLANE ) // ILUMINACAO DIFUSA
     {
         // Coordenadas de textura do plano, obtidas do arquivo OBJ.
         U = texcoords.x;
