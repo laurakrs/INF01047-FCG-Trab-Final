@@ -176,13 +176,6 @@ void main()
         vec3 blinn_phong_specular_term  = Ks*I*pow(max(0,dot(n,h)),q_linha);
         
 
-        // ANTES - NO ARQUIVO ORIGINAL DO LAB 5
-        // Obtemos a refletância difusa a partir da leitura da imagem TextureImage0
-        // vec3 Kd0 = texture(TextureImage0, vec2(U,V)).rgb;
-
-        // Equação de Iluminação
-        // float lambert = max(0,dot(n,l));
-
         // color.rgb = Kd0 * (lambert + 0.01);
 
         // NOTE: Se você quiser fazer o rendering de objetos transparentes, é
@@ -278,16 +271,6 @@ void main()
         // Slide 150
         vec3 blinn_phong_specular_term  = Ks*I*pow(max(0,dot(n,h)),q_linha);
         
-
-        // ANTES - NO ARQUIVO ORIGINAL DO LAB 5
-        // Obtemos a refletância difusa a partir da leitura da imagem TextureImage0
-        // vec3 Kd0 = texture(TextureImage0, vec2(U,V)).rgb;
-
-        // Equação de Iluminação
-        // float lambert = max(0,dot(n,l));
-
-        // color.rgb = Kd0 * (lambert + 0.01);
-
         // NOTE: Se você quiser fazer o rendering de objetos transparentes, é
         // necessário:
         // 1) Habilitar a operação de "blending" de OpenGL logo antes de realizar o
@@ -369,33 +352,10 @@ void main()
         // Slide 150
         vec3 blinn_phong_specular_term  = Ks*I*pow(max(0,dot(n,h)),q_linha);
         
-
-        // ANTES - NO ARQUIVO ORIGINAL DO LAB 5
-        // Obtemos a refletância difusa a partir da leitura da imagem TextureImage0
-        // vec3 Kd0 = texture(TextureImage0, vec2(U,V)).rgb;
-
-        // Equação de Iluminação
-        // float lambert = max(0,dot(n,l));
-
-        // color.rgb = Kd0 * (lambert + 0.01);
-
-        // NOTE: Se você quiser fazer o rendering de objetos transparentes, é
-        // necessário:
-        // 1) Habilitar a operação de "blending" de OpenGL logo antes de realizar o
-        //    desenho dos objetos transparentes, com os comandos abaixo no código C++:
-        //      glEnable(GL_BLEND);
-        //      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        // 2) Realizar o desenho de todos objetos transparentes *após* ter desenhado
-        //    todos os objetos opacos; e
-        // 3) Realizar o desenho de objetos transparentes ordenados de acordo com
-        //    suas distâncias para a câmera (desenhando primeiro objetos
-        //    transparentes que estão mais longe da câmera).
-        // Alpha default = 1 = 100% opaco = 0% transparente
         color.a = 1;
 
         // Cor final do fragmento calculada com uma combinação dos termos difuso,
         // especular, e ambiente. Veja slide 129 do documento Aula_17_e_18_Modelos_de_Iluminacao.pdf.
-        //color.rgb = lambert_diffuse_term + ambient_term + phong_specular_term;
 
         // OU - PARA BLINN-PHONG:
         color.rgb = lambert_diffuse_term + ambient_term + blinn_phong_specular_term;
@@ -411,7 +371,7 @@ void main()
     {
     
         
-        // PROJECAO PLANAR
+        // PROJECAO ESFERICA
         // TEXTURA
 
         // TEXTURA
@@ -450,8 +410,7 @@ void main()
         vec3 lambert_diffuse_term = Kd0*I*max(0,dot(n,l)); // PREENCHA AQUI o termo difuso de Lambert
 
         //float lambert = max(0,dot(n,l));
-    
-       
+
         color.a = 1;
 
         // LAMBERT
@@ -471,7 +430,6 @@ void main()
     {
     
         // as coordenadas de textura do retangulo
-        // IGUAL AO COELHO POR ENQUANTO
         float minx = bbox_min.x;
         float maxx = bbox_max.x;
 
@@ -516,29 +474,12 @@ void main()
         // SUBSTITUI O Kd pelo Kd0 da textura
         vec3 lambert_diffuse_term = Kd0*I*max(0,dot(n,l)); // PREENCHA AQUI o termo difuso de Lambert
 
-        // Termo ambiente
-        // Slide 103
-        //vec3 ambient_term = Ka*Ia; // PREENCHA AQUI o termo ambiente
-
-        // Termo especular utilizando o modelo de iluminação de Phong
-        // Slide 128
-        //vec3 phong_specular_term  = Ks*I*pow(max(0,dot(r,v)),q); // PREENCHA AQUI o termo especular de Phong
 
         // MODELO DE BLINN-PHONG - DIFERENTE:
         // Termo especular utilizando o modelo de iluminacao de Blinn-Phong:
         // Slide 150
         //vec3 blinn_phong_specular_term  = Ks*I*pow(max(0,dot(n,h)),q_linha);
-        
-
-        // ANTES - NO ARQUIVO ORIGINAL DO LAB 5
-        // Obtemos a refletância difusa a partir da leitura da imagem TextureImage0
-        // vec3 Kd0 = texture(TextureImage0, vec2(U,V)).rgb;
-
-        // Equação de Iluminação
-        //OU 
-        //float lambert = max(0,dot(n,l));
-
-        //color.rgb = Kd0 * (lambert + 0.01);
+    
 
         // NOTE: Se você quiser fazer o rendering de objetos transparentes, é
         // necessário:
@@ -610,16 +551,6 @@ void main()
         //vec3 blinn_phong_specular_term  = Ks*I*pow(max(0,dot(n,h)),q_linha);
         
 
-        // ANTES - NO ARQUIVO ORIGINAL DO LAB 5
-        // Obtemos a refletância difusa a partir da leitura da imagem TextureImage0
-        // vec3 Kd0 = texture(TextureImage0, vec2(U,V)).rgb;
-
-        // Equação de Iluminação
-        //OU
-        // float lambert = max(0,dot(n,l));
-
-        // color.rgb = Kd0 * (lambert + 0.01);
-
         // NOTE: Se você quiser fazer o rendering de objetos transparentes, é
         // necessário:
         // 1) Habilitar a operação de "blending" de OpenGL logo antes de realizar o
@@ -675,8 +606,6 @@ void main()
         q = 1.0;
         q_linha = 1.0;
     }
-   
-
 
 }
 
