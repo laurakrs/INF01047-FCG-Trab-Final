@@ -390,38 +390,40 @@ void main()
 
         float x_range = (maxx - minx);
         float y_range = (maxy - miny);
+        float z_range = (maxz - minz);
 
         float relative_x_position = (position_model.x - minx);
         float relative_y_position = (position_model.y - miny);
+        float relative_z_position = (position_model.z - minz);
 
 
         // Determine which face of the cube the point lies on based on the maximum range
         if (x_range >= y_range && x_range >= z_range) {
             // Map to the left or right face
             if (relative_x_position >= 0) {
-                u = (relative_z_position / x_range + 1.0) / 2.0;
-                v = 1.0 - (relative_y_position / x_range + 1.0) / 2.0;
+                U = (relative_z_position / x_range + 1.0) / 2.0;
+                V = 1.0 - (relative_y_position / x_range + 1.0) / 2.0;
             } else {
-                u = 1.0 - (relative_z_position / x_range + 1.0) / 2.0;
-                v = 1.0 - (relative_y_position / x_range + 1.0) / 2.0;
+                U = 1.0 - (relative_z_position / x_range + 1.0) / 2.0;
+                V = 1.0 - (relative_y_position / x_range + 1.0) / 2.0;
             }
         } else if (y_range >= x_range && y_range >= z_range) {
             // Map to the top or bottom face
             if (relative_y_position >= 0) {
-                u = (relative_x_position / y_range + 1.0) / 2.0;
-                v = (relative_z_position / y_range + 1.0) / 2.0;
+                U = (relative_x_position / y_range + 1.0) / 2.0;
+                V = (relative_z_position / y_range + 1.0) / 2.0;
             } else {
-                u = (relative_x_position / y_range + 1.0) / 2.0;
-                v = 1.0 - (relative_z_position / y_range + 1.0) / 2.0;
+                U = (relative_x_position / y_range + 1.0) / 2.0;
+                V = 1.0 - (relative_z_position / y_range + 1.0) / 2.0;
             }
         } else {
             // Map to the front or back face
             if (relative_z_position >= 0) {
-                u = (relative_x_position / z_range + 1.0) / 2.0;
-                v = 1.0 - (relative_y_position / z_range + 1.0) / 2.0;
+                U = (relative_x_position / z_range + 1.0) / 2.0;
+                V = 1.0 - (relative_y_position / z_range + 1.0) / 2.0;
             } else {
-                u = 1.0 - (relative_x_position / z_range + 1.0) / 2.0;
-                v = 1.0 - (relative_y_position / z_range + 1.0) / 2.0;
+                U = 1.0 - (relative_x_position / z_range + 1.0) / 2.0;
+                V = 1.0 - (relative_y_position / z_range + 1.0) / 2.0;
             }
         }
  
@@ -483,38 +485,40 @@ void main()
 
         float x_range = (maxx - minx);
         float y_range = (maxy - miny);
+        float z_range = (maxz - minz);
 
         float relative_x_position = (position_model.x - minx);
         float relative_y_position = (position_model.y - miny);
+        float relative_z_position = (position_model.z - minz);
 
 
         // Determine which face of the cube the point lies on based on the maximum range
         if (x_range >= y_range && x_range >= z_range) {
             // Map to the left or right face
             if (relative_x_position >= 0) {
-                u = (relative_z_position / x_range + 1.0) / 2.0;
-                v = 1.0 - (relative_y_position / x_range + 1.0) / 2.0;
+                U = (relative_z_position / x_range + 1.0) / 2.0;
+                V = 1.0 - (relative_y_position / x_range + 1.0) / 2.0;
             } else {
-                u = 1.0 - (relative_z_position / x_range + 1.0) / 2.0;
-                v = 1.0 - (relative_y_position / x_range + 1.0) / 2.0;
+                U = 1.0 - (relative_z_position / x_range + 1.0) / 2.0;
+                V = 1.0 - (relative_y_position / x_range + 1.0) / 2.0;
             }
         } else if (y_range >= x_range && y_range >= z_range) {
             // Map to the top or bottom face
             if (relative_y_position >= 0) {
-                u = (relative_x_position / y_range + 1.0) / 2.0;
-                v = (relative_z_position / y_range + 1.0) / 2.0;
+                U = (relative_x_position / y_range + 1.0) / 2.0;
+                V = (relative_z_position / y_range + 1.0) / 2.0;
             } else {
-                u = (relative_x_position / y_range + 1.0) / 2.0;
-                v = 1.0 - (relative_z_position / y_range + 1.0) / 2.0;
+                U = (relative_x_position / y_range + 1.0) / 2.0;
+                V = 1.0 - (relative_z_position / y_range + 1.0) / 2.0;
             }
         } else {
             // Map to the front or back face
             if (relative_z_position >= 0) {
-                u = (relative_x_position / z_range + 1.0) / 2.0;
-                v = 1.0 - (relative_y_position / z_range + 1.0) / 2.0;
+                U = (relative_x_position / z_range + 1.0) / 2.0;
+                V = 1.0 - (relative_y_position / z_range + 1.0) / 2.0;
             } else {
-                u = 1.0 - (relative_x_position / z_range + 1.0) / 2.0;
-                v = 1.0 - (relative_y_position / z_range + 1.0) / 2.0;
+                U = 1.0 - (relative_x_position / z_range + 1.0) / 2.0;
+                V = 1.0 - (relative_y_position / z_range + 1.0) / 2.0;
             }
         }
 
