@@ -10,7 +10,7 @@
 extern float g_ScreenRatio;
 extern float g_AngleX, g_AngleY, g_AngleZ;
 extern bool g_LeftMouseButtonPressed, g_RightMouseButtonPressed, g_MiddleMouseButtonPressed;
-extern bool tecla_W_pressionada, tecla_A_pressionada, tecla_S_pressionada, tecla_D_pressionada;
+extern bool w_key_pressed, a_key_pressed, s_key_pressed, d_key_pressed;
 extern float g_CameraTheta, g_CameraPhi, g_CameraDistance;
 extern float g_ForearmAngleZ, g_ForearmAngleX;
 extern float g_TorsoPositionX, g_TorsoPositionY;
@@ -33,10 +33,15 @@ extern GLint g_bbox_max_uniform;
 extern GLint g_is_bounding_box_vertex_uniform;
 extern GLint g_is_bounding_box_fragment_uniform;
 extern GLuint g_NumLoadedTextures;
+
+// Variáveis de seleção de objeto e animação
 extern int g_selectedObject;
 extern bool g_animateSelectedObject;
 extern float g_animationStartTime;
-extern glm::mat4 g_objectStartModelMatrix;
+extern glm::mat4 g_objectAnimationStartModelMatrix;
+extern glm::vec4 g_selectedObjectCenter, g_selectedObjectScale, g_selectedObjectRotation;
+extern std::string g_selectedObjectName;
+
 
 extern int g_startWindowWidth, g_startWindowHeight;
 extern float g_actualWindowWidth, g_actualWindowHeight;
@@ -48,17 +53,18 @@ extern std::map<std::string, int> g_ObjectInstanceNameToIdMap;
 extern std::vector<std::string> g_modelPaths;
 extern std::vector<std::string> g_texturePaths;
 
-// DEBUG
-extern double g_glfwLastRayCursorPosX, g_glfwLastRayCursorPosY;
-extern double g_NDCGlfwLastRayCursorPosX, g_NDCGlfwLastRayCursorPosY;
-extern glm::vec4 g_rayClip, g_rayEye, g_rayWorld, g_rayDirection;
-
-extern glm::vec4 g_rayStartPoint;
+// Variáveis para o raio
 extern float g_rayLength;
-extern glm::vec4 g_rayEndPoint;
-extern glm::vec3 g_rayVertices[2];
 extern GLuint VBO_ray_id;
 extern GLuint VAO_ray_id;
-extern std::string g_error;
-extern std::string g_intersectObject;
-extern float g_intersectObjectDistance;
+
+// DEBUG
+extern float g_distSquared, g_radiusSquared, g_t1, g_t2, g_t;
+extern glm::vec3 g_toSphere, g_closestPoint, g_centerToPoint;
+extern bool g_isScaleEqualOnAllDirections;
+extern glm::vec3 g_rayOrigin, g_rayDirection;
+
+
+
+
+

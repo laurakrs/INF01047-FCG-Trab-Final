@@ -55,13 +55,5 @@ CursorRay ComputeRayFromMouse(GLFWwindow* window, const glm::mat4& projMatrix, c
         ray.direction = SceneInformation::camera_view_vector;
     }
 
-    // Dados de debug
-    // g_glfwLastRayCursorPosX = g_LastCursorPosX;
-    // g_glfwLastRayCursorPosY = g_LastCursorPosY;
-    // g_NDCGlfwLastRayCursorPosX = x;
-    // g_NDCGlfwLastRayCursorPosY = y;
-    // g_rayClip = rayClip;
-    // g_rayEye = rayEye;
-
     return ray;
 }
