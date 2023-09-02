@@ -17,7 +17,6 @@ uniform mat4 projection;
 #define BUNNY  1
 #define PLANE  2
 uniform int object_id;
- 
 
 // O valor de saída ("out") de um Fragment Shader é a cor final do fragmento.
 out vec4 color;
@@ -44,11 +43,10 @@ void main()
     vec4 l = normalize(vec4(1.0,1.0,0.5,0.0));
 
     // Vetor que define o sentido da câmera em relação ao ponto atual.
-    vec4 v = normalize(camera_position - p);
+    vec4 v = normalize(camera_position - p);                        // Seta o sentido da fonte de luz como sendo o sentido da câmera
 
     // Vetor que define o sentido da reflexão especular ideal.
-    vec4 r = -l + 2*n*(dot(n,l)); // PREENCHA AQUI o vetor de reflexão especular ideal - AULAS 17 E 18 - MODELOS DE ILUMINACAO
-    
+    vec4 r = -l + 2 * n * dot(n, l);    // Slide 115 das Aulas 17 e 18 - Modelos de Iluminação
 
     // Parâmetros que definem as propriedades espectrais da superfície
     vec3 Kd; // Refletância difusa
@@ -58,30 +56,27 @@ void main()
 
     if ( object_id == SPHERE )
     {
-        // PREENCHA AQUI
         // Propriedades espectrais da esfera
-        Kd = vec3(0.8,0.4,0.08);
-        Ks = vec3(0.0,0.0,0.0); // superficie 100% difusa
-        Ka = Kd/2;
-        q = 1.0;
+        Kd = vec3(0.8,0.4,0.08);        // Refletância no modelo RGB = (0.8, 0.4, 0.08)
+        Ks = vec3(0.0,0.0,0.0);         // Superfície 100% difusa
+        Ka = Kd / 2;                    // Refletância ambiente no modelo RGB = metade da refletância difusa
+        q = 1.0;                        // Expoente especular de Phong não especificado
     }
     else if ( object_id == BUNNY )
     {
-        // PREENCHA AQUI
         // Propriedades espectrais do coelho
-        Kd = vec3(0.08,0.4,0.8);
-        Ks = vec3(0.8,0.8,0.8);
-        Ka = Kd/2;
-        q = 32.0;
+        Kd = vec3(0.08,0.4,0.8);         // Refletância difusa no modelo RGB = (0.08, 0.4, 0.8)
+        Ks = vec3(0.8,0.8,0.8);          // Refletância especular no modelo RGB = (0.8, 0.8, 0.8)
+        Ka = Kd / 2;                     // Refletância ambiente no modelo RGB = metade da refletância difusa
+        q = 32.0;                        // Expoente especular de Phong = 32.0
     }
     else if ( object_id == PLANE )
     {
-        // PREENCHA AQUI
         // Propriedades espectrais do plano
-        Kd = vec3(0.2,0.2,0.2);
-        Ks = vec3(0.3,0.3,0.3);
-        Ka = vec3(0.0,0.0,0.0);
-        q = 20.0;
+        Kd = vec3(0.2,0.2,0.2);         // Refletância difusa no modelo RGB = (0.2, 0.2, 0.2)
+        Ks = vec3(0.3,0.3,0.3);         // Refletância especular no modelo RGB = (0.3, 0.3, 0.3)
+        Ka = vec3(0.0,0.0,0.0);         // Refletância ambiente no modelo RGB = zero.
+        q = 20.0;                       // Expoente especular de Phong = 20.0
     }
     else // Objeto desconhecido = preto
     {
@@ -92,38 +87,33 @@ void main()
     }
 
     // Espectro da fonte de iluminação
-    vec3 I = vec3(1.0,1.0,1.0); // PREENCHA AQUI o espectro da fonte de luz
+    vec3 I = vec3(1.0,1.0,1.0);     // Fonte de luz com espectro no modelo RGB = (1.0, 1.0, 1.0)
 
-    // SPOTLIGHT - aulas 17 e 18
-    // implementar uma fonte de luz do tipo spotlight, 
-    // com ângulo de abertura de 30°, posicionada em (0.0,2.0,1.0), 
-    // e com vetor de sentido (0.0,-1.0,0.0),
-    // no sistema de coordenadas Cartesiano:
+    // Propriedades da iluminaão spotligh no slide 204 das aulas 17 e 18 - Modelos de Iluminação
+    vec4 spotlight_position_l = vec4(0.0f,2.0f,1.0f,1.0f);     // Luz posicionada em (0.0,2.0,1.0)
+    vec4 spotlight_direction_v = vec4(0.0f,-1.0f,0.0f,0.0f);   // Com vetor de sentido (0.0,-1.0,0.0)
+    float spotlight_opening_angle_alpha = radians(30.0f);      // Luz do tipo spotlight, com ângulo de abertura de 30°
 
-    vec4 l_posicao = vec4(0.0,2.0,1.0,1.0);  // posicao l da luz
-    vec4 v_direcao = vec4(0.0,-1.0,0.0,0.0); // vetor de sentido
-    float angulo = radians(30.0);   // definicao do angulo 
+    float cos_beta = dot(normalize(p - spotlight_position_l), normalize(spotlight_direction_v));
 
-    // slide 212
-    // o ponto nao  eh iluminado se o resultado for menor do que cos
-    if(dot(normalize(p - l_posicao), normalize(v_direcao)) < cos(angulo)){
-        I = vec3(0.0,0.0,0.0);
+    if (cos_beta < cos(spotlight_opening_angle_alpha))         // Slide 211 e 212
+    {
+        I = vec3(0.0,0.0,0.0);                                 // Zera o espectro da fonte de luz
     }
 
     // Espectro da luz ambiente
-    vec3 Ia = vec3(0.2,0.2,0.2); // PREENCHA AQUI o espectro da luz ambiente
+    vec3 Ia = vec3(0.2,0.2,0.2);    // Fonte de luz ambiente com espectro no modelo RGB = (0.2, 0.2, 0.2)
 
     // Termo difuso utilizando a lei dos cossenos de Lambert
-    // Aula 17 e 18 - Modelos de Iluminação - Slide 103
-    vec3 lambert_diffuse_term = Kd*I*max(0,dot(n,l)); // PREENCHA AQUI o termo difuso de Lambert
+    float clamping_lambert_diffuse = max(0, dot(n,l));                      // Slide 102 das Aulas 17 e 18 - Modelos de Iluminação
+    vec3 lambert_diffuse_term = Kd * I * clamping_lambert_diffuse;          // Slide 102 das Aulas 17 e 18 - Modelos de Iluminação
 
     // Termo ambiente
-    // Slide 103
-    vec3 ambient_term = Ka*Ia; // PREENCHA AQUI o termo ambiente
+    vec3 ambient_term = Ka * Ia;                                            // Slide 104 das Aulas 17 e 18 - Modelos de Iluminação
 
     // Termo especular utilizando o modelo de iluminação de Phong
-    // Slide 128
-    vec3 phong_specular_term  = Ks*I*pow(max(0,dot(r,v)),q); // PREENCHA AQUI o termo especular de Phong
+    float clamping_phong_specular = max(0, dot(r,v));                       // Slide 129 das Aulas 17 e 18 - Modelos de Iluminação
+    vec3 phong_specular_term  = Ks * I * pow(clamping_phong_specular, q);   // Slide 129 das Aulas 17 e 18 - Modelos de Iluminação
 
     // NOTE: Se você quiser fazer o rendering de objetos transparentes, é
     // necessário:
@@ -146,5 +136,4 @@ void main()
     // Cor final com correção gamma, considerando monitor sRGB.
     // Veja https://en.wikipedia.org/w/index.php?title=Gamma_correction&oldid=751281772#Windows.2C_Mac.2C_sRGB_and_TV.2Fvideo_standard_gammas
     color.rgb = pow(color.rgb, vec3(1.0,1.0,1.0)/2.2);
-} 
-
+}
