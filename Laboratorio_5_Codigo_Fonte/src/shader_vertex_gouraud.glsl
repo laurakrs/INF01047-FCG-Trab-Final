@@ -252,7 +252,12 @@ void main()
 
 
     }
-
+    
+    if (isBoundingBoxVertex)
+    {
+        gl_Position = projection * view * model * model_coefficients;
+        return;  // Exit the vertex shader early; we don't need the rest for bounding box vertices
+    }
     
 
 
