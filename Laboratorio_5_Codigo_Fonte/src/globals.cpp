@@ -97,10 +97,11 @@ std::vector<std::string> g_modelPaths =
 
 std::vector<std::string> g_texturePaths = 
 {
-    "../../data/tc-earth_daymap_surface.jpg",
-    "../../data/tc-earth_nightmap_citylights.gif",
+   "../../data/tc-earth_daymap_surface.jpg",
     "../../data/brick_wall_02_diff_4k.jpg",
-    "../../data/wood_table_001_diff_4k.jpg"
+    "../../data/wood_table_001_diff_4k.jpg",
+    "../../data/fabric_leather_02_diff_4k.jpg",
+    "../../data/leather_white_diff_4k.jpg"
 };
 
 // DEBUG
