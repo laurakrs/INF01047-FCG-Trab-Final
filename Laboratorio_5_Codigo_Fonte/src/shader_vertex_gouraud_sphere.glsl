@@ -21,7 +21,41 @@ out vec4 normal;
 out vec2 texcoords;
 
 // para a esfera => Gouraud
-out vec3 color_sphere
+out vec4 color_sphere;
+
+
+// Identificador que define qual objeto está sendo desenhado no momento
+#define CENTRAL_SPHERE 0
+#define SPHERE 1
+#define SPHERE2 2
+#define BUNNY  3
+#define BUNNY2 4
+#define PLANE  5
+#define COW    6
+#define CUBE   7
+#define RECTANGLE 8
+#define X_AXIS 9
+#define Y_AXIS 10
+#define Z_AXIS 11
+
+uniform int object_id;
+
+// Parâmetros da axis-aligned bounding box (AABB) do modelo
+uniform vec4 bbox_min;
+uniform vec4 bbox_max;
+
+// Variáveis para acesso das imagens de textura
+uniform sampler2D TextureImage0;
+uniform sampler2D TextureImage1;
+uniform sampler2D TextureImage2;
+uniform sampler2D TextureImage3;
+uniform sampler2D TextureImage4;
+uniform sampler2D TextureImage5;
+
+// Constantes
+#define M_PI   3.14159265358979323846
+#define M_PI_2 1.57079632679489661923
+
 
 void main()
 {
@@ -72,7 +106,7 @@ void main()
     // PARA INTERPOLACAO DE GOURAUD
     // PARA GOURAUD, O QUE ESTÁ NO FRAGMENT SHADER VAI VIR PRA CÁ
 
-     if ( object_id == SPHERE || object_id == CENTRAL_SPHERE || object_id == SPHERE2 )
+    if ( object_id == SPHERE || object_id == CENTRAL_SPHERE || object_id == SPHERE2 )
     {
 
         // Obtemos a posição da câmera utilizando a inversa da matriz que define o
@@ -137,7 +171,7 @@ void main()
         vec4 bbox_center = (bbox_min + bbox_max) / 2.0;
 
         // Slide 150 da Aula 20 - Mapeamento de Texturas
-        vec4 p = position_model - bbox_center;
+        p = position_model - bbox_center;
         float theta = atan(p.x, p.z);       // Range: [-PI, PI)
         float phi = asin(p.y / length(p));  // Range: [-PI/2, PI/2)
 
@@ -201,24 +235,29 @@ void main()
         //    suas distâncias para a câmera (desenhando primeiro objetos
         //    transparentes que estão mais longe da câmera).
         // Alpha default = 1 = 100% opaco = 0% transparente
-        color.a = 1;
+        color_sphere.a = 1;
 
         // Cor final do fragmento calculada com uma combinação dos termos difuso,
         // especular, e ambiente. Veja slide 129 do documento Aula_17_e_18_Modelos_de_Iluminacao.pdf.
         //color.rgb = lambert_diffuse_term + ambient_term + phong_specular_term;
 
         // OU - PARA BLINN-PHONG:
-        color_sphere = lambert_diffuse_term + ambient_term + blinn_phong_specular_term;
+        color_sphere.rgb = lambert_diffuse_term + ambient_term + blinn_phong_specular_term;
 
 
 
         // Cor final com correção gamma, considerando monitor sRGB.
         // Veja https://en.wikipedia.org/w/index.php?title=Gamma_correction&oldid=751281772#Windows.2C_Mac.2C_sRGB_and_TV.2Fvideo_standard_gammas
-        color_sphere = pow(color.rgb, vec3(1.0,1.0,1.0)/2.2);
+        color_sphere.rgb = pow(color_sphere.rgb, vec3(1.0,1.0,1.0)/2.2, 1.0);
 
 
     }
-
+    
+    if (isBoundingBoxVertex)
+    {
+        gl_Position = projection * view * model * model_coefficients;
+        return;  // Exit the vertex shader early; we don't need the rest for bounding box vertices
+    }
     
 
 
