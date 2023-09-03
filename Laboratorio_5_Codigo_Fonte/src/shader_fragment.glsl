@@ -442,31 +442,10 @@ void main()
         vec3 lambert_diffuse_term = Kd0*I*max(0,dot(n,l)); // PREENCHA AQUI o termo difuso de Lambert
 
 
-        // MODELO DE BLINN-PHONG - DIFERENTE:
-        // Termo especular utilizando o modelo de iluminacao de Blinn-Phong:
-        // Slide 150
-        //vec3 blinn_phong_specular_term  = Ks*I*pow(max(0,dot(n,h)),q_linha);
-    
-
-        // NOTE: Se você quiser fazer o rendering de objetos transparentes, é
-        // necessário:
-        // 1) Habilitar a operação de "blending" de OpenGL logo antes de realizar o
-        //    desenho dos objetos transparentes, com os comandos abaixo no código C++:
-        //      glEnable(GL_BLEND);
-        //      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        // 2) Realizar o desenho de todos objetos transparentes *após* ter desenhado
-        //    todos os objetos opacos; e
-        // 3) Realizar o desenho de objetos transparentes ordenados de acordo com
-        //    suas distâncias para a câmera (desenhando primeiro objetos
-        //    transparentes que estão mais longe da câmera).
         // Alpha default = 1 = 100% opaco = 0% transparente
         color.a = 1;
 
-        // Cor final do fragmento calculada com uma combinação dos termos difuso,
-        // especular, e ambiente. Veja slide 129 do documento Aula_17_e_18_Modelos_de_Iluminacao.pdf.
-        //color.rgb = lambert_diffuse_term + ambient_term + phong_specular_term;
 
-        // OU - PARA BLINN-PHONG:
         color.rgb = lambert_diffuse_term + ambient_term;
 
 
@@ -485,14 +464,8 @@ void main()
         Kd0 = texture(TextureImage0, vec2(U,V)).rgb;
 
         // Propriedades espectrais do plano
-        //Kd = vec3(0.2,0.2,0.2);         // Refletância difusa no modelo RGB = (0.2, 0.2, 0.2)
-        ///Ks = vec3(0.3,0.3,0.3);         // Refletância especular no modelo RGB = (0.3, 0.3, 0.3)
         Ka = Kd0/2;        // Refletância ambiente no modelo RGB = zero.
-        //q = 20.0;                       // Expoente especular de Phong = 20.0
-        //q_linha = 20.00;
-
-
-        
+    
         // Espectro da fonte de iluminação
         vec3 I = vec3(1.0,1.0,1.0); // PREENCHA AQUI o espectro da fonte de luz
 
@@ -507,34 +480,10 @@ void main()
         // Termo ambiente
         // Slide 103
         vec3 ambient_term = Ka*Ia; // PREENCHA AQUI o termo ambiente
-
-        // Termo especular utilizando o modelo de iluminação de Phong
-        // Slide 128
-        //vec3 phong_specular_term  = Ks*I*pow(max(0,dot(r,v)),q); // PREENCHA AQUI o termo especular de Phong
-
-        // MODELO DE BLINN-PHONG - DIFERENTE:
-        // Termo especular utilizando o modelo de iluminacao de Blinn-Phong:
-        // Slide 150
-        //vec3 blinn_phong_specular_term  = Ks*I*pow(max(0,dot(n,h)),q_linha);
         
 
-        // NOTE: Se você quiser fazer o rendering de objetos transparentes, é
-        // necessário:
-        // 1) Habilitar a operação de "blending" de OpenGL logo antes de realizar o
-        //    desenho dos objetos transparentes, com os comandos abaixo no código C++:
-        //      glEnable(GL_BLEND);
-        //      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        // 2) Realizar o desenho de todos objetos transparentes *após* ter desenhado
-        //    todos os objetos opacos; e
-        // 3) Realizar o desenho de objetos transparentes ordenados de acordo com
-        //    suas distâncias para a câmera (desenhando primeiro objetos
-        //    transparentes que estão mais longe da câmera).
         // Alpha default = 1 = 100% opaco = 0% transparente
         color.a = 1;
-
-        // Cor final do fragmento calculada com uma combinação dos termos difuso,
-        // especular, e ambiente. Veja slide 129 do documento Aula_17_e_18_Modelos_de_Iluminacao.pdf.
-        //color.rgb = lambert_diffuse_term + ambient_term + phong_specular_term;
 
         // DIFUSA (LAMBERT)
         color.rgb = lambert_diffuse_term + ambient_term;
