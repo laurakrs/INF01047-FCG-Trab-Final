@@ -296,6 +296,33 @@ int main(int argc, char* argv[])
         //     g_error += "Error glBindVertexArray: " + std::to_string(error) + "\n";
         // }
         // Gera as imagens dos objetos
+        
+        // BEZIER CURVE DENTRO DO LOOP:
+
+        float current_time_Bezier = (float)glfwGetTime();
+        float delta_t_Bezier = current_time_Bezier - prev_time;
+        prev_time = current_time_Bezier;
+        float speed_bezier = 0.5f;
+
+        time_Bezier += delta_t_Bezier;
+
+
+       //  vec4 l = normalize(vec4(1.0,1.0,0.5,0.0));
+        glm::vec3 originBezier = glm::vec3(0.0, 0.0, 0.0);
+        glm::vec3 startPoint = glm::vec3(-10.0f, 0.0f, 0.0f);
+        glm::vec3 endPoint = glm::vec3(10.0f, 0.0f, 0.0f);
+        glm::vec3 control1 = glm::vec3(-5.0f, 5.0f, 0.0f);
+        glm::vec3 control2 = glm::vec3(5.0f, 5.0f, 0.0f);
+
+         //Ensure 't' stays within the range [0, 1]
+        //if (time_Bezier > 1.0f) {
+           // time_Bezier = 0.0f; // Reset to the beginning of the curve
+        //}
+
+        glm::vec3 currentPointLight = bezierCurve(time_Bezier,10.0f,startPoint, control1, control2, endPoint);
+
+        glm::vec3 sentidoL = currentPointLight;
+
         for (const auto& pair : g_ObjectInstances)
         {
             int key = pair.first;
@@ -304,8 +331,10 @@ int main(int argc, char* argv[])
             // Modificação da posição da esfera
             if (key == CENTRAL_SPHERE)
             {
-                instance.model_matrix = Matrix_Translate(camera_lookat_l.x,camera_lookat_l.y,camera_lookat_l.z)
-                    * Matrix_Scale(0.05f,0.05f,0.05f);
+                //time_Bezier += 0.5;
+                glm::vec3 currentPoint = bezierCurve(time_Bezier,10.0f,startPoint, control1, control2, endPoint);
+                instance.model_matrix = Matrix_Translate(currentPoint.x, currentPoint.y, currentPoint.z)
+                    * Matrix_Scale(0.5f,0.5f,0.5f);
             }
 
             glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(instance.model_matrix));

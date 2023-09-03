@@ -3,13 +3,13 @@
 
 
 // bezier curve
-glm::vec3 bezierCurve(float t, glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, glm::vec3 p4){
+glm::vec3 bezierCurve(float t_passed, float period, glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, glm::vec3 p4){
 
-    float t = t - floor(t);
-    glm::vec3 point = pow(1.0f-t,3.0f)*p1 +
-                    (3.0f * t * pow((1.0f-t),2.0f))*p2 +
-                    ((3.0f*pow(t,2.0f) * (1.0f-t))*p3) +
-                    pow(t,3.0f)*p4;
+    float t = (t_passed/period) - floor(t_passed/period);
+    glm::vec3 point = (1-t)*(1-t)*(1-t)*p1 +
+            3*t*(1-t)*(1-t)*p2 +
+            3*t*t*(1-t)*p3 +
+            t*t*t*p4;
 
     return point;
 }
