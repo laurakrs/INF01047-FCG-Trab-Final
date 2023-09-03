@@ -3,6 +3,7 @@
 
 #include "collisions.h"
 
+
 //FONTE: http://www.opengl-tutorial.org/miscellaneous/clicking-on-objects/picking-with-custom-ray-obb-function/
 // Com adaptações para suportar escala de objetos (as quais não estavam inclusas na fonte original)
 bool TestRayOBBIntersection(
@@ -136,45 +137,80 @@ bool TestRayOBBIntersection(
 }
 
 bool RayIntersectsSphere(
-    glm::vec3 rayOrigin, 
-    glm::vec3 rayDirection, 
-    glm::vec3 sphereCenter, 
-    float sphereRadius, 
-    glm::mat4 modelMatrix, 
+    glm::vec3 rayOrigin,
+    glm::vec3 rayDirection,
+    glm::vec4 originalSphereCenter,
+    float originalSphereRadius,
+    glm::mat4 modelMatrix,
     float& intersectionDistance)
 {
-    // Extract translation from the model matrix
-    glm::vec3 translation = glm::vec3(modelMatrix[3]);
+	// Problemas na importação se usar o "norm"
+	// float sphereXScale = norm(glm::vec4(modelMatrix[0]));
+    // float sphereYScale = norm(glm::vec4(modelMatrix[1]));
+    // float sphereZScale = norm(glm::vec4(modelMatrix[2]));
 
-    // Adjust the sphere's center using the translation
-    sphereCenter += translation;
+	g_rayOrigin = rayOrigin;
+	g_rayDirection = rayDirection;
 
-    // Extract scale factors from the model matrix
-    glm::vec3 scaleFactors = glm::vec3(glm::length(modelMatrix[0]), glm::length(modelMatrix[1]), glm::length(modelMatrix[2]));
+	float sphereXScale = glm::length(glm::vec3(modelMatrix[0]));
+    float sphereYScale = glm::length(glm::vec3(modelMatrix[1]));
+    float sphereZScale = glm::length(glm::vec3(modelMatrix[2]));
 
-    // Use the largest scale factor for the sphere's radius to ensure intersection
-    float maxScale = glm::max(scaleFactors.x, glm::max(scaleFactors.y, scaleFactors.z));
-    sphereRadius *= maxScale;
+	float tolerance = 0.001f;
+	bool isScaleEqualOnAllDirections = fabs(sphereXScale - sphereYScale) < tolerance && fabs(sphereXScale - sphereZScale) < tolerance;
 
-    // Now test for intersection with the transformed sphere
-    glm::vec3 toSphere = sphereCenter - rayOrigin;
-    float t = glm::dot(toSphere, rayDirection);
-    glm::vec3 closestPoint = rayOrigin + rayDirection * t;
+	g_isScaleEqualOnAllDirections = false;
+	g_isScaleEqualOnAllDirections = isScaleEqualOnAllDirections;
 
-    float distSquared = glm::dot(toSphere, toSphere) - t * t;
-    float radiusSquared = sphereRadius * sphereRadius;
+	if (isScaleEqualOnAllDirections)
+	{
+		float scaleFactor = sphereXScale;
+		float transformedSphereRadius = originalSphereRadius * scaleFactor;
+		glm::vec4 transformedSphereCenter = modelMatrix * originalSphereCenter;
 
-    if (distSquared > radiusSquared)
-        return false; // No intersection
+		// Vetor entre o centro da esfera e a origem do raio
+		glm::vec3 toSphere = glm::vec3(transformedSphereCenter) - rayOrigin;
+		rayDirection = glm::normalize(rayDirection);
+		float t = glm::dot(toSphere, rayDirection);
 
-    float dt = sqrt(radiusSquared - distSquared);
-    float t1 = t - dt;
-    float t2 = t + dt;
+		// Calcula o ponto mais próximo entre o raio projetado e o centro da esfera
+		glm::vec3 closestPoint = rayOrigin + rayDirection * t;
 
-    if (t2 < 0)
-        return false; // Object is behind the camera
+		// Calcula a distância entre o ponto mais próximo e o centro da esfera
+		glm::vec3 centerToPoint = closestPoint - glm::vec3(transformedSphereCenter);
+		float distSquared = glm::dot(centerToPoint, centerToPoint);
+		float radiusSquared = transformedSphereRadius * transformedSphereRadius;
 
-    intersectionDistance = (t1 < 0) ? t2 : t1; // Get the nearest intersection point in front of the camera
-    return true;
+		g_toSphere = toSphere;
+		g_t = t;
+		g_closestPoint = closestPoint;
+		g_centerToPoint = centerToPoint;
+
+		g_distSquared = distSquared;
+		g_radiusSquared = radiusSquared;
+
+		// Se a distância entro os dois pontos for maior que o raio da esfera, o raio e a esfera não se intersectam
+		if (distSquared > radiusSquared)
+			return false;
+
+		// Caso contrário, eles se intersectam e a distância da intersecção é calculada
+		float dt = sqrt(radiusSquared - distSquared);
+		float t1 = t - dt;
+		float t2 = t + dt;
+
+		g_t1 = t1;
+		g_t2 = t2;
+
+		// Se a distância da intersecção for negativa, o objeto está atrás da câmera
+		if (t2 < 0)
+			return false;
+
+		// Caso contrário, a distância da intersecção é a menor distância entre os dois possíveis pontos de intersecção
+		intersectionDistance = (t1 < 0) ? t2 : t1;
+		return true;
+	}
+
+	return false;
 }
+
 
