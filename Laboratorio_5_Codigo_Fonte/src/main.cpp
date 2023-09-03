@@ -327,7 +327,7 @@ int main(int argc, char* argv[])
             if (instanceName == "Illumination Sphere" && g_moveIllumination)
             {
                 g_ObjectInstances[instance_id].model_matrix = Matrix_Translate(-currentLightPosition.x,-currentLightPosition.y,currentLightPosition.z)
-                                                            * Matrix_Scale(0.05f,0.05f,0.05f);
+                                                            * Matrix_Scale(1.0f,1.0f,1.0f);
             }
 
             glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(instance.model_matrix));
@@ -1460,8 +1460,8 @@ void GenerateObjectInstances(glm::vec4 camera_lookat_l)
     ObjectInstance("Central Sphere", model, CENTRAL_SPHERE);
 
     // Instância da esfera de iluminação
-    model = Matrix_Translate(-15.0f,0.0f,0.0f)
-            * Matrix_Scale(0.1f,0.1f,0.1f);
+    model = Matrix_Translate(15.0f,0.0f,0.0f)
+            * Matrix_Scale(1.0f,1.0f,1.0f);
     ObjectInstance("Illumination Sphere", model, ILLUMINATION_SPHERE);
 
     // Desenhamos o modelo da esfera
@@ -1787,22 +1787,16 @@ void SetObjectInformationWindowData()
         glm::vec4 sceneObject_center = (sceneObject_bb_min + sceneObject_bb_max) / 2.0f;
         g_selectedObjectCenter = g_ObjectInstances[g_selectedObject].model_matrix * sceneObject_center;
 
-        // PEga a escala do objeto selecionado
+        // Pega a escala do objeto selecionado
         g_selectedObjectScale.x = norm(glm::vec4(g_ObjectInstances[g_selectedObject].model_matrix[0]));
         g_selectedObjectScale.y = norm(glm::vec4(g_ObjectInstances[g_selectedObject].model_matrix[1]));
         g_selectedObjectScale.z = norm(glm::vec4(g_ObjectInstances[g_selectedObject].model_matrix[2]));
-
-        // Pega a rotação do objeto selecionado
-        glm::quat rotationQuat = glm::quat_cast(g_ObjectInstances[g_selectedObject].model_matrix);
-        glm::vec3 eulerAngles = glm::eulerAngles(rotationQuat);
-        g_selectedObjectRotation = glm::vec4(glm::degrees(eulerAngles), 0.0f);
     }
     else
     {
         g_selectedObjectName = "NO OBJECT SELECTED";
         g_selectedObjectCenter = glm::vec4(0.0f,0.0f,0.0f,1.0f);
         g_selectedObjectScale = glm::vec4(0.0f,0.0f,0.0f,0.0f);
-        g_selectedObjectRotation = glm::vec4(0.0f,0.0f,0.0f,0.0f);
     }
 }
 

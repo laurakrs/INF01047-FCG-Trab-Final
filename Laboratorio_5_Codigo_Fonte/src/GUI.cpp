@@ -164,7 +164,6 @@ void CreateObjectInformationWindow(ImVec2 windowSize, ImVec2 windowPosition)
     ImGui::Text("==================================================");
     ImGui::Text("Center Coordinates: x=%.3f, y=%.3f, z=%.3f", g_selectedObjectCenter.x, g_selectedObjectCenter.y, g_selectedObjectCenter.z);
     ImGui::Text("Scale: x=%.3f, y=%.3f, z=%.3f", g_selectedObjectScale.x, g_selectedObjectScale.y, g_selectedObjectScale.z);
-    ImGui::Text("Rotation: x=%.3f, y=%.3f, z=%.3f", g_selectedObjectRotation.x, g_selectedObjectRotation.y, g_selectedObjectRotation.z);
     
     ImGui::End();
 }
