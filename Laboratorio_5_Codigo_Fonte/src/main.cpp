@@ -191,8 +191,8 @@ int main(int argc, char* argv[])
     float time_Bezier = 0.0f;
     glm::vec4 startPoint = glm::vec4(-15.0f, 0.0f, 0.0f, 1.0f);
     glm::vec4 endPoint = glm::vec4(15.0f, 0.0f, 0.0f, 1.0f);
-    glm::vec4 control1 = glm::vec4(0.0f, -20.0f, 0.0f, 1.0f);
-    glm::vec4 control2 = glm::vec4(0.0f, -20.0f, 0.0f, 1.0f);
+    glm::vec4 control1 = glm::vec4(-5.0f, -20.0f, 0.0f, 1.0f);
+    glm::vec4 control2 = glm::vec4(5.0f, -20.0f, 0.0f, 1.0f);
     glm::vec4 currentLightPosition = bezierCurve(time_Bezier,startPoint, control1, control2, endPoint);
 
     // Geração das instâncias de objetos alterando a model matrix
