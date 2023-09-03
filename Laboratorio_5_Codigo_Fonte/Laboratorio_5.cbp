@@ -387,6 +387,8 @@
 		<Unit filename="src/SceneObject.h" />
 		<Unit filename="src/Triangle.cpp" />
 		<Unit filename="src/Triangle.h" />
+		<Unit filename="src/bezier.cpp" />
+		<Unit filename="src/bezier.h" />
 		<Unit filename="src/collisions.cpp" />
 		<Unit filename="src/collisions.h" />
 		<Unit filename="src/glad.c">
