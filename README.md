@@ -1,16 +1,85 @@
 # INF01047-FCG-Trab-Final
 Repositório para o Trabalho Final da disciplina de Fundamentos de Computação Gráfica
 
+Alunos:
+Laura Keidann Rodrigues da Silva - 217870
+Matheus Henrique Sabadin - 228729
+
 Proposta: Será criado um programa no estilo do SketchUp em que será possível visualizar modelos, lançar algumas geometrias específicas em 2D a partir de linhas e pontos e extrudá-las ortogonalmente ao seu plano para formar uma geometria 3D.
 
-Tarefas futuras:
+
 Relatório em formato de README.md colocado no Github, contendo uma descrição simples sobre o desenvolvimento do trabalho, o qual deve obrigatoriamente incluir:
-- Parágrafo listando as contribuição de cada membro da dupla para o trabalho;
+    O objetivo inicial do trabalho era criar um programa no estilo do SketchUp em que será possível visualizar modelos, lançar algumas geometrias específicas em 2D a partir de linhas e pontos e extrudá-las ortogonalmente ao seu plano para formar uma geometria 3D.
+    O trabalho foi desenvolvido de forma colaborativa, em constante diálogo. Para facilitar a elaboração, dividimos as tarefas na etapa de planejamento, de acordo com os interesses e habilidades de cada integrante, mas mantivemos constante troca de informações e atualizações, assim como discussões sobre os passos seguintes. 
+    Separamos os requisitos em metas, definimos prioridades de entrega (dividindo entre apresentação parcial e apresentação final), e fomos atualizando o progresso em cada item. 
+- Parágrafo listando as contribuição de cada membro da dupla para o trabalho:
+    Laura ficou responsável por implementar os seguintes requisitos: 
+    - Objetos da cena virtual (cow, bunny, plane, spheres, cube, e "rectangle");
+    - Modelos de Iluminacao Difusa (cuoboides e plane) e Blinn-Phong (cow, bunny, spheres);
+    - Modelos de Interpolação de Phong (sphere, plane, cuboides, cow) e Gouraud (bunny);
+    - Mpeamento de texturas (5 images) em todos os objetos;
+    - Movimentação com curva Bézier cúbica para uma esfera e a fonte de luz;
+    Matheus ficou responsável pelos seguintes requisitos:
+    - Transformações geométrica controladas pelo usuário;
+    - Câmera Livre e Câmera Look-at, possibilitando ao usuário alterar o tipo;
+    - Três tipos de testes de intersecção: testes raio-esfera, raio-bounding box e raio-triângulo;
+    - Animações baseadas no tempo.
+    Além disso, Matheus implementou as seguintes funcionalidades extras, que faziam sentido para a aplicação desenvolvidas, assim como outras mudanças:
+    - Seleção de objetos virtuais com o mouse (picking);
+    - Interface: alterar o tipo de projeção, inserir instâncias novas dos objetos.
+    - Refatoração do código, modificação de estruturas de dados. 
+
+
+
 - Parágrafo curto indicando se a dupla fez uso do ChatGPT (ou alguma outra ferramenta similar, como Github Copilot, OpenAI Codex, etc.) para desenvolvimento do trabalho, descrevendo como a ferramenta foi utilizada e para quais partes do trabalho. O parágrafo deve também incluir uma análise crítica descrevendo quão útil a dupla achou a ferramenta, onde ela auxiliou e onde ela não auxiliou adequadamente;
+    Fizemos uso do ChatGPT e percebemos que sua melhor contribuição foi para resolver questões pontuais de problemas no código, mas mesmo assim com alguns equívocos iniciais.
+    Exemplos de utilidade: 
+    - Ajudou na implementação da curva de Bézier, após fornecermos explicações detalhadas e exemplo do nosso código. ChatGPT forneceu coordenadas para os pontos de forma a gerar a curva que desejávamos.
+    - Quando tentamos atualizar a fonte de iluminação a partir de um "in" no shader fragment, o ChatGPT respondeu que iria funcionar, mas não funcionou. Após, ele sugeriu a utilização de uma variável "uniform", que deu certo.
+  
+    Exemplos de inutilidade: 
+    - Não conseguiu ajudar a consertar o problema do cálculo das normais dos cuboides;
+    - Não conseguiu solucionar a implementação de iluminação junto com mapeamento de textura;
+    (Estes problemas foram solucionados com a ajuda do professor)
+    
+
+
 - Descrição do processo de desenvolvimento e do uso em sua aplicação dos conceitos de Computação Gráfica estudados e listados nos requisitos acima;
+    Iniciamos o desenvolvimento do trabalho a partir do código fonte do Laboratório 5. Além disso, consultamos os laboratórios anteriores e adaptamos os códigos para servir aos propósitos de nossa aplicação. Durante a elaboração, foi possível entender melhor os conceitos estudados na disciplina, em especial os requisitos que implementamos. Constantemente revisitamos os slides e as vídeo aulas para solucionar dúvidas e relembrar explicações. Muito do que foi visto de forma teórica passou a fazer mais sentido no momento da aplicação. Os próprios laboratórios foram ressignificados no contexto de uma aplicação que unia tudo o que havia sido implementado de forma isolada. 
+
 - No mínimo duas imagens mostrando o funcionamento da aplicação;
+
 - Um manual descrevendo a utilização da aplicação (atalhos de teclado, etc.);
+    Ao abrir a aplicação, o usuário vê a cena virtual com os objetos.
+
+    Atalhos de teclado:
+    - Teclas W, A, S, D: movimentação da câmera para frente (W), esquerda (A), trás (S), direita (D), respectivamente;
+    - Teclas Q e E: movimentação da câmera para cima (Q) e para baixo (E), respectivamente;
+    - Teclas E e Q: movimentação dos objetos ??? para cima e para baixo, respectivamente;
+    - Setas para direita, esquerda, cima e baixo: movimentação de objetos selecionados;
+    - ESC: fecha a janela;
+
+
+    Movimentações e seleções com o mouse:
+    - Botão esquerdo: seleção e movimentação de objetos;
+    - Botão direito: pan da câmera; 
+    - Rodinha pressionada: movimentação da câmera look-at;
+    - Rodinha movimentada:  zoom in e out.
+
+    Opções disponíveis na interface:
+    - Add items to the scene: adicionar sphere, cuboid, cow, bunny, e plane através de seleção no menu;
+    - Pick animation: checkbox para ativação de animação ao clicar em objeto;
+    - Draw mouse ray: desenhar raio do mouse;
+    - Show B. Boxes: ativar/desativar display das Bounding Boxes;
+    - Perspective / Orthographic: alteração do tipo de projeção (Perspectiva ou Ortográfica);
+    - Debug window? 
+    - Object information ?
+
+
+
 - Explicação de todos os passos necessários para compilação e execução da aplicação;
+
+
 
 CRITERIOS TECNICOS (RESUMO):
 
@@ -20,9 +89,9 @@ CRITERIOS TECNICOS (RESUMO):
 - Instancias de objetos - ok
 - Tres tipos de testes de interseccao
 - Modelos de Iluminacao Difusa e Blinn-Phong - ok 
-- Modelos de Interpolacao de Phong e Gouraud
+- Modelos de Interpolacao de Phong e Gouraud - ok
 - Mapeamento de texturas em todos os objetos - ok 
-- Movimentacao com curva Bezier cubica
+- Movimentacao com curva Bezier cubica - ok
 - Animacoes baseadas no tempo ($\Delta t$) - ok
 
 Requisitos minimos - explicacao:
