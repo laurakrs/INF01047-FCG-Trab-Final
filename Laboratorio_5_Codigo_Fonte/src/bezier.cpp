@@ -3,9 +3,9 @@
 
 
 // bezier curve
-glm::vec4 bezierCurve(float t_passed, float period, glm::vec4 p1, glm::vec4 p2, glm::vec4 p3, glm::vec4 p4){
+glm::vec4 bezierCurve(float t_passed, glm::vec4 p1, glm::vec4 p2, glm::vec4 p3, glm::vec4 p4){
 
-    float t = (t_passed/period) - floor(t_passed/period);
+    float t = (t_passed/10.0f) - floor(t_passed/10.0f);
     glm::vec4 point = (1-t)*(1-t)*(1-t)*p1 +
             3*t*(1-t)*(1-t)*p2 +
             3*t*t*(1-t)*p3 +
@@ -13,6 +13,7 @@ glm::vec4 bezierCurve(float t_passed, float period, glm::vec4 p1, glm::vec4 p2, 
 
     return point;
 }
+
 
 /*
 // Function to generate a circle in the XZ plane using a Bezier curve
