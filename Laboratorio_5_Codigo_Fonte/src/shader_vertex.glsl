@@ -27,6 +27,7 @@ out vec4 color_bunny;
 
 // Identificador que define qual objeto está sendo desenhado no momento
 #define BUNNY  3
+#define BUNNY2 4
 
 uniform int object_id;
 
