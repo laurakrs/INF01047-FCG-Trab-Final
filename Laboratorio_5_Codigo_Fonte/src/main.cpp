@@ -290,7 +290,6 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(SceneInformation::projection));
 
         // BEZIER CURVE DENTRO DO LOOP:
-        // =================================================================
         if (g_moveIllumination)
         {
             float current_time_Bezier = (float)glfwGetTime();
@@ -298,13 +297,10 @@ int main(int argc, char* argv[])
             prev_time = current_time_Bezier;
 
             time_Bezier += delta_t_Bezier;
-            
+
             currentLightPosition = bezierCurve(time_Bezier,startPoint, control1, control2, endPoint);
             glUniform4f(g_light_uniformLocation, currentLightPosition.x, currentLightPosition.y, currentLightPosition.z, currentLightPosition.w);
         }
-        
-        
-        // =================================================================
 
 
         // parece estar dando algum erro nesse loop quando debuga com
