@@ -11,6 +11,8 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
+uniform vec4 lightPosition; // POSICAO DA LUZ
+
 uniform bool isBoundingBoxVertex;  // Verdadeiro para vértices de bounding box
 
 // Atributos de vértice que serão gerados como saída ("out") pelo Vertex Shader.
@@ -108,8 +110,10 @@ void main()
         vec4 n = normalize(normal);
 
         // Vetor que define o sentido da fonte de luz em relação ao ponto atual.
-        vec4 newLight = vec4(sentidoL, 0.0) - p;
-        vec4 l = normalize(vec4(newLight));
+        vec4 directionFromLight = p - lightPosition; // Assuming 'fragmentPosition' is the position of the fragment
+        //vec4 newLight = vec4(sentidoL, 0.0) - p;
+        vec4 l = normalize(vec4(directionFromLight));
+        
 
         // Vetor que define o sentido da câmera em relação ao ponto atual.
         vec4 v = normalize(camera_position - p);

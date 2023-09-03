@@ -87,6 +87,7 @@ void PrintGPUInformation();
 void LoadShadersFromFiles(); // Carrega os shaders de vértice e fragmento, criando um programa de GPU
 GLuint LoadShader_Vertex(const char* filename);   // Carrega um vertex shader
 GLuint LoadShader_Fragment(const char* filename); // Carrega um fragment shader
+GLint g_light_uniformLocation;
 void LoadShader(const char* filename, GLuint shader_id); // Função utilizada pelas duas acima
 
 // Geração dos objetos
@@ -312,20 +313,25 @@ int main(int argc, char* argv[])
 
 
        //  vec4 l = normalize(vec4(1.0,1.0,0.5,0.0));
-        glm::vec3 originBezier = glm::vec3(0.0, 0.0, 0.0);
-        glm::vec3 startPoint = glm::vec3(-10.0f, 0.0f, 0.0f);
-        glm::vec3 endPoint = glm::vec3(10.0f, 0.0f, 0.0f);
-        glm::vec3 control1 = glm::vec3(-5.0f, 5.0f, 0.0f);
-        glm::vec3 control2 = glm::vec3(5.0f, 5.0f, 0.0f);
+        glm::vec4 originBezier = glm::vec4(0.0, 0.0, 0.0, 1.0f);
+        glm::vec4 startPoint = glm::vec4(-10.0f, 0.0f, 0.0f, 1.0f);
+        glm::vec4 endPoint = glm::vec4(10.0f, 0.0f, 0.0f, 1.0f);
+        glm::vec4 control1 = glm::vec4(-5.0f, 5.0f, 0.0f, 1.0f);
+        glm::vec4 control2 = glm::vec4(5.0f, 5.0f, 0.0f, 1.0f);;
 
          //Ensure 't' stays within the range [0, 1]
         //if (time_Bezier > 1.0f) {
            // time_Bezier = 0.0f; // Reset to the beginning of the curve
         //}
 
-        glm::vec3 currentPointLight = bezierCurve(time_Bezier,startPoint, control1, control2, endPoint);
+        //float t = fmod(glfwGetTime(), 10.0f) / 10.0f; // Normalized time between 0 and 1
 
-        glm::vec3 sentidoL = currentPointLight;
+        glm::vec4 currentLightPosition = bezierCurve(time_Bezier,startPoint, control1, control2, endPoint);
+
+       
+        glUniform4f(g_light_uniformLocation, currentLightPosition.x, currentLightPosition.y, currentLightPosition.z, currentLightPosition.w);
+
+        //glm::vec4 sentidoL = currentPointLight;
 
         for (const auto& pair : g_ObjectInstances)
         {
@@ -336,7 +342,7 @@ int main(int argc, char* argv[])
             if (key == CENTRAL_SPHERE)
             {
                 //time_Bezier += 0.5;
-                glm::vec3 currentPoint = bezierCurve(time_Bezier,startPoint, control1, control2, endPoint);
+                glm::vec4 currentPoint = bezierCurve(time_Bezier,startPoint, control1, control2, endPoint);
                 instance.model_matrix = Matrix_Translate(currentPoint.x, currentPoint.y, currentPoint.z)
                     * Matrix_Scale(0.5f,0.5f,0.5f);
             }
@@ -370,37 +376,7 @@ int main(int argc, char* argv[])
                 glUniform1i(g_object_id_uniform, key);
                 DrawVirtualObject(instance.object_name.c_str());
             }
-
         }
-
-        // BEZIER CURVE DENTRO DO LOOP:
-        float time_Bezier = 0.0f;
-        float prev_time_bezier = 0.0f;
-        float current_time_Bezier = (float)glfwGetTime();
-        float delta_t_Bezier = current_time_Bezier - prev_time;
-        prev_time = current_time_Bezier;
-        float speed_bezier = 0.5f;
-
-        time_Bezier += speed_bezier * delta_t_Bezier;
-
-
-       //  vec4 l = normalize(vec4(1.0,1.0,0.5,0.0));
-        glm::vec3 originBezier = glm::vec3(0.0, 0.0, 0.0);
-        glm::vec3 startPoint = glm::vec3(-10.0f, 0.0f, 0.0f);
-        glm::vec3 endPoint = glm::vec3(10.0f, 0.0f, 0.0f);
-        glm::vec3 control1 = glm::vec3(-5.0f, 5.0f, 0.0f);
-        glm::vec3 control2 = glm::vec3(5.0f, 5.0f, 0.0f);
-
-         // Ensure 't' stays within the range [0, 1]
-        if (time_Bezier > 1.0f) {
-            time_Bezier = 0.0f; // Reset to the beginning of the curve
-        }
-
-        glm::vec3 currentPoint = bezierCurve(time_Bezier, startPoint, control1, control2, endPoint);
-
-        glm::vec3 sentidoL = currentPoint - originBezier;
-        
-        
         if (g_LeftMouseButtonPressed)
         {
             g_cursorRay = ComputeRayFromMouse(window, SceneInformation::projection, SceneInformation::view);
@@ -909,6 +885,8 @@ void LoadShadersFromFiles()
     g_object_id_uniform  = glGetUniformLocation(g_GpuProgramID, "object_id"); // Variável "object_id" em shader_fragment.glsl
     g_bbox_min_uniform   = glGetUniformLocation(g_GpuProgramID, "bbox_min");
     g_bbox_max_uniform   = glGetUniformLocation(g_GpuProgramID, "bbox_max");
+
+    g_light_uniformLocation = glGetUniformLocation(g_GpuProgramID, "lightPosition");
 
     g_is_bounding_box_vertex_uniform = glGetUniformLocation(g_GpuProgramID, "isBoundingBoxVertex");
     g_is_bounding_box_fragment_uniform = glGetUniformLocation(g_GpuProgramID, "isBoundingBoxFragment");
