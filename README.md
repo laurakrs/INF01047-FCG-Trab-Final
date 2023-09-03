@@ -7,7 +7,7 @@ Matheus Henrique Sabadin - 228729<br/>
 
 **Proposta inicial:** Será criado um programa no estilo do SketchUp em que será possível visualizar modelos, lançar algumas geometrias específicas em 2D a partir de linhas e pontos e extrudá-las ortogonalmente ao seu plano para formar uma geometria 3D.
 
-**Proposta executada:** Programa em que é possível selecionar objetos, movimentá-los, inserir nova sinstâncias e analisar dados de seu centro e escala. Também é possível visualizar animações de luz e de objetos selecionados.
+**Proposta executada:** Programa em que é possível selecionar objetos, movimentá-los, inserir novas instâncias e analisar dados de seu centro e escala. Este programa também possui animações de luz e de objetos selecionados.
 
 ~Relatório em formato de README.md colocado no Github, contendo uma descrição simples sobre o desenvolvimento do trabalho, o qual deve obrigatoriamente incluir:<br/>~
 **Descrição:**
