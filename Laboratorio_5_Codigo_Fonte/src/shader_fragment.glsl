@@ -364,8 +364,7 @@ void main()
         Kd0 = texture(TextureImage2, vec2(U,V)).rgb; // wood table
 
         // Propriedades espectrais do retangulo
-        Kd = vec3(0.8,0.4,0.08);        // Refletância no modelo RGB = (0.8, 0.4, 0.08)
-       // Ks = vec3(0.0,0.0,0.0);         // Superfície 100% difusa
+        //Kd = vec3(0.8,0.4,0.08);        // Refletância no modelo RGB = (0.8, 0.4, 0.08)
         Ka = Kd0 / 2;                    // Refletância ambiente no modelo RGB = metade da refletância difusa
         //q = 1.0;                        // Expoente especular de Phong não especificado
         //q_linha = 1.0;
