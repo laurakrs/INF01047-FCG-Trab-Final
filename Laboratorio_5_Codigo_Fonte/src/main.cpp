@@ -295,13 +295,9 @@ int main(int argc, char* argv[])
         float current_time_Bezier = (float)glfwGetTime();
         float delta_t_Bezier = current_time_Bezier - prev_time;
         prev_time = current_time_Bezier;
-        float speed_bezier = 0.5f;
 
         time_Bezier += delta_t_Bezier;
 
-
-
-        glm::vec4 originBezier = glm::vec4(0.0, 0.0, 0.0, 1.0f);
         glm::vec4 startPoint = glm::vec4(-10.0f, 0.0f, 0.0f, 1.0f);
         glm::vec4 endPoint = glm::vec4(10.0f, 0.0f, 0.0f, 1.0f);
         glm::vec4 control1 = glm::vec4(-5.0f, 5.0f, 0.0f, 1.0f);
