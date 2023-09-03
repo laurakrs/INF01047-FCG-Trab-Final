@@ -182,6 +182,10 @@ int main(int argc, char* argv[])
     float fixed_z = fixed_r*cos(g_CameraPhi)*cos(g_CameraTheta);
     glm::vec4 camera_lookat_l = glm::vec4(0.0f,0.0f,0.0f,1.0f);
 
+    // VARIAVEIS PARA A CURVA DE BEZIER:
+    float time_Bezier = 0.0f;
+    float prev_time_bezier = 0.0f;
+
     // Inicialização dos instâncias dos objetos
     #define CENTRAL_SPHERE 0
     #define SPHERE 1
