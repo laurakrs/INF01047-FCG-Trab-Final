@@ -2,6 +2,7 @@
 
 #include "globals.h"
 #include "SceneInformation.h"
+#include "Triangle.h"
 
 bool TestRayOBBIntersection(
 	glm::vec3 ray_origin,        // Ray origin, in world space
@@ -18,4 +19,11 @@ bool RayIntersectsSphere(
     glm::vec4 originalSphereCenter,
     float originalSphereRadius,
     glm::mat4 modelMatrix,
+    float& intersectionDistance);
+
+bool RayIntersectsTriangle(
+    const glm::vec3 rayOrigin,
+    const glm::vec3 rayDirection,
+    const Triangle triangle,
+    const glm::mat4 modelMatrix,
     float& intersectionDistance);

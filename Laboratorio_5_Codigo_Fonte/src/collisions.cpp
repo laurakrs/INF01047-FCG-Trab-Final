@@ -136,31 +136,28 @@ bool TestRayOBBIntersection(
 
 }
 
+// Algoritmo genérico de intersecção entre um raio e uma esfera
 bool RayIntersectsSphere(
-    glm::vec3 rayOrigin,
-    glm::vec3 rayDirection,
-    glm::vec4 originalSphereCenter,
-    float originalSphereRadius,
-    glm::mat4 modelMatrix,
-    float& intersectionDistance)
+    glm::vec3 rayOrigin,			// Origem do raio
+    glm::vec3 rayDirection,			// Direção do raio normalizada
+    glm::vec4 originalSphereCenter,	// Centro da esfera nas coordenadas do obj importado
+    float originalSphereRadius,		// Raio da esfera do obj importado
+    glm::mat4 modelMatrix,			// Matriz de transformação do objeto
+    float& intersectionDistance		// Distância da intersecção entre o raio e a esfera
+	)
 {
 	// Problemas na importação se usar o "norm"
 	// float sphereXScale = norm(glm::vec4(modelMatrix[0]));
     // float sphereYScale = norm(glm::vec4(modelMatrix[1]));
     // float sphereZScale = norm(glm::vec4(modelMatrix[2]));
 
-	g_rayOrigin = rayOrigin;
-	g_rayDirection = rayDirection;
-
+	// Considera que a escala é igual em todas as direções para uma esfera
 	float sphereXScale = glm::length(glm::vec3(modelMatrix[0]));
     float sphereYScale = glm::length(glm::vec3(modelMatrix[1]));
     float sphereZScale = glm::length(glm::vec3(modelMatrix[2]));
 
 	float tolerance = 0.001f;
 	bool isScaleEqualOnAllDirections = fabs(sphereXScale - sphereYScale) < tolerance && fabs(sphereXScale - sphereZScale) < tolerance;
-
-	g_isScaleEqualOnAllDirections = false;
-	g_isScaleEqualOnAllDirections = isScaleEqualOnAllDirections;
 
 	if (isScaleEqualOnAllDirections)
 	{
@@ -180,14 +177,6 @@ bool RayIntersectsSphere(
 		float distSquared = glm::dot(centerToPoint, centerToPoint);
 		float radiusSquared = transformedSphereRadius * transformedSphereRadius;
 
-		g_toSphere = toSphere;
-		g_t = t;
-		g_closestPoint = closestPoint;
-		g_centerToPoint = centerToPoint;
-
-		g_distSquared = distSquared;
-		g_radiusSquared = radiusSquared;
-
 		// Se a distância entro os dois pontos for maior que o raio da esfera, o raio e a esfera não se intersectam
 		if (distSquared > radiusSquared)
 			return false;
@@ -196,9 +185,6 @@ bool RayIntersectsSphere(
 		float dt = sqrt(radiusSquared - distSquared);
 		float t1 = t - dt;
 		float t2 = t + dt;
-
-		g_t1 = t1;
-		g_t2 = t2;
 
 		// Se a distância da intersecção for negativa, o objeto está atrás da câmera
 		if (t2 < 0)
@@ -211,5 +197,65 @@ bool RayIntersectsSphere(
 
 	return false;
 }
+
+// Möller–Trumbore intersection algorithm https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
+bool RayIntersectsTriangle(
+    const glm::vec3 rayOrigin,		// Origem do raio
+    const glm::vec3 rayDirection,	// Direção do raio normalizada
+    const Triangle triangle,		// Triângulo nas coordenadas do obj importado
+    const glm::mat4 modelMatrix,	// Matriz de transformação do objeto
+    float& intersectionDistance		// Distância da intersecção entre o raio e o triângulo
+	)
+{
+    const float EPSILON = 0.0000001f;
+
+    // Transforma os vértices do triângulo para as coordenadas do mundo
+    glm::vec3 vertex0 = glm::vec3(modelMatrix * triangle.vertices[0]);
+    glm::vec3 vertex1 = glm::vec3(modelMatrix * triangle.vertices[1]);
+    glm::vec3 vertex2 = glm::vec3(modelMatrix * triangle.vertices[2]);
+
+    // Calcula os vetores das arestas do triângulo
+    glm::vec3 edge1 = vertex1 - vertex0;
+    glm::vec3 edge2 = vertex2 - vertex0;
+
+	// Calcula o vetor normal do triângulo e o determinante
+    glm::vec3 h = glm::cross(rayDirection, edge2);
+    float a = glm::dot(edge1, h);
+
+    // Se o determinante for próximo de zero, o raio e o triângulo são paralelos
+    if (a > -EPSILON && a < EPSILON)
+        return false;
+
+	// Calcula u, que é uma coordenada baricêntrica. Se u estiver fora do intervalo [0, 1], o raio não intersecta o triângulo
+    float f = 1.0f / a;
+    glm::vec3 s = rayOrigin - vertex0;
+    float u = f * glm::dot(s, h);
+
+	// Verifica se u está fora do intervalo [0, 1]
+    if (u < 0.0f || u > 1.0f)
+        return false;
+
+	// Calcula v, que também é uma coordenada baricêntrica. Se v estiver fora do intervalo [0, 1], o raio não intersecta o triângulo
+    glm::vec3 q = glm::cross(s, edge1);
+    float v = f * glm::dot(rayDirection, q);
+
+	// Verifica se v está fora do intervalo [0, 1]
+    if (v < 0.0f || u + v > 1.0f)
+        return false;
+
+    // Calcula t, que é a distância entre a origem do raio e o ponto de intersecção
+    float t = f * glm::dot(edge2, q);
+
+	// Se t é positivo, o raio intersecta o triângulo no campo de visão da câmera
+    if (t > EPSILON)
+    {
+        intersectionDistance = t;
+        return true;
+    }
+	// Caso contrário, o raio não intersecta o triângulo no campo de visão da câmera
+	else
+		return false;
+}
+
 
 

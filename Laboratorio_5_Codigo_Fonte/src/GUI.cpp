@@ -243,6 +243,15 @@ void CreateDebugWindow(ImVec2 windowSize, ImVec2 windowPosition)
     // show g_LeftMouseButtonClicked
     ImGui::Text("g_LeftMouseButtonClicked: %s", g_LeftMouseButtonClicked ? "true" : "false");
 
+    //show g_printBoundingBox
+    ImGui::Text("g_printBoundingBox: %s", g_printBoundingBox.c_str());
+
+    // show g_debug_name
+    ImGui::Text("g_debug_name: %s", g_debug_name.c_str());
+
+    // show g_plane_data
+    ImGui::Text("g_plane_data: %s", g_triangle_data.c_str());
+
     ImGui::End();
 }
 

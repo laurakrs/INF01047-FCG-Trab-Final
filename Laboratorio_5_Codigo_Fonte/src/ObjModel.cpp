@@ -223,3 +223,48 @@ void PrintObjModelInfo(ObjModel* model)
   }
 }
 
+std::vector<Triangle> ObjModel::ExtractTriangles()
+{
+    std::vector<Triangle> triangles;
+
+    for (size_t s = 0; s < shapes.size(); s++)
+    {
+        size_t index_offset = 0;
+        for (size_t f = 0; f < shapes[s].mesh.num_face_vertices.size(); f++)
+        {
+            int fv = shapes[s].mesh.num_face_vertices[f];
+
+            // Assume que os objetos são triangulados
+            if (fv == 3)
+            {
+              Triangle triangle;
+
+              // Pega as coordenadas de cada vértice
+              for (size_t v = 0; v < fv; v++)
+              {
+                     tinyobj::index_t idx = shapes[s].mesh.indices[index_offset + v];
+                     triangle.vertices[v].x = attrib.vertices[3*idx.vertex_index+0];
+                     triangle.vertices[v].y = attrib.vertices[3*idx.vertex_index+1];
+                     triangle.vertices[v].z = attrib.vertices[3*idx.vertex_index+2];
+              }
+
+              // Calcula a normal do triângulo, para ver se ela está apontando para a câmera ou não
+              glm::vec3 edge1 = triangle.vertices[1] - triangle.vertices[0];
+              glm::vec3 edge2 = triangle.vertices[2] - triangle.vertices[0];
+              glm::vec3 normal = glm::cross(edge1, edge2);
+
+              if (normal.z < 0) // Assumindo z como o eixo da câmera
+              {
+                     // Inverte a ordem dos vértices caso a normal esteja apontando para o lado errado
+                     std::swap(triangle.vertices[0], triangle.vertices[1]);
+              }
+
+              triangles.push_back(triangle);
+            }
+            index_offset += fv;
+        }
+    }
+
+    return triangles;
+}
+

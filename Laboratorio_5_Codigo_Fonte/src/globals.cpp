@@ -129,6 +129,8 @@ glm::vec3 g_toSphere, g_closestPoint, g_centerToPoint;
 bool g_isScaleEqualOnAllDirections;
 glm::vec3 g_rayOrigin, g_rayDirection;
 float g_dx, g_dy;
+std::string g_printBoundingBox;
+std::string g_debug_name, g_triangle_data;
 
 
 

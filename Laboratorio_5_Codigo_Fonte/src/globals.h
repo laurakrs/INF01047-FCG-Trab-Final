@@ -83,6 +83,8 @@ extern glm::vec3 g_toSphere, g_closestPoint, g_centerToPoint;
 extern bool g_isScaleEqualOnAllDirections;
 extern glm::vec3 g_rayOrigin, g_rayDirection;
 extern float g_dx, g_dy;
+extern std::string g_printBoundingBox;
+extern std::string g_debug_name, g_triangle_data;
 
 
 
