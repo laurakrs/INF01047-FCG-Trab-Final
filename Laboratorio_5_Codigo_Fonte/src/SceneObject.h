@@ -5,6 +5,7 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <vector>
+#include "Triangle.h"
 
 // Definimos uma estrutura que armazenará dados necessários para renderizar
 // cada objeto da cena virtual.
@@ -18,6 +19,7 @@ struct SceneObject
     glm::vec4    bbox_min;
     glm::vec4    bbox_max;
 
+    std::vector<Triangle> triangles;
     // A bounding box é definida por 8 vértices, que são os cantos do cubóide
     glm::vec4 bbox_vertices[8];
     GLuint bbox_vertex_array_object_id;

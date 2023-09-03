@@ -61,6 +61,7 @@
 #include "CursorRay.h"
 #include "GUI.h"
 #include "collisions.h"
+#include "Triangle.h"
 
 // Definição de constantes
 #define M_PI   3.14159265358979323846
@@ -109,6 +110,8 @@ void DrawVirtualObject(const char* object_name); // Desenha um objeto armazenado
 void DrawRay(glm::vec4 cameraPosition, glm::vec4 ray_direction);
 
 // Funções de controle
+void TryToPickObject(GLFWwindow* window);
+void SelectInstanceAndInitializeAnimationData(int nearest_object);
 void SetObjectInformationWindowData();
 
 // Funções abaixo renderizam como texto na janela OpenGL algumas matrizes e
@@ -329,74 +332,16 @@ int main(int argc, char* argv[])
 
         }
         
+        // Tentamos pegar algum objeto a partir de um clique do mouse
         if (g_LeftMouseButtonPressed)
         {
-            g_cursorRay = ComputeRayFromMouse(window, SceneInformation::projection, SceneInformation::view);
-            
-            bool intersectsSomething = false;
-            int nearest_object = -1;
-
-            // Loop for each object in g_ObjectInstances
-            for (const auto& pair : g_ObjectInstances)
-            {
-                int instance_id = pair.first;
-                ObjectInstance instance = pair.second;
-                std::string instance_name = instance.object_name;
-                glm::mat4 model_matrix = instance.model_matrix;
-                int sceneObjectId = instance.sceneObject_id;
-                SceneObject sceneObject = g_idToSceneObject[sceneObjectId];
-                std::string sceneObject_name = sceneObject.name;
-
-                float intersection_distance;
-                float nearest_intersection_distance = std::numeric_limits<float>::max();
-                
-                if (sceneObjectId == SPHERE)
-                {
-                    glm::vec4 sphere_bb_min = sceneObject.bbox_min;
-                    glm::vec4 sphere_bb_max = sceneObject.bbox_max;
-                    glm::vec4 sphere_bb_center = (sphere_bb_min + sphere_bb_max) / 2.0f;
-                    float side_length = fabs(sphere_bb_max.x - sphere_bb_min.x);
-                    float sphere_bb_radius = side_length / 2.0f;
-
-                    intersectsSomething = RayIntersectsSphere(g_cursorRay.startPoint, g_cursorRay.direction, 
-                                                            sphere_bb_center, sphere_bb_radius, 
-                                                            model_matrix, intersection_distance);
-                }
-                else
-                {
-                    intersectsSomething = TestRayOBBIntersection(g_cursorRay.startPoint, g_cursorRay.direction, 
-                                                             sceneObject.bbox_min, sceneObject.bbox_max, 
-                                                             model_matrix, intersection_distance);
-                }
-
-                if (intersectsSomething)
-                {
-                    if (intersection_distance < nearest_intersection_distance)
-                    {
-                        nearest_object = instance_id;
-                        nearest_intersection_distance = intersection_distance;
-                    }
-                }
-            }
-
-
-            if (nearest_object != -1)
-            {
-                g_selectedObject = nearest_object;
-                g_animateSelectedObject = true;
-                g_animationStartTime = (float)glfwGetTime();
-                g_objectAnimationStartModelMatrix = g_ObjectInstances[g_selectedObject].model_matrix;
-            }
-            else
-            {
-                g_selectedObject = -1;
-            }
-            
+            TryToPickObject(window);
         }
 
         // Atualiza as informações do objeto selecionado
         SetObjectInformationWindowData();
 
+        // Atualiza o status dos botões do mouse para ver se é um clique ou se o botão do mouse está sendo segurado
         UpdateMouseButtonStatus(window);
 
         // Desenha um raio a partir do mouse
@@ -764,9 +709,46 @@ void CursorPosCallback(GLFWwindow* window, double xpos, double ypos)
         float dx = xpos - g_LastCursorPosX;
         float dy = ypos - g_LastCursorPosY;
 
-        // change the model matrix according to the mouse movement
-        g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix
-        * Matrix_Translate(dx * 0.01f, 0.0f, dy * 0.01f);
+        // Determina qual o valor mais alto em módulo do vetor de visão da câmera
+        glm::vec3 camView = SceneInformation::camera_view_vector;
+        float maxComponent = glm::max(abs(camView.x), glm::max(abs(camView.y), abs(camView.z)));
+
+        // Câmera apontando para o eixo X
+        if (maxComponent == abs(camView.x)) 
+        {
+            // Caso aponte para o lado negativo, inverte o sinal de dx
+            if (camView.x < 0) 
+            {
+                dx = -dx;
+                dy = dy;
+            }
+            g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix
+                * Matrix_Translate(0.0f, -dy * 0.01f, dx * 0.01f);
+        }
+        // Câmera apontando para o eixo Y
+        else if (maxComponent == abs(camView.y)) 
+        {
+            // Caso aponte para o lado negativo, inverte o sinal de dy
+            if (camView.y < 0) 
+            {
+                dx = dx;
+                dy = -dy;
+            }
+            g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix
+                * Matrix_Translate(dx * 0.01f, 0.0f, -dy * 0.01f);
+        }
+        // Câmera apontando para o eixo Z
+        else 
+        {
+            // Caso aponte para o lado negativo, inverte o sinal de dx
+            if (camView.z < 0) 
+            {
+                dx = -dx;
+                dy = dy;
+            }
+            g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix
+                * Matrix_Translate(-dx * 0.01f, -dy * 0.01f, 0.0f);
+        }
 
         // Atualizamos as variáveis globais para armazenar a posição atual do
         // cursor como sendo a última posição conhecida do cursor.
@@ -1035,6 +1017,7 @@ void GenerateObjectModels(const std::vector<std::tuple<std::string, int>> g_mode
         ObjModel model(path.c_str());
         ComputeNormals(&model);
         BuildTrianglesAndAddToVirtualScene(&model, id);
+        g_idToSceneObject[id].triangles = model.ExtractTriangles();
     }
 }
 
@@ -1320,6 +1303,8 @@ void BuildTrianglesAndAddToVirtualScene(ObjModel* model, int sceneObjectId)
     // alterar o mesmo. Isso evita bugs.
     glBindVertexArray(0);
 }
+
+
 
 // Inicializa o VAO e o VBO das bounding boxes dos elementos
 void SetupBoundingBoxVAOAndVBO() 
@@ -1640,6 +1625,114 @@ void DrawRay(glm::vec4 rayStartPoint, glm::vec4 rayDirection)
 
 
 // Funções de controle ======================================================================================================
+void TryToPickObject(GLFWwindow* window)
+{
+    // Cria um raio a partir do clique do mouse e extrai os dados de origem e direção deste de acordo com a projeção utilizada
+    g_cursorRay = ComputeRayFromMouse(window, SceneInformation::projection, SceneInformation::view);
+    
+    bool intersectsSomething = false;
+    int nearest_object = -1;
+    float nearest_intersection_distance = std::numeric_limits<float>::max();
+
+    // DEBUG ==================
+    g_printBoundingBox = "";
+    // ========================
+
+    // Faz um loop em todas instâncias de objeto da cena para procurar colisões
+    for (const auto& pair : g_ObjectInstances)
+    {
+        // Coleta todos dados necessários da instância
+        int instance_id = pair.first;
+        ObjectInstance instance = pair.second;
+        std::string instance_name = instance.object_name;
+        glm::mat4 model_matrix = instance.model_matrix;
+        int sceneObjectId = instance.sceneObject_id;
+        SceneObject sceneObject = g_idToSceneObject[sceneObjectId];
+        std::string sceneObject_name = sceneObject.name;
+
+        // Inicializa variáveis que contabilizam a distância para saber qual objeto está mais próximo
+        float intersection_distance;
+        
+        // Se o objeto analisado for uma esfera, fazemos o teste de intersecção de raio e esfera
+        if (sceneObjectId == SPHERE)
+        {
+            glm::vec4 sphere_bb_min = sceneObject.bbox_min;
+            glm::vec4 sphere_bb_max = sceneObject.bbox_max;
+            glm::vec4 sphere_bb_center = (sphere_bb_min + sphere_bb_max) / 2.0f;
+            float side_length = fabs(sphere_bb_max.x - sphere_bb_min.x);
+            float sphere_bb_radius = side_length / 2.0f;
+
+            bool intersectsSphere = RayIntersectsSphere(g_cursorRay.startPoint, g_cursorRay.direction, 
+                                                        sphere_bb_center, sphere_bb_radius, 
+                                                        model_matrix, intersection_distance);
+
+            if (intersectsSphere && intersection_distance < nearest_intersection_distance)
+            {
+                nearest_object = instance_id;
+                nearest_intersection_distance = intersection_distance;
+                intersectsSomething = true;
+            }
+        }
+        // Se o objeto analisado for qualquer outro, primeiro vemos se o raio itnersecta a bounding box e, se intersectar,
+        // fazemos uma colisão com os triângulos do objeto
+        else
+        {
+            bool intersectsBoundingBox = TestRayOBBIntersection(g_cursorRay.startPoint, g_cursorRay.direction, 
+                                                                sceneObject.bbox_min, sceneObject.bbox_max, 
+                                                                model_matrix, intersection_distance);
+            // DEBUG ==================
+            if (intersectsBoundingBox)
+            {
+                g_printBoundingBox += "bounding box do " + instance_name + "\n";
+            }
+            // ========================
+
+
+            if (intersectsBoundingBox)
+            {
+                g_triangle_data = "";
+                for (const auto& triangle : sceneObject.triangles)
+                {
+                    bool intersectsTriangle =  RayIntersectsTriangle(g_cursorRay.startPoint, g_cursorRay.direction,
+                                                                    triangle, model_matrix, intersection_distance);
+
+                    // DEBUG ==================
+                    if (intersectsTriangle)
+                    {
+                        g_printBoundingBox += instance_name + " " + std::to_string(intersection_distance) + "\n";
+                    }
+                    // ========================
+
+                    if (intersectsTriangle && intersection_distance < nearest_intersection_distance)
+                    {
+                        nearest_object = instance_id;
+                        nearest_intersection_distance = intersection_distance;
+                        intersectsSomething = true;
+                    }
+                }
+            }
+            
+        }
+
+        SelectInstanceAndInitializeAnimationData(nearest_object);
+    }
+}
+
+void SelectInstanceAndInitializeAnimationData(int nearest_object)
+{
+    if (nearest_object != -1)
+    {
+        g_selectedObject = nearest_object;
+        g_animateSelectedObject = true;
+        g_animationStartTime = (float)glfwGetTime();
+        g_objectAnimationStartModelMatrix = g_ObjectInstances[g_selectedObject].model_matrix;
+    }
+    else
+    {
+        g_selectedObject = -1;
+    }
+}
+
 void SetObjectInformationWindowData()
 {
     if (g_selectedObject != -1)
