@@ -346,7 +346,7 @@ void main()
         return;
 
     }
-    else if( object_id == CUBE ) // DIFUSA LAMBERT
+    else if( object_id == CUBE ) // DIFUSA (LAMBERT)
     {
     
         
@@ -408,32 +408,21 @@ void main()
     else if( object_id == RECTANGLE )
     {
     
-        // as coordenadas de textura do retangulo
-        float minx = bbox_min.x;
-        float maxx = bbox_max.x;
+        // TEXTURA
+        vec4 bbox_center = (bbox_min + bbox_max) / 2.0;
 
-        float miny = bbox_min.y;
-        float maxy = bbox_max.y;
+        // Slide 150 da Aula 20 - Mapeamento de Texturas
+        vec4 p = position_model - bbox_center;
+        float theta = atan(p.x, p.z);       // Range: [-PI, PI)
+        float phi = asin(p.y / length(p));  // Range: [-PI/2, PI/2)
 
-        float minz = bbox_min.z;
-        float maxz = bbox_max.z;
+        U = (theta + M_PI) / (2 * M_PI);    // Range: [0,1)
+        V = (phi + M_PI / 2) / M_PI;        // Range: [0, 1)
 
-        float x_range = (maxx - minx);
-        float y_range = (maxy - miny);
-
-        float relative_x_position = (position_model.x - minx);
-        float relative_y_position = (position_model.y - miny);
-
-        U = relative_x_position / x_range;
-        V = relative_y_position / y_range;
-
-        Kd0 = texture(TextureImage2, vec2(U,V)).rgb; // wood table
+        Kd0 = texture(TextureImage2, vec2(U,V)).rgb; // asphalt
 
         // Propriedades espectrais do retangulo
-        //Kd = vec3(0.8,0.4,0.08);        // Refletância no modelo RGB = (0.8, 0.4, 0.08)
         Ka = Kd0 / 2;                    // Refletância ambiente no modelo RGB = metade da refletância difusa
-        //q = 1.0;                        // Expoente especular de Phong não especificado
-        //q_linha = 1.0;
 
 
         // Espectro da fonte de iluminação
