@@ -213,7 +213,7 @@ void main()
         color.rgb = pow(color.rgb, vec3(1.0,1.0,1.0)/2.2);
         return;
     }
-    else if(object_id == ILLUMINATION_SPHERE){ // BLINN-PHONG
+    else if( object_id == ILLUMINATION_SPHERE ){ // BLINN-PHONG
     
         // TEXTURA
         vec4 bbox_center = (bbox_min + bbox_max) / 2.0;
