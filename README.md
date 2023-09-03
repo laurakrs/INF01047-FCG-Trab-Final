@@ -14,8 +14,10 @@ Matheus Henrique Sabadin - 228729<br/>
     O objetivo inicial do trabalho era criar um programa no estilo do SketchUp em que será possível visualizar modelos, lançar algumas geometrias específicas em 2D a partir de linhas e pontos e extrudá-las ortogonalmente ao seu plano para formar uma geometria 3D.<br/>
     O trabalho foi desenvolvido de forma colaborativa, em constante diálogo. Para facilitar a elaboração, dividimos as tarefas na etapa de planejamento, de acordo com os interesses e habilidades de cada integrante, mas mantivemos constante troca de informações e atualizações, assim como discussões sobre os passos seguintes. <br/>
     Separamos os requisitos em metas, definimos prioridades de entrega (dividindo entre apresentação parcial e apresentação final), e fomos atualizando o progresso em cada item. <br/>
-- ~Parágrafo listando as contribuição de cada membro da dupla para o trabalho:<br/>~
-- ~E Descrição de onde em sua aplicação você utilizou os conceitos de Computação Gráfica listado nos requisitos<br/>~
+<br/>
+
+~Parágrafo listando as contribuição de cada membro da dupla para o trabalho:<br/>~
+~E Descrição de onde em sua aplicação você utilizou os conceitos de Computação Gráfica listado nos requisitos<br/>~
 **Laura ficou responsável por implementar os seguintes requisitos:** <br/>
 - Objetos da cena virtual (cow, bunny, plane, spheres, cube, e "rectangle");
 - Modelos de Iluminacao Difusa (cuboides e plane) e Blinn-Phong (cow, bunny, spheres);
@@ -28,16 +30,16 @@ Matheus Henrique Sabadin - 228729<br/>
 - Transformações geométrica controladas pelo usuário: movimentação dos objetos;
 - Câmera Livre e Câmera Look-at, possibilitando ao usuário alterar o tipo;
 - Três tipos de testes de intersecção: testes raio-esfera, raio-bounding box e raio-triângulo;
-- Animações baseadas no tempo: ao clicar em objeto com a funcionalidade de animação ativada, o usuário observa a animação na tela.
+- Animações baseadas no tempo: ao clicar em objeto com a funcionalidade de animação ativada, o usuário observa a animação na tela. <br/>
 <br/>
+
 **Além disso, Matheus implementou as seguintes funcionalidades extras, que faziam sentido para a aplicação desenvolvidas, assim como outras mudanças:** <br/>
 - Seleção de objetos virtuais com o mouse (picking);
 - Interface: janela para inserir instâncias novas dos objetos, janela com informações do objeto, checkboxes para alterar o tipo de projeção, desenhar raios do mouse ao clicar, exibir animações no clique de objetos selecionados e exibir animação na iluminação do modelo;
-- Refatoração do código, modificação de estruturas de dados, criação de diversas classes, structs e arquivos novos. 
+- Refatoração do código, modificação de estruturas de dados, criação de diversas classes, structs e arquivos novos. <br/>
+<br/>
 
-
-
-- Parágrafo curto indicando se a dupla fez uso do ChatGPT (ou alguma outra ferramenta similar, como Github Copilot, OpenAI Codex, etc.) para desenvolvimento do trabalho, descrevendo como a ferramenta foi utilizada e para quais partes do trabalho. O parágrafo deve também incluir uma análise crítica descrevendo quão útil a dupla achou a ferramenta, onde ela auxiliou e onde ela não auxiliou adequadamente;<br/>
+~Parágrafo curto indicando se a dupla fez uso do ChatGPT (ou alguma outra ferramenta similar, como Github Copilot, OpenAI Codex, etc.) para desenvolvimento do trabalho, descrevendo como a ferramenta foi utilizada e para quais partes do trabalho. O parágrafo deve também incluir uma análise crítica descrevendo quão útil a dupla achou a ferramenta, onde ela auxiliou e onde ela não auxiliou adequadamente;~ <br/>
 
 COPILOT:<br/>
 Foi feito uso do Copilot principalmente para ajudar no debug do código. Diversas vezes a úncia maneira de exibir as variáveis que estavam sendo executadas era mostrar seus valores no console ou em uma interface gráfica criada com essa intenção. O copilot ajudava muito ao transformar vetores em string ou exibir matrizes de vários elementos em loop, como por exemplo:<br/>
@@ -64,7 +66,8 @@ Exemplos de pontos em que o ChatGPT não foi útil:
 <br/>
 - Descrição do processo de desenvolvimento e do uso em sua aplicação dos conceitos de Computação Gráfica estudados e listados nos requisitos acima;<br/><br/>
 
-Iniciamos o desenvolvimento do trabalho a partir do código fonte do Laboratório 5. Além disso, consultamos os laboratórios anteriores e adaptamos os códigos para servir aos propósitos de nossa aplicação. Durante a elaboração, foi possível entender melhor os conceitos estudados na disciplina, em especial os requisitos que implementamos. Constantemente revisitamos os slides e as vídeo aulas para solucionar dúvidas e relembrar explicações. Muito do que foi visto de forma teórica passou a fazer mais sentido no momento da aplicação. Os próprios laboratórios foram ressignificados no contexto de uma aplicação que unia tudo o que havia sido implementado de forma isolada.<br/><br/>
+Iniciamos o desenvolvimento do trabalho a partir do código fonte do Laboratório 5. Além disso, consultamos os laboratórios anteriores e adaptamos os códigos para servir aos propósitos de nossa aplicação. Durante a elaboração, foi possível entender melhor os conceitos estudados na disciplina, em especial os requisitos que implementamos. Constantemente revisitamos os slides e as vídeo aulas para solucionar dúvidas e relembrar explicações. Muito do que foi visto de forma teórica passou a fazer mais sentido no momento da aplicação. Os próprios laboratórios foram ressignificados no contexto de uma aplicação que unia tudo o que havia sido implementado de forma isolada.<br/>
+<br/>
 Como já mencionamos anteriormente, na seção sobre as contribuições dos integrantes, os conceitos listados nos requisitos foram utilizados da forma que julgamos fazer mais sentido para o propósito da aplicação.
 
 - No mínimo duas imagens mostrando o funcionamento da aplicação;
