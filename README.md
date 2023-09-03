@@ -35,13 +35,13 @@ Relatório em formato de README.md colocado no Github, contendo uma descrição 
 
 - Parágrafo curto indicando se a dupla fez uso do ChatGPT (ou alguma outra ferramenta similar, como Github Copilot, OpenAI Codex, etc.) para desenvolvimento do trabalho, descrevendo como a ferramenta foi utilizada e para quais partes do trabalho. O parágrafo deve também incluir uma análise crítica descrevendo quão útil a dupla achou a ferramenta, onde ela auxiliou e onde ela não auxiliou adequadamente;<br/>
 
-COPILOT:
-Foi feito uso do Copilot principalmente para ajudar no debug do código. Diversas vezes a úncia maneira de exibir as variáveis que estavam sendo executadas era mostrar seus valores no console ou em uma interface gráfica criada com essa intenção. O copilot ajudava muito ao transformar vetores em string ou exibir matrizes de vários elementos em loop, como por exemplo:
-Se digitava em uma função da GUI "// show SceneInformation::camera_movement" e o copilot automaticamente preenchia uma linha de código que mostrava todos os dados da variável: ImGui::Text("camera_movement: x=%.3f, y=%.3f, z=%.3f", SceneInformation::camera_movement.x, SceneInformation::camera_movement.y, SceneInformation::camera_movement.z);
-Esta interação ajudava muito para a criação de código repeptitivo e de fácil erro na digitação.
+COPILOT:<br/>
+Foi feito uso do Copilot principalmente para ajudar no debug do código. Diversas vezes a úncia maneira de exibir as variáveis que estavam sendo executadas era mostrar seus valores no console ou em uma interface gráfica criada com essa intenção. O copilot ajudava muito ao transformar vetores em string ou exibir matrizes de vários elementos em loop, como por exemplo:<br/>
+Se digitava em uma função da GUI "// show SceneInformation::camera_movement" e o copilot automaticamente preenchia uma linha de código que mostrava todos os dados da variável: ImGui::Text("camera_movement: x=%.3f, y=%.3f, z=%.3f", SceneInformation::camera_movement.x, SceneInformation::camera_movement.y, SceneInformation::camera_movement.z);<br/>
+Esta interação ajudava muito para a criação de código repeptitivo e de fácil erro na digitação.<br/>
 O copilot algumas vezes também ajudou na documentação em português do código.
 
-CHATGPT:
+CHATGPT:<br/>
 Fizemos uso do ChatGPT e percebemos que sua melhor contribuição foi para resolver questões pontuais de problemas no código, mas mesmo assim com alguns equívocos iniciais.
 Exemplos de pontos em que o ChatGPT foi útil: 
 - Ajudou na implementação da curva de Bézier, após fornecermos explicações detalhadas e exemplo do nosso código. ChatGPT forneceu coordenadas para os pontos de forma a gerar a curva que desejávamos.
