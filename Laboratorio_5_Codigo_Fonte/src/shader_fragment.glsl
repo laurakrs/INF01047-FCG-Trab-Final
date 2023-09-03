@@ -93,8 +93,8 @@ void main()
     vec4 n = normalize(normal);
 
     // Vetor que define o sentido da fonte de luz em relação ao ponto atual.
-    vec4 directionFromLight = p - lightPosition; // Assuming 'fragmentPosition' is the position of the fragment
-    //vec4 newLight = vec4(sentidoL, 0.0) - p;
+    vec4 directionFromLight = p - lightPosition; // Calculo do vetor da luz
+    // Normaliza o vetor da luz
     vec4 l = normalize(vec4(directionFromLight));
 
     // Vetor que define o sentido da câmera em relação ao ponto atual.
@@ -156,7 +156,6 @@ void main()
         Kd = vec3(0.8,0.4,0.08);        // Refletância no modelo RGB = (0.8, 0.4, 0.08)
         Ks = vec3(0.0,0.0,0.0);         // Superfície 100% difusa
         Ka = Kd0 / 2;                    // Refletância ambiente no modelo RGB = metade da refletância difusa
-        q = 1.0;                        // Expoente especular de Phong não especificado
         q_linha = 1.0;
 
         // Espectro da fonte de iluminação
@@ -176,7 +175,8 @@ void main()
 
         // Termo especular utilizando o modelo de iluminação de Phong
         // Slide 128
-        vec3 phong_specular_term  = Ks*I*pow(max(0,dot(r,v)),q); // PREENCHA AQUI o termo especular de Phong
+        //vec3 phong_specular_term  = Ks*I*pow(max(0,dot(r,v)),q); // PREENCHA AQUI o termo especular de Phong
+
 
         // MODELO DE BLINN-PHONG - DIFERENTE:
         // Termo especular utilizando o modelo de iluminacao de Blinn-Phong:
@@ -232,7 +232,6 @@ void main()
         // Propriedades espectrais da esfera
         Ks = vec3(0.0,0.0,0.0);         // Superfície 100% difusa
         Ka = Kd0 / 2;                    // Refletância ambiente no modelo RGB = metade da refletância difusa
-        q = 1.0;                        // Expoente especular de Phong não especificado
         q_linha = 1.0;
 
         // Espectro da fonte de iluminação
@@ -248,11 +247,7 @@ void main()
 
         // Termo ambiente
         // Slide 103
-        vec3 ambient_term = Ka*Ia; // PREENCHA AQUI o termo ambiente
-
-        // Termo especular utilizando o modelo de iluminação de Phong
-        // Slide 128
-        vec3 phong_specular_term  = Ks*I*pow(max(0,dot(r,v)),q); // PREENCHA AQUI o termo especular de Phong
+        vec3 ambient_term = Ka*Ia; // PREENCHA AQUI o termo ambiente 
 
         // MODELO DE BLINN-PHONG - DIFERENTE:
         // Termo especular utilizando o modelo de iluminacao de Blinn-Phong:
@@ -304,7 +299,7 @@ void main()
         Kd = vec3(0.08,0.4,0.8);         // Refletância difusa no modelo RGB = (0.08, 0.4, 0.8)
         Ks = vec3(0.8,0.8,0.8);          // Refletância especular no modelo RGB = (0.8, 0.8, 0.8)
         Ka = Kd0 / 2;                     // Refletância ambiente no modelo RGB = metade da refletância difusa
-        q = 32.0;                        // Expoente especular de Phong = 32.0
+        //q = 32.0;                        // Expoente especular de Phong = 32.0
         q_linha = 80.0;
 
         // Espectro da fonte de iluminação
@@ -322,9 +317,6 @@ void main()
         // Slide 103
         vec3 ambient_term = Ka*Ia; // PREENCHA AQUI o termo ambiente
 
-        // Termo especular utilizando o modelo de iluminação de Phong
-        // Slide 128
-        vec3 phong_specular_term  = Ks*I*pow(max(0,dot(r,v)),q); // PREENCHA AQUI o termo especular de Phong
 
         // MODELO DE BLINN-PHONG - DIFERENTE:
         // Termo especular utilizando o modelo de iluminacao de Blinn-Phong:
@@ -349,9 +341,6 @@ void main()
     else if( object_id == CUBE ) // DIFUSA (LAMBERT)
     {
     
-        
-        // PROJECAO ESFERICA
-        // TEXTURA
 
         // TEXTURA
         vec4 bbox_center = (bbox_min + bbox_max) / 2.0;
@@ -367,11 +356,8 @@ void main()
         Kd0 = texture(TextureImage1, vec2(U,V)).rgb; // brick wall
 
         // Propriedades espectrais do cubo
-        //Kd = vec3(0.8,0.4,0.08);        // Refletância no modelo RGB = (0.8, 0.4, 0.08)
-        //Ks = vec3(0.0,0.0,0.0);         // Superfície 100% difusa
         Ka = Kd0 / 2;                    // Refletância ambiente no modelo RGB = metade da refletância difusa
-        //q = 1.0;                        // Expoente especular de Phong não especificado
-        //q_linha = 1.0;
+     
 
         // Espectro da fonte de iluminação
         vec3 I = vec3(1.0,1.0,1.0); // PREENCHA AQUI o espectro da fonte de luz

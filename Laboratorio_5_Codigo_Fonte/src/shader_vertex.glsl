@@ -111,7 +111,6 @@ void main()
 
         // Vetor que define o sentido da fonte de luz em relação ao ponto atual.
         vec4 directionFromLight = p - lightPosition; // Assuming 'fragmentPosition' is the position of the fragment
-        //vec4 newLight = vec4(sentidoL, 0.0) - p;
         vec4 l = normalize(vec4(directionFromLight));
         
 
@@ -208,10 +207,6 @@ void main()
         // Veja https://en.wikipedia.org/w/index.php?title=Gamma_correction&oldid=751281772#Windows.2C_Mac.2C_sRGB_and_TV.2Fvideo_standard_gammas
         color_bunny.rgb = pow(color_bunny.rgb, vec3(1.0,1.0,1.0)/2.2);  
     }
-
-
-    // PARA INTERPOLACAO DE GOURAUD
-    // PARA GOURAUD, O QUE ESTÁ NO FRAGMENT SHADER VAI VIR PRA CÁ
 
     if (isBoundingBoxVertex)
     {
