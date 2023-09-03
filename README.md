@@ -13,17 +13,18 @@ Relatório em formato de README.md colocado no Github, contendo uma descrição 
     O trabalho foi desenvolvido de forma colaborativa, em constante diálogo. Para facilitar a elaboração, dividimos as tarefas na etapa de planejamento, de acordo com os interesses e habilidades de cada integrante, mas mantivemos constante troca de informações e atualizações, assim como discussões sobre os passos seguintes. <br/>
     Separamos os requisitos em metas, definimos prioridades de entrega (dividindo entre apresentação parcial e apresentação final), e fomos atualizando o progresso em cada item. <br/>
 - Parágrafo listando as contribuição de cada membro da dupla para o trabalho:<br/>
+- E Descrição de onde em sua aplicação você utilizou os conceitos de Computação Gráfica listado nos requisitos<br/>
     Laura ficou responsável por implementar os seguintes requisitos: <br/>
     - Objetos da cena virtual (cow, bunny, plane, spheres, cube, e "rectangle");
     - Modelos de Iluminacao Difusa (cuoboides e plane) e Blinn-Phong (cow, bunny, spheres);
     - Modelos de Interpolação de Phong (sphere, plane, cuboides, cow) e Gouraud (bunny);
     - Mpeamento de texturas (5 images) em todos os objetos;
     - Movimentação com curva Bézier cúbica para uma esfera e a fonte de luz;<br/>
-    Matheus ficou responsável pelos seguintes requisitos:
-    - Transformações geométrica controladas pelo usuário;
+    Matheus ficou responsável pelos seguintes requisitos:<br/>
+    - Transformações geométrica controladas pelo usuário: movimentação dos objetos ????
     - Câmera Livre e Câmera Look-at, possibilitando ao usuário alterar o tipo;
     - Três tipos de testes de intersecção: testes raio-esfera, raio-bounding box e raio-triângulo;
-    - Animações baseadas no tempo.
+    - Animações baseadas no tempo: ao clicar em objeto com a funcionalidade de animação ativada, o usuário observa a animação na tela.
     Além disso, Matheus implementou as seguintes funcionalidades extras, que faziam sentido para a aplicação desenvolvidas, assim como outras mudanças:
     - Seleção de objetos virtuais com o mouse (picking);
     - Interface: alterar o tipo de projeção, inserir instâncias novas dos objetos.
@@ -46,6 +47,7 @@ Relatório em formato de README.md colocado no Github, contendo uma descrição 
 
 - Descrição do processo de desenvolvimento e do uso em sua aplicação dos conceitos de Computação Gráfica estudados e listados nos requisitos acima;<br/>
     Iniciamos o desenvolvimento do trabalho a partir do código fonte do Laboratório 5. Além disso, consultamos os laboratórios anteriores e adaptamos os códigos para servir aos propósitos de nossa aplicação. Durante a elaboração, foi possível entender melhor os conceitos estudados na disciplina, em especial os requisitos que implementamos. Constantemente revisitamos os slides e as vídeo aulas para solucionar dúvidas e relembrar explicações. Muito do que foi visto de forma teórica passou a fazer mais sentido no momento da aplicação. Os próprios laboratórios foram ressignificados no contexto de uma aplicação que unia tudo o que havia sido implementado de forma isolada. 
+    Como já mencionamos anteriormente, na seção sobre as contribuições dos integrantes, os conceitos listados nos requisitos foram utilizados da forma que julgamos fazer mais sentido para o propósito da aplicação.
 
 - No mínimo duas imagens mostrando o funcionamento da aplicação;
 
