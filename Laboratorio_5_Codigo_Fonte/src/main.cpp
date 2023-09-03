@@ -90,7 +90,6 @@ void PrintGPUInformation();
 void LoadShadersFromFiles(); // Carrega os shaders de vértice e fragmento, criando um programa de GPU
 GLuint LoadShader_Vertex(const char* filename);   // Carrega um vertex shader
 GLuint LoadShader_Fragment(const char* filename); // Carrega um fragment shader
-GLint g_light_uniformLocation;
 void LoadShader(const char* filename, GLuint shader_id); // Função utilizada pelas duas acima
 
 // Geração dos objetos
@@ -310,30 +309,6 @@ int main(int argc, char* argv[])
         //     g_error += "Error glBindVertexArray: " + std::to_string(error) + "\n";
         // }
         // Gera as imagens dos objetos
-        
-        // BEZIER CURVE DENTRO DO LOOP:
-
-        float current_time_Bezier = (float)glfwGetTime();
-        float delta_t_Bezier = current_time_Bezier - prev_time;
-        prev_time = current_time_Bezier;
-
-        time_Bezier += delta_t_Bezier;
-
-        glm::vec4 startPoint = glm::vec4(-10.0f, 0.0f, 0.0f, 1.0f);
-        glm::vec4 endPoint = glm::vec4(10.0f, 0.0f, 0.0f, 1.0f);
-        glm::vec4 control1 = glm::vec4(-5.0f, 5.0f, 0.0f, 1.0f);
-        glm::vec4 control2 = glm::vec4(5.0f, 5.0f, 0.0f, 1.0f);
-
-    
-        //time_Bezier = (time_Bezier/10.0f) - floor(time_Bezier/10.0f);
-        //time_Bezier = fmod(time_Bezier, 10.0f) / 10.0f; // Normalized time between 0 and 1
-
-        glm::vec4 currentLightPosition = bezierCurve(time_Bezier,startPoint, control1, control2, endPoint);
-
-       
-        glUniform4f(g_light_uniformLocation, currentLightPosition.x, currentLightPosition.y, currentLightPosition.z, currentLightPosition.w);
-
-
         for (const auto& pair : g_ObjectInstances)
         {
             int instance_id = pair.first;
@@ -384,6 +359,7 @@ int main(int argc, char* argv[])
                 glUniform1i(g_object_id_uniform, sceneObjectId);
                 DrawVirtualObject(sceneObject.name.c_str());
             }
+
         }
         
         // Tentamos pegar algum objeto a partir de um clique do mouse
