@@ -3,14 +3,53 @@ Repositório para o Trabalho Final da disciplina de Fundamentos de Computação 
 
 Proposta: Será criado um programa no estilo do SketchUp em que será possível visualizar modelos, lançar algumas geometrias específicas em 2D a partir de linhas e pontos e extrudá-las ortogonalmente ao seu plano para formar uma geometria 3D.
 
-Tarefas futuras:
+
 Relatório em formato de README.md colocado no Github, contendo uma descrição simples sobre o desenvolvimento do trabalho, o qual deve obrigatoriamente incluir:
-- Parágrafo listando as contribuição de cada membro da dupla para o trabalho;
+    O trabalho foi desenvolvido de forma colaborativa, em constante diálogo. Para facilitar a elaboração, dividimos as tarefas na etapa de planejamento, mas mantivemos constante troca de informações e a discussão.
+- Parágrafo listando as contribuição de cada membro da dupla para o trabalho:
+    Laura ficou responsável por implementar os seguintes requisitos: 
+    - Objetos da cena virtual (cow, bunny, plane, spheres, cube, e "rectangle");
+    - Modelos de Iluminacao Difusa e Blinn-Phong;
+    - Modelos de Interpolação de Phong e Gouraud;
+    - Mpeamento de texturas em todos os objetos;
+    - Movimentação com curva Bézier cúbica para uma esfera e a fonte de luz;
+    Matheus ficou responsável pelos seguintes requisitos:
+    - Transformações geométrica controladas pelo usuário;
+    - Câmera Livre e Câmera Look-at, possibilitando ao usuário alterar o tipo;
+    - Três tipos de testes de intersecção: testes raio-esfera, raio-bounding box e raio-triângulo;
+    - Animações baseadas no tempo.
+    Além disso, Matheus implementou as seguintes funcionalidades extras, que faziam sentido para a aplicação desenvolvidas, assim como outras mudanças:
+    - Seleção de objetos virtuais com o mouse (picking);
+    - Interface: alterar o tipo de projeção, inserir instâncias novas dos objetos.  
+    - Refatoração do código, modificação de estruturas de dados. 
+
+
+
 - Parágrafo curto indicando se a dupla fez uso do ChatGPT (ou alguma outra ferramenta similar, como Github Copilot, OpenAI Codex, etc.) para desenvolvimento do trabalho, descrevendo como a ferramenta foi utilizada e para quais partes do trabalho. O parágrafo deve também incluir uma análise crítica descrevendo quão útil a dupla achou a ferramenta, onde ela auxiliou e onde ela não auxiliou adequadamente;
+    Fizemos uso do ChatGPT e percebemos que sua melhor contribuição foi para resolver questões pontuais de problemas no código, mas mesmo assim com alguns equívocos iniciais.
+    Exemplo: quando tentamos atualizar a fonte de iluminação a partir de um "in" no shader fragment, o ChatGPT respondeu que iria funcionar, mas não funcionou. Após, ele sugeriu a utilização de uma variável "uniform", que deu certo.
+
+
+
 - Descrição do processo de desenvolvimento e do uso em sua aplicação dos conceitos de Computação Gráfica estudados e listados nos requisitos acima;
+    Iniciamos o desenvolvimento do trabalho a partir do código fonte do Laboratório 5. Adaptamos o código desenvolvido em outros labora†órios para servir aos propósitos de nossa aplicação. Durante a elaboração, foi possível entender melhor os conceitos estudados na disciplina, em especial os requisitos que implementamos.
+
 - No mínimo duas imagens mostrando o funcionamento da aplicação;
+
 - Um manual descrevendo a utilização da aplicação (atalhos de teclado, etc.);
+    Ao abrir a aplicação, o usuário vê a cena virtual com os objetos.
+
+    Atalhos de teclado:
+    - Teclas E e Q: movimentação dos objetos para cima e para baixo, respectivamente.
+
+    Movimentações e seleções com o mouse:
+    - Botão esquerdo: movimentação de objetos;
+    - Botão direito: pan da câmera;
+
+
 - Explicação de todos os passos necessários para compilação e execução da aplicação;
+
+
 
 CRITERIOS TECNICOS (RESUMO):
 
@@ -20,9 +59,9 @@ CRITERIOS TECNICOS (RESUMO):
 - Instancias de objetos - ok
 - Tres tipos de testes de interseccao
 - Modelos de Iluminacao Difusa e Blinn-Phong - ok 
-- Modelos de Interpolacao de Phong e Gouraud
+- Modelos de Interpolacao de Phong e Gouraud - ok
 - Mapeamento de texturas em todos os objetos - ok 
-- Movimentacao com curva Bezier cubica
+- Movimentacao com curva Bezier cubica - ok
 - Animacoes baseadas no tempo ($\Delta t$) - ok
 
 Requisitos minimos - explicacao:
