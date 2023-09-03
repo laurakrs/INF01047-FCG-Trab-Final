@@ -226,7 +226,7 @@ void main()
         U = (theta + M_PI) / (2 * M_PI);    // Range: [0,1)
         V = (phi + M_PI / 2) / M_PI;        // Range: [0, 1)
 
-        Kd0 = texture(TextureImage0, vec2(U,V)).rgb; // planet
+        Kd0 = texture(TextureImage5, vec2(U,V)).rgb; // Image by benzoix on Freepik
 
         // ILUMINACAO DIFUSA
         // Propriedades espectrais da esfera
@@ -239,7 +239,7 @@ void main()
         vec3 I = vec3(1.0,1.0,1.0); // PREENCHA AQUI o espectro da fonte de luz
 
         // Espectro da luz ambiente
-        vec3 Ia = vec3(0.2,0.2,0.2); // PREENCHA AQUI o espectro da luz ambiente
+        vec3 Ia = vec3(1.0,1.0,0.0); // espectro da luz ambiente - amarelo
 
         // Termo difuso utilizando a lei dos cossenos de Lambert
         // Aula 17 e 18 - Modelos de Iluminação - Slide 103
