@@ -300,20 +300,16 @@ int main(int argc, char* argv[])
         time_Bezier += delta_t_Bezier;
 
 
-       //  vec4 l = normalize(vec4(1.0,1.0,0.5,0.0));
+
         glm::vec4 originBezier = glm::vec4(0.0, 0.0, 0.0, 1.0f);
         glm::vec4 startPoint = glm::vec4(-10.0f, 0.0f, 0.0f, 1.0f);
         glm::vec4 endPoint = glm::vec4(10.0f, 0.0f, 0.0f, 1.0f);
         glm::vec4 control1 = glm::vec4(-5.0f, 5.0f, 0.0f, 1.0f);
         glm::vec4 control2 = glm::vec4(5.0f, 5.0f, 0.0f, 1.0f);
 
-         //Ensure 't' stays within the range [0, 1]
-        //if (time_Bezier > 1.0f) {
-           // time_Bezier = 0.0f; // Reset to the beginning of the curve
-        //}
-
-        // outra possibility
-        //float t = fmod(glfwGetTime(), 10.0f) / 10.0f; // Normalized time between 0 and 1
+    
+        //time_Bezier = (time_Bezier/10.0f) - floor(time_Bezier/10.0f);
+        time_Bezier = fmod(time_Bezier, 10.0f) / 10.0f; // Normalized time between 0 and 1
 
         glm::vec4 currentLightPosition = bezierCurve(time_Bezier,startPoint, control1, control2, endPoint);
 

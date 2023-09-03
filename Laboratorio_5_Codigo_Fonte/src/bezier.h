@@ -3,5 +3,5 @@
 #include <glm/glm.hpp>
 #include <glm/vec3.hpp>
 
-glm::vec4 bezierCurve(float t_passed, glm::vec4 p1, glm::vec4 p2, glm::vec4 p3, glm::vec4 p4);
+glm::vec4 bezierCurve(float t, glm::vec4 p1, glm::vec4 p2, glm::vec4 p3, glm::vec4 p4);
 
