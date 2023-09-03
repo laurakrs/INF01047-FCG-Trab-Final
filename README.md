@@ -63,48 +63,56 @@ Fizemos uso do ChatGPT e percebemos que sua melhor contribuição foi para resol
 - Não conseguiu ajudar a consertar o problema do cálculo das normais dos cuboides;
 - Não conseguiu solucionar a implementação de iluminação junto com mapeamento de textura;
 (Estes problemas foram solucionados com a ajuda do professor)
-- Tinha muita dificuldade de encontrar problemas relacionados aos shaders, visto que precisava ver o contexto do código em c++ e o glsl
+- Tinha muita dificuldade de encontrar problemas relacionados aos shaders, visto que precisava ver o contexto do código em c++ e o glsl <br/>
 <br/>
-<br/>
-~Descrição do processo de desenvolvimento e do uso em sua aplicação dos conceitos de Computação Gráfica estudados e listados nos requisitos acima;~ <br/>
+
+~Descrição do processo de desenvolvimento e do uso em sua aplicação dos conceitos de Computação Gráfica estudados e listados nos requisitos acima;~ <br/> 
+
 **Descrição do processo de desenvolvimento e do uso em sua aplicação dos conceitos de Computação Gráfica estudados:** <br/>
 Iniciamos o desenvolvimento do trabalho a partir do código fonte do Laboratório 5. Além disso, consultamos os laboratórios anteriores e adaptamos os códigos para servir aos propósitos de nossa aplicação. Durante a elaboração, foi possível entender melhor os conceitos estudados na disciplina, em especial os requisitos que implementamos. Constantemente revisitamos os slides e as vídeo aulas para solucionar dúvidas e relembrar explicações. Muito do que foi visto de forma teórica passou a fazer mais sentido no momento da aplicação. Os próprios laboratórios foram ressignificados no contexto de uma aplicação que unia tudo o que havia sido implementado de forma isolada.<br/>
 <br/>
 Como já mencionamos anteriormente, na seção sobre as contribuições dos integrantes, os conceitos listados nos requisitos foram utilizados da forma que julgamos fazer mais sentido para o propósito da aplicação.
 
-- No mínimo duas imagens mostrando o funcionamento da aplicação;
+~No mínimo duas imagens mostrando o funcionamento da aplicação;~
 
-- Um manual descrevendo a utilização da aplicação (atalhos de teclado, etc.);
-    Ao abrir a aplicação, o usuário vê a cena virtual com os objetos.
-
-    Atalhos de teclado:
-    - Teclas W, A, S, D: movimentação da câmera para frente (W), esquerda (A), trás (S), direita (D), respectivamente;
-    - Teclas Q e E: movimentação da câmera para cima (Q) e para baixo (E), respectivamente;
-    - Teclas E e Q: movimentação dos objetos ??? para cima e para baixo, respectivamente;
-    - Setas para direita, esquerda, cima e baixo: movimentação de objetos selecionados;
-    - ESC: fecha a janela;
-
-
-    Movimentações e seleções com o mouse:
-    - Botão esquerdo: seleção e movimentação de objetos;
-    - Botão direito: pan da câmera; 
-    - Rodinha pressionada: movimentação da câmera look-at;
-    - Rodinha movimentada:  zoom in e out.
-
-    Opções disponíveis na interface:
-    - Add items to the scene: adicionar sphere, cuboid, cow, bunny, e plane através de seleção no menu;
-    - Pick animation: checkbox para ativação de animação ao clicar em objeto;
-    - Draw mouse ray: desenhar raio do mouse;
-    - Show B. Boxes: ativar/desativar display das Bounding Boxes;
-    - Perspective / Orthographic: alteração do tipo de projeção (Perspectiva ou Ortográfica);
-    - Debug window? 
-    - Object information ?
+~Um manual descrevendo a utilização da aplicação (atalhos de teclado, etc.);
+    Ao abrir a aplicação, o usuário vê a cena virtual com os objetos.~
+  
+**Manual:**
+  
+**Atalhos de teclado:**
+- Teclas W, A, S, D: movimentação da câmera para frente (W), esquerda (A), trás (S), direita (D), respectivamente;
+- Teclas Q e E: movimentação da câmera para cima (Q) e para baixo (E), respectivamente;
+- Teclas E e Q: movimentação dos objetos ??? para cima e para baixo, respectivamente;
+- Setas para direita, esquerda, cima e baixo: movimentação de objetos selecionados;
+- ESC: fecha a janela;
 
 
+**Movimentações e seleções com o mouse:**
+- Botão esquerdo: seleção e movimentação de objetos;
+- Botão direito: pan da câmera; 
+- Rodinha pressionada: movimentação da câmera look-at;
+- Rodinha movimentada:  zoom in e out.
 
-- Explicação de todos os passos necessários para compilação e execução da aplicação;
+**Opções disponíveis na interface:**
+- Add items to the scene: adicionar sphere, cuboid, cow, bunny, e plane através de seleção no menu;
+- Move illumination: checkbox que ativa a movimentação da fonte de luz na cena com uma curva de Beziér;
+- Pick animation: checkbox para ativação de animação ao clicar em objeto;
+- Draw mouse ray: checkbox que ativa o desenho de um raio projetado a partir do mouse em um clique;
+- Show B. Boxes: checkbox ativar o display das Bounding Boxes dos elementos na cena;
+- Perspective / Orthographic: radio button que altera o tipo de projeção (Perspectiva ou Ortográfica);
+- Debug window: janela em que são imprimidos dados de variáveis para debug;
+- Object information: janela em que são exibidas informações sobre um objeto selecionado.
 
 
+
+~Explicação de todos os passos necessários para compilação e execução da aplicação;~
+
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
 
 CRITERIOS TECNICOS (RESUMO):
 
