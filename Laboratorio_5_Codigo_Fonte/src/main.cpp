@@ -1460,7 +1460,7 @@ void GenerateObjectInstances(glm::vec4 camera_lookat_l)
     ObjectInstance("Central Sphere", model, CENTRAL_SPHERE);
 
     // Instância da esfera de iluminação
-    model = Matrix_Translate(1.0f,3.0f,0.0f)
+    model = Matrix_Translate(-15.0f,0.0f,0.0f)
             * Matrix_Scale(0.1f,0.1f,0.1f);
     ObjectInstance("Illumination Sphere", model, ILLUMINATION_SPHERE);
 
