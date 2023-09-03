@@ -324,6 +324,7 @@ int main(int argc, char* argv[])
            // time_Bezier = 0.0f; // Reset to the beginning of the curve
         //}
 
+        // outra possibility
         //float t = fmod(glfwGetTime(), 10.0f) / 10.0f; // Normalized time between 0 and 1
 
         glm::vec4 currentLightPosition = bezierCurve(time_Bezier,startPoint, control1, control2, endPoint);
@@ -331,7 +332,6 @@ int main(int argc, char* argv[])
        
         glUniform4f(g_light_uniformLocation, currentLightPosition.x, currentLightPosition.y, currentLightPosition.z, currentLightPosition.w);
 
-        //glm::vec4 sentidoL = currentPointLight;
 
         for (const auto& pair : g_ObjectInstances)
         {
