@@ -27,6 +27,7 @@ out vec4 color_bunny;
 
 // Identificador que define qual objeto está sendo desenhado no momento
 #define BUNNY  3
+#define BUNNY2 4
 
 uniform int object_id;
 
@@ -89,7 +90,7 @@ void main()
     // PARA INTERPOLACAO DE GOURAUD
     // o que estava no fragment shader deve estar aqui:
 
-    if (object_id == BUNNY)
+    if (object_id == BUNNY || object_id == BUNNY2 )
     {
         // Obtemos a posição da câmera utilizando a inversa da matriz que define o
         // sistema de coordenadas da câmera.
