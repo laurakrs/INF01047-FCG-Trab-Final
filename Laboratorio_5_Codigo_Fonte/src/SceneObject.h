@@ -29,5 +29,3 @@ struct SceneObject
 // estes são acessados.
 extern std::map<std::string, SceneObject> g_VirtualScene;
 extern std::map<int, SceneObject> g_idToSceneObject;
-extern std::map<int, std::string> g_idToSceneObjectName;
-extern std::map<std::string, int> g_nameToSceneObjectId;
