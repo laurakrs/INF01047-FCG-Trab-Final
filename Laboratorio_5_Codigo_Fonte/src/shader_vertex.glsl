@@ -89,7 +89,7 @@ void main()
     // PARA INTERPOLACAO DE GOURAUD
     // o que estava no fragment shader deve estar aqui:
 
-    if (object_id == BUNNY)
+    if (object_id == BUNNY || object_id == BUNNY2 )
     {
         // Obtemos a posição da câmera utilizando a inversa da matriz que define o
         // sistema de coordenadas da câmera.
