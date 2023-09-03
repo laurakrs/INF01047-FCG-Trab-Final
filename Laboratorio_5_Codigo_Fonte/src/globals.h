@@ -22,6 +22,7 @@ extern bool g_ShowInfoText;
 extern bool g_drawBoundingBox;
 extern bool g_drawMouseRay;
 extern bool g_pickAnimation;
+extern bool g_moveIllumination;
 extern double g_LastCursorPosX, g_LastCursorPosY;
 
 extern std::stack<glm::mat4> g_MatrixStack;
@@ -35,6 +36,7 @@ extern GLint g_bbox_max_uniform;
 extern GLint g_is_bounding_box_vertex_uniform;
 extern GLint g_is_bounding_box_fragment_uniform;
 extern GLuint g_NumLoadedTextures;
+extern GLint g_light_uniformLocation;
 
 // Variáveis de seleção de objeto e animação
 extern int g_selectedObject;
@@ -60,6 +62,7 @@ extern float g_actualWindowWidth, g_actualWindowHeight;
 #define COW    7
 #define CUBE   8
 #define RECTANGLE 9
+#define ILLUMINATION_SPHERE 10
 
 // Paths de arquivos externos a serem carregados e seus ids
 extern std::vector<std::tuple<std::string, int>> g_modelPathsAndIds;
@@ -83,6 +86,8 @@ extern glm::vec3 g_toSphere, g_closestPoint, g_centerToPoint;
 extern bool g_isScaleEqualOnAllDirections;
 extern glm::vec3 g_rayOrigin, g_rayDirection;
 extern float g_dx, g_dy;
+extern std::string g_printBoundingBox;
+extern std::string g_debug_name, g_triangle_data;
 
 
 

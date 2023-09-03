@@ -7,8 +7,6 @@
 in vec4 position_world;
 in vec4 normal;
 
-in vec3 sentidoL; 
-
 uniform vec4 lightPosition; // POSICAO DA LUZ
 
 // Posição do vértice atual no sistema de coordenadas local do modelo.
@@ -588,14 +586,3 @@ void main()
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-

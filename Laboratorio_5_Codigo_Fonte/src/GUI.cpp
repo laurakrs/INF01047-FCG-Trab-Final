@@ -94,6 +94,16 @@ void GenerateGUIWindows()
     ImVec2 pickAnimationWindowPos = ImVec2(pickAnimationWindowXPosition, pickAnimationWindowYPosition);
     CreatePickAnimationWindow(pickAnimationWindowSize, pickAnimationWindowPos);
 
+    // Define a posição e tamanho da janela da GUI que escolhe movimentar a iluminação
+    float moveIlluminationWindowWidth = 150.0f;
+    float moveIlluminationWindowHeight = 35.0f;
+    ImVec2 moveIlluminationWindowSize = ImVec2(moveIlluminationWindowWidth, moveIlluminationWindowHeight);
+    float offsetFromPickAnimationWindow = 10.0f;
+    float moveIlluminationWindowXPosition = pickAnimationWindowXPosition;
+    float moveIlluminationWindowYPosition = pickAnimationWindowYPosition - moveIlluminationWindowSize.y - offsetFromPickAnimationWindow;
+    ImVec2 moveIlluminationWindowPos = ImVec2(moveIlluminationWindowXPosition, moveIlluminationWindowYPosition);
+    CreateMoveIlluminationWindow(moveIlluminationWindowSize, moveIlluminationWindowPos);
+
     // Renderiza a GUI
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -243,6 +253,15 @@ void CreateDebugWindow(ImVec2 windowSize, ImVec2 windowPosition)
     // show g_LeftMouseButtonClicked
     ImGui::Text("g_LeftMouseButtonClicked: %s", g_LeftMouseButtonClicked ? "true" : "false");
 
+    //show g_printBoundingBox
+    ImGui::Text("g_printBoundingBox: %s", g_printBoundingBox.c_str());
+
+    // show g_debug_name
+    ImGui::Text("g_debug_name: %s", g_debug_name.c_str());
+
+    // show g_plane_data
+    ImGui::Text("g_plane_data: %s", g_triangle_data.c_str());
+
     ImGui::End();
 }
 
@@ -315,6 +334,20 @@ void CreatePickAnimationWindow(ImVec2 windowSize, ImVec2 windowPosition)
     ImGui::Begin("PickAnimationWindow", NULL, windowFlags);
 
     ImGui::Checkbox("Pick animation", &g_pickAnimation);
+
+    ImGui::End();
+}
+
+void CreateMoveIlluminationWindow(ImVec2 windowSize, ImVec2 windowPosition)
+{
+    ImGui::SetNextWindowSize(windowSize);
+    ImGui::SetNextWindowPos(windowPosition);
+
+    // Criação da janela
+    ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+    ImGui::Begin("MoveIlluminationWindow", NULL, windowFlags);
+
+    ImGui::Checkbox("Move illumination", &g_moveIllumination);
 
     ImGui::End();
 }
