@@ -317,7 +317,7 @@ int main(int argc, char* argv[])
         glm::vec4 startPoint = glm::vec4(-10.0f, 0.0f, 0.0f, 1.0f);
         glm::vec4 endPoint = glm::vec4(10.0f, 0.0f, 0.0f, 1.0f);
         glm::vec4 control1 = glm::vec4(-5.0f, 5.0f, 0.0f, 1.0f);
-        glm::vec4 control2 = glm::vec4(5.0f, 5.0f, 0.0f, 1.0f);;
+        glm::vec4 control2 = glm::vec4(5.0f, 5.0f, 0.0f, 1.0f);
 
          //Ensure 't' stays within the range [0, 1]
         //if (time_Bezier > 1.0f) {
