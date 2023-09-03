@@ -533,7 +533,7 @@ void main()
         // Propriedades espectrais do plano
         //Kd = vec3(0.2,0.2,0.2);         // Refletância difusa no modelo RGB = (0.2, 0.2, 0.2)
         ///Ks = vec3(0.3,0.3,0.3);         // Refletância especular no modelo RGB = (0.3, 0.3, 0.3)
-        //Ka = vec3(0.0,0.0,0.0);         // Refletância ambiente no modelo RGB = zero.
+        Ka = Kd0/2;        // Refletância ambiente no modelo RGB = zero.
         //q = 20.0;                       // Expoente especular de Phong = 20.0
         //q_linha = 20.00;
 
@@ -543,7 +543,7 @@ void main()
         vec3 I = vec3(1.0,1.0,1.0); // PREENCHA AQUI o espectro da fonte de luz
 
         // Espectro da luz ambiente
-        //vec3 Ia = vec3(0.2,0.2,0.2); // PREENCHA AQUI o espectro da luz ambiente
+        vec3 Ia = vec3(0.2,0.2,0.2); // PREENCHA AQUI o espectro da luz ambiente
 
         // Termo difuso utilizando a lei dos cossenos de Lambert
         // Aula 17 e 18 - Modelos de Iluminação - Slide 103
@@ -552,7 +552,7 @@ void main()
 
         // Termo ambiente
         // Slide 103
-        //vec3 ambient_term = Ka*Ia; // PREENCHA AQUI o termo ambiente
+        vec3 ambient_term = Ka*Ia; // PREENCHA AQUI o termo ambiente
 
         // Termo especular utilizando o modelo de iluminação de Phong
         // Slide 128
@@ -582,8 +582,8 @@ void main()
         // especular, e ambiente. Veja slide 129 do documento Aula_17_e_18_Modelos_de_Iluminacao.pdf.
         //color.rgb = lambert_diffuse_term + ambient_term + phong_specular_term;
 
-        // OU - PARA BLINN-PHONG:
-        color.rgb = lambert_diffuse_term;
+        // DIFUSA (LAMBERT)
+        color.rgb = lambert_diffuse_term + ambient_term;
 
 
         // Cor final com correção gamma, considerando monitor sRGB.
