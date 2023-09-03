@@ -52,7 +52,7 @@ CursorRay ComputeRayFromMouse(GLFWwindow* window, const glm::mat4& projMatrix, c
         ray.startPoint = rayWorldPos;
 
         // Para projeção ortográfica, a direção do raio será o vetor de visão da câmera.
-        ray.direction = SceneInformation::camera_view_vector;
+        ray.direction = glm::normalize(SceneInformation::camera_view_vector);
     }
 
     return ray;

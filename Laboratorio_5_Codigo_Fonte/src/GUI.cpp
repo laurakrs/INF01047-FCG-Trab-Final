@@ -176,25 +176,66 @@ void CreateDebugWindow(ImVec2 windowSize, ImVec2 windowPosition)
     // ImGui::Begin("Debug", &show_window, window_flags);
     ImGui::Begin("Debug", &show_window);
 
-    // show g_rayOrigin
-    ImGui::Text("g_rayOrigin: x=%.3f, y=%.3f, z=%.3f", g_rayOrigin.x, g_rayOrigin.y, g_rayOrigin.z);
-    ImGui::Text("g_rayDirection: x=%.3f, y=%.3f, z=%.3f", g_rayDirection.x, g_rayDirection.y, g_rayDirection.z);
+    // // show g_rayOrigin
+    // ImGui::Text("g_rayOrigin: x=%.3f, y=%.3f, z=%.3f", g_rayOrigin.x, g_rayOrigin.y, g_rayOrigin.z);
+    // ImGui::Text("g_rayDirection: x=%.3f, y=%.3f, z=%.3f", g_rayDirection.x, g_rayDirection.y, g_rayDirection.z);
     
-    // show SceneInformation::camera_view_vector
-    ImGui::Text("camera_view_vector: x=%.3f, y=%.3f, z=%.3f", SceneInformation::camera_view_vector.x, SceneInformation::camera_view_vector.y, SceneInformation::camera_view_vector.z);
+    // // show SceneInformation::camera_view_vector
+    // ImGui::Text("camera_view_vector: x=%.3f, y=%.3f, z=%.3f", SceneInformation::camera_view_vector.x, SceneInformation::camera_view_vector.y, SceneInformation::camera_view_vector.z);
 
-    // show g_isScaleEqualOnAllDirections
-    ImGui::Text("g_isScaleEqualOnAllDirections: %s", g_isScaleEqualOnAllDirections ? "true" : "false");
-    ImGui::Text("g_toSphere: x=%.3f, y=%.3f, z=%.3f", g_toSphere.x, g_toSphere.y, g_toSphere.z);
-    ImGui::Text("g_t: %.3f", g_t);
-    ImGui::Text("g_closestPoint: x=%.3f, y=%.3f, z=%.3f", g_closestPoint.x, g_closestPoint.y, g_closestPoint.z);
-    ImGui::Text("g_centerToPoint: x=%.3f, y=%.3f, z=%.3f", g_centerToPoint.x, g_centerToPoint.y, g_centerToPoint.z);
+    // // show g_isScaleEqualOnAllDirections
+    // ImGui::Text("g_isScaleEqualOnAllDirections: %s", g_isScaleEqualOnAllDirections ? "true" : "false");
+    // ImGui::Text("g_toSphere: x=%.3f, y=%.3f, z=%.3f", g_toSphere.x, g_toSphere.y, g_toSphere.z);
+    // ImGui::Text("g_t: %.3f", g_t);
+    // ImGui::Text("g_closestPoint: x=%.3f, y=%.3f, z=%.3f", g_closestPoint.x, g_closestPoint.y, g_closestPoint.z);
+    // ImGui::Text("g_centerToPoint: x=%.3f, y=%.3f, z=%.3f", g_centerToPoint.x, g_centerToPoint.y, g_centerToPoint.z);
 
-    // show g_distSquared, g_radiusSquared, g_t1, g_t2;
-    ImGui::Text("g_distSquared: %.3f", g_distSquared);
-    ImGui::Text("g_radiusSquared: %.3f", g_radiusSquared);
-    ImGui::Text("g_t1: %.3f", g_t1);
-    ImGui::Text("g_t2: %.3f", g_t2);
+    // // show g_distSquared, g_radiusSquared, g_t1, g_t2;
+    // ImGui::Text("g_distSquared: %.3f", g_distSquared);
+    // ImGui::Text("g_radiusSquared: %.3f", g_radiusSquared);
+    // ImGui::Text("g_t1: %.3f", g_t1);
+    // ImGui::Text("g_t2: %.3f", g_t2);
+
+
+    // show all keys and names on g_VirtualScene
+    ImGui::Text("g_VirtualScene: \n");
+    for (auto const& x : g_VirtualScene)
+    {
+        ImGui::Text("key: %s, name: %s", x.first.c_str(), x.second.name.c_str());
+    }
+
+    // show all keys and names on g_idToSceneObject
+    ImGui::Text("g_idToSceneObject: \n");
+    for (auto const& x : g_idToSceneObject)
+    {
+        ImGui::Text("key: %d, name: %s", x.first, x.second.name.c_str());
+    }
+
+    // show all keys and names on g_idToSceneObjectName
+    ImGui::Text("g_idToSceneObjectName: \n");
+    for (auto const& x : g_idToSceneObjectName)
+    {
+        ImGui::Text("key: %d, name: %s", x.first, x.second.c_str());
+    }
+
+    // show all keys and names on g_nameToSceneObjectId
+    ImGui::Text("g_nameToSceneObjectId: \n");
+    for (auto const& x : g_nameToSceneObjectId)
+    {
+        ImGui::Text("key: %s, name: %d", x.first.c_str(), x.second);
+    }
+
+    // show all keys and names and ids on g_ObjectInstances
+    ImGui::Text("g_ObjectInstances: \n");
+    for (auto const& x : g_ObjectInstances)
+    {
+        ImGui::Text("key: %d, name: %s, sceneObject_id: %d, instance_id: %d", x.first, x.second.object_name.c_str(), x.second.sceneObject_id, x.second.instance_id);
+        ImGui::Text("x: %.3f, %.3f, %.3f, %.3f", x.second.model_matrix[0][0], x.second.model_matrix[0][1], x.second.model_matrix[0][2], x.second.model_matrix[0][3]);
+        ImGui::Text("y: %.3f, %.3f, %.3f, %.3f", x.second.model_matrix[1][0], x.second.model_matrix[1][1], x.second.model_matrix[1][2], x.second.model_matrix[1][3]);
+        ImGui::Text("z: %.3f, %.3f, %.3f, %.3f", x.second.model_matrix[2][0], x.second.model_matrix[2][1], x.second.model_matrix[2][2], x.second.model_matrix[2][3]);
+        ImGui::Text("=======================\n");
+    }
+
 
 
     ImGui::End();

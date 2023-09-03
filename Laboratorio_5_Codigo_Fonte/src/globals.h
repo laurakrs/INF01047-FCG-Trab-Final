@@ -46,11 +46,22 @@ extern std::string g_selectedObjectName;
 extern int g_startWindowWidth, g_startWindowHeight;
 extern float g_actualWindowWidth, g_actualWindowHeight;
 
-// Map de instâncias para seu id
-extern std::map<std::string, int> g_ObjectInstanceNameToIdMap;
+// Paths de arquivos externos a serem carregados e seus ids
+// Objetos não selecionáveis:
+#define CENTRAL_SPHERE 0
+#define X_AXIS 1
+#define Y_AXIS 2
+#define Z_AXIS 3
+// Objetos selecionáveis:
+#define SPHERE 4
+#define BUNNY  5
+#define PLANE  6
+#define COW    7
+#define CUBE   8
+#define RECTANGLE 9
 
-// Paths de arquivos externos a serem carregados
-extern std::vector<std::string> g_modelPaths;
+
+extern std::vector<std::tuple<std::string, int>> g_modelPathsAndIds;
 extern std::vector<std::string> g_texturePaths;
 
 // Variáveis para o raio

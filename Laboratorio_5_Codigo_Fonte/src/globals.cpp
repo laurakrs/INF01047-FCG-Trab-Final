@@ -83,18 +83,16 @@ int g_startWindowHeight = 600;
 float g_actualWindowWidth;
 float g_actualWindowHeight;
 
-// Map de instâncias para seu id
-std::map<std::string, int> g_ObjectInstanceNameToIdMap;
-
-// Paths de arquivos externos a serem carregados
-std::vector<std::string> g_modelPaths = 
+// Map de objetos para seu id
+std::vector<std::tuple<std::string, int>> g_modelPathsAndIds = 
 {
-    "../../data/sphere.obj",
-    "../../data/bunny.obj",
-    "../../data/plane.obj",
-    "../../data/cow.obj",
-    "../../data/cube.obj",
-    "../../data/rectangle.obj"
+    std::make_tuple("../../data/sphere.obj", CENTRAL_SPHERE),
+    std::make_tuple("../../data/sphere.obj", SPHERE),
+    std::make_tuple("../../data/bunny.obj", BUNNY),
+    std::make_tuple("../../data/plane.obj", PLANE),
+    std::make_tuple("../../data/cow.obj", COW),
+    std::make_tuple("../../data/cube.obj", CUBE),
+    std::make_tuple("../../data/rectangle.obj", RECTANGLE)
 };
 
 std::vector<std::string> g_texturePaths = 

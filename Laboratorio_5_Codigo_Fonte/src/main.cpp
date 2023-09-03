@@ -89,9 +89,9 @@ GLuint LoadShader_Fragment(const char* filename); // Carrega um fragment shader
 void LoadShader(const char* filename, GLuint shader_id); // Função utilizada pelas duas acima
 
 // Geração dos objetos
-void GenerateObjectModels(const std::vector<std::string>& modelPaths); // Constrói representações de objetos geométricos
+void GenerateObjectModels(const std::vector<std::tuple<std::string, int>> g_modelPathsAndIds); // Constrói representações de objetos geométricos
 void ComputeNormals(ObjModel* model); // Computa normais de um ObjModel, caso não existam.
-void BuildTrianglesAndAddToVirtualScene(ObjModel*); // Constrói representação de um ObjModel como malha de triângulos para renderização
+void BuildTrianglesAndAddToVirtualScene(ObjModel* model, int sceneObjectId); // Constrói representação de um ObjModel como malha de triângulos para renderização
 GLuint BuildTriangles(); // Constrói triângulos para renderização
 void SetupBoundingBoxVAOAndVBO();
 void LoadTextureImages(const std::vector<std::string>& texturePaths); // Carrega imagens de textura
@@ -139,7 +139,7 @@ int main(int argc, char* argv[])
     LoadTextureImages(g_texturePaths);
 
     // Construímos a representação de objetos geométricos através de malhas de triângulos
-    GenerateObjectModels(g_modelPaths);
+    GenerateObjectModels(g_modelPathsAndIds);
 
     // Configuramos o VAO das bounding boxes dos elementos
     SetupBoundingBoxVAOAndVBO();
@@ -155,7 +155,7 @@ int main(int argc, char* argv[])
     if ( argc > 1 )
     {
         ObjModel model(argv[1]);
-        BuildTrianglesAndAddToVirtualScene(&model);
+        BuildTrianglesAndAddToVirtualScene(&model, 0);
     }
 
     // Inicializamos o código para renderização de texto.
@@ -182,18 +182,18 @@ int main(int argc, char* argv[])
     glm::vec4 camera_lookat_l = glm::vec4(0.0f,0.0f,0.0f,1.0f);
 
     // Inicialização dos instâncias dos objetos
-    #define CENTRAL_SPHERE 0
-    #define SPHERE 1
-    #define SPHERE2 2
-    #define BUNNY  3
-    #define BUNNY2 4
-    #define PLANE  5
-    #define COW    6
-    #define CUBE   7
-    #define RECTANGLE 8
-    #define X_AXIS 9
-    #define Y_AXIS 10
-    #define Z_AXIS 11
+    // #define CENTRAL_SPHERE 0
+    // #define SPHERE 1
+    // #define SPHERE2 2
+    // #define BUNNY  3
+    // #define BUNNY2 4
+    // #define PLANE  5
+    // #define COW    6
+    // #define CUBE   7
+    // #define RECTANGLE 8
+    // #define X_AXIS 9
+    // #define Y_AXIS 10
+    // #define Z_AXIS 11
 
     // Geração das instâncias de objetos alterando a model matrix
     GenerateObjectInstances(camera_lookat_l);
@@ -297,22 +297,24 @@ int main(int argc, char* argv[])
         // Gera as imagens dos objetos
         for (const auto& pair : g_ObjectInstances)
         {
-            int key = pair.first;
+            int instance_id = pair.first;
             ObjectInstance instance = pair.second;
+            int sceneObjectId = instance.sceneObject_id;
+            SceneObject sceneObject = g_idToSceneObject[sceneObjectId];
 
             // Modificação da posição da esfera
-            if (key == CENTRAL_SPHERE)
+            if (sceneObjectId == CENTRAL_SPHERE)
             {
                 instance.model_matrix = Matrix_Translate(camera_lookat_l.x,camera_lookat_l.y,camera_lookat_l.z)
                     * Matrix_Scale(0.05f,0.05f,0.05f);
             }
 
             glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(instance.model_matrix));
-            glUniform1i(g_object_id_uniform, key);
+            glUniform1i(g_object_id_uniform, sceneObjectId);
 
-            if (key == X_AXIS || key == Y_AXIS || key == Z_AXIS)
+            if (sceneObjectId == X_AXIS || sceneObjectId == Y_AXIS || sceneObjectId == Z_AXIS)
             {
-                switch (key)
+                switch (sceneObjectId)
                 {
                 case X_AXIS:
                     glBindVertexArray(VAO_X_axis);
@@ -333,8 +335,8 @@ int main(int argc, char* argv[])
             else
             {
                 glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(instance.model_matrix));
-                glUniform1i(g_object_id_uniform, key);
-                DrawVirtualObject(instance.object_name.c_str());
+                glUniform1i(g_object_id_uniform, sceneObjectId);
+                DrawVirtualObject(sceneObject.name.c_str());
             }
 
         }
@@ -344,22 +346,23 @@ int main(int argc, char* argv[])
             g_cursorRay = ComputeRayFromMouse(window, SceneInformation::projection, SceneInformation::view);
             
             bool intersectsSomething = false;
-
             int nearest_object = -1;
 
-            // Loop for each object in g_VirtualScene
-            for (auto& object : g_VirtualScene)
+            // Loop for each object in g_ObjectInstances
+            for (const auto& pair : g_ObjectInstances)
             {
-                std::string object_name = object.first;
-                SceneObject sceneObject = object.second;
-                int id = g_ObjectInstanceNameToIdMap[object_name];
-                glm::mat4 model_matrix = g_ObjectInstances[id].model_matrix;
+                int instance_id = pair.first;
+                ObjectInstance instance = pair.second;
+                std::string instance_name = instance.object_name;
+                glm::mat4 model_matrix = instance.model_matrix;
+                int sceneObjectId = instance.sceneObject_id;
+                SceneObject sceneObject = g_idToSceneObject[sceneObjectId];
+                std::string sceneObject_name = sceneObject.name;
 
                 float intersection_distance;
-                
                 float nearest_intersection_distance = std::numeric_limits<float>::max();
                 
-                if (object_name == "the_sphere")
+                if (sceneObjectId == SPHERE)
                 {
                     glm::vec4 sphere_bb_min = sceneObject.bbox_min;
                     glm::vec4 sphere_bb_max = sceneObject.bbox_max;
@@ -378,17 +381,16 @@ int main(int argc, char* argv[])
                                                              model_matrix, intersection_distance);
                 }
 
-                
-
                 if (intersectsSomething)
                 {
                     if (intersection_distance < nearest_intersection_distance)
                     {
-                        nearest_object = id;
+                        nearest_object = instance_id;
                         nearest_intersection_distance = intersection_distance;
                     }
                 }
             }
+
 
             if (nearest_object != -1)
             {
@@ -984,13 +986,15 @@ void LoadShader(const char* filename, GLuint shader_id)
 
 
 // Geração dos modelos ======================================================================================================
-void GenerateObjectModels(const std::vector<std::string>& modelPaths)
+void GenerateObjectModels(const std::vector<std::tuple<std::string, int>> g_modelPathsAndIds)
 {
-    for(const auto& path : modelPaths)
+    for (const auto& pathAndId : g_modelPathsAndIds)
     {
+        std::string path = std::get<0>(pathAndId);
+        int id = std::get<1>(pathAndId);
         ObjModel model(path.c_str());
         ComputeNormals(&model);
-        BuildTrianglesAndAddToVirtualScene(&model);
+        BuildTrianglesAndAddToVirtualScene(&model, id);
     }
 }
 
@@ -1113,7 +1117,7 @@ void ComputeNormals(ObjModel* model)
 }
 
 // Constrói triângulos para futura renderização a partir de um ObjModel.
-void BuildTrianglesAndAddToVirtualScene(ObjModel* model)
+void BuildTrianglesAndAddToVirtualScene(ObjModel* model, int sceneObjectId)
 {
     // Criamos um VAO para o objeto
     GLuint vertex_array_object_id;
@@ -1220,7 +1224,11 @@ void BuildTrianglesAndAddToVirtualScene(ObjModel* model)
         }
         // ======================
 
-        g_VirtualScene[model->shapes[shape].name] = theobject;
+        std::string object_name = model->shapes[shape].name;
+        g_VirtualScene[object_name] = theobject;
+        g_idToSceneObjectName[sceneObjectId] = object_name;
+        g_idToSceneObject[sceneObjectId] = theobject;
+        g_nameToSceneObjectId[object_name] = sceneObjectId;
 
     }
 
@@ -1397,33 +1405,33 @@ void GenerateObjectInstances(glm::vec4 camera_lookat_l)
     // For the first sphere:
     model = Matrix_Translate(camera_lookat_l.x,camera_lookat_l.y,camera_lookat_l.z)
             * Matrix_Scale(0.05f,0.05f,0.05f);
-    ObjectInstance("the_sphere", model, CENTRAL_SPHERE);
+    ObjectInstance("Central Sphere", model, CENTRAL_SPHERE);
 
     // //Desenhamos o modelo da esfera
     model = Matrix_Translate(-2.0f,0.0f,0.5f)
             * Matrix_Scale(1.0f,1.0f,1.0f);
-    ObjectInstance("the_sphere", model, SPHERE);
+    ObjectInstance("World", model, SPHERE);
 
     // Desenhamos outra instancia da esfera
     model = Matrix_Translate(-2.0f,-2.0f,0.0f)
             * Matrix_Scale(0.4f,0.4f,0.4f);
-    ObjectInstance("the_sphere", model, SPHERE2);
+    ObjectInstance("World2", model, SPHERE);
 
     // Desenhamos o modelo do coelho
     model = Matrix_Translate(1.0f,0.0f,0.0f)
         * Matrix_Scale(0.3f,0.3f,0.3f)
         * Matrix_Rotate_X(g_AngleX + (float)glfwGetTime() * 0.1f);
-    ObjectInstance("the_bunny", model, BUNNY);
+    ObjectInstance("Bunny1", model, BUNNY);
 
     // Desenhamos outra instancia do coelho
     model = Matrix_Translate(0.8f,-0.5f,0.5f)
             * Matrix_Scale(0.2f,0.2f,0.2f)
             * Matrix_Rotate_X(g_AngleX + (float)glfwGetTime() * 0.1f);
-    ObjectInstance("the_bunny", model, BUNNY2);
+    ObjectInstance("Bunny2", model, BUNNY);
 
     // Desenhamos o plano do chão
     model = Matrix_Translate(0.0f,-1.1f,0.0f);
-    ObjectInstance("the_plane", model, PLANE);
+    ObjectInstance("Plane", model, PLANE);
 
     // 90 degrees in radians
     float ninety_degrees = 1.5708f;
@@ -1432,27 +1440,21 @@ void GenerateObjectInstances(glm::vec4 camera_lookat_l)
             * Matrix_Rotate_Y(ninety_degrees)
             * Matrix_Rotate_X(1.0f)
             * Matrix_Rotate_Z(0.7f);
-    ObjectInstance("the_cow", model, COW);
+    ObjectInstance("Cow", model, COW);
 
     // Desenhamos o modelo do cubo
     model = Matrix_Translate(2.0f,0.0f,-0.7f);
-    ObjectInstance("the_cube", model, CUBE);
+    ObjectInstance("Cube", model, CUBE);
 
     // // Desenhamos o modelo do retangulo
-    model = Matrix_Translate(-3.0f,0.0f,0.7f);
-    ObjectInstance("the_rectangle", model, RECTANGLE);
+    // model = Matrix_Translate(-3.0f,0.0f,0.7f);
+    // ObjectInstance("Rectangle", model, RECTANGLE);
 
     // Desenhamos os eixos XYZ
     glm::mat4 model_origin = Matrix_Translate(0.0f,0.0f,0.0f);
-    ObjectInstance("the_x_axis", model_origin, X_AXIS);
-    ObjectInstance("the_y_axis", model_origin, Y_AXIS);
-    ObjectInstance("the_z_axis", model_origin, Z_AXIS);
-
-    // Itera por todas as instâncias de objetos na cena e faz um mapa entre o nome da instância do objeto e seu id
-    for (auto const& x : g_ObjectInstances)
-    {
-        g_ObjectInstanceNameToIdMap[x.second.object_name] = x.second.object_id;
-    }
+    ObjectInstance("X Axis", model_origin, X_AXIS);
+    ObjectInstance("Y Axis", model_origin, Y_AXIS);
+    ObjectInstance("Z Axis", model_origin, Z_AXIS);
 }
 
 void SetupXYZAxesVAOAndVBO(GLuint &VAO_X_axis, GLuint &VAO_Y_axis, GLuint &VAO_Z_axis, GLuint &VBO_X_axis, GLuint &VBO_Y_axis, GLuint &VBO_Z_axis)
@@ -1608,12 +1610,14 @@ void SetObjectInformationWindowData()
 {
     if (g_selectedObject != -1)
     {
+        ObjectInstance objectInstance = g_ObjectInstances[g_selectedObject];
+
         // Pega o nome do objeto selecionado
-        std::string object_name = g_ObjectInstances[g_selectedObject].object_name;
-        g_selectedObjectName = object_name;
+        g_selectedObjectName = objectInstance.object_name;
 
         // Pega o centro do objeto selecionado
-        SceneObject sceneObject = g_VirtualScene[object_name];
+
+        SceneObject sceneObject = g_idToSceneObject[objectInstance.sceneObject_id];
         glm::vec4 sceneObject_bb_min = sceneObject.bbox_min;
         glm::vec4 sceneObject_bb_max = sceneObject.bbox_max;
         glm::vec4 sceneObject_center = (sceneObject_bb_min + sceneObject_bb_max) / 2.0f;
