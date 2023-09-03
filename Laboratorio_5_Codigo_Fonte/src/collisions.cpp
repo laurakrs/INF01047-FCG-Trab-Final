@@ -170,7 +170,6 @@ bool RayIntersectsSphere(
 
 		// Vetor entre o centro da esfera e a origem do raio
 		glm::vec3 toSphere = glm::vec3(transformedSphereCenter) - rayOrigin;
-		rayDirection = glm::normalize(rayDirection);
 		float t = glm::dot(toSphere, rayDirection);
 
 		// Calcula o ponto mais próximo entre o raio projetado e o centro da esfera

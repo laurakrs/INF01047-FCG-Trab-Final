@@ -28,3 +28,4 @@ struct SceneObject
 // objetos dentro da variável g_VirtualScene, e veja na função main() como
 // estes são acessados.
 extern std::map<std::string, SceneObject> g_VirtualScene;
+extern std::map<int, SceneObject> g_idToSceneObject;

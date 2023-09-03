@@ -77,6 +77,8 @@ void PopMatrix(glm::mat4& M);
 // usuário. Veja mais comentários nas definições das mesmas, abaixo.
 void SetCallbacks(GLFWwindow* window);
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode);
+void CursorPosCallback(GLFWwindow* window, double xpos, double ypos);
+void UpdateMouseButtonStatus(GLFWwindow* window);
 
 // Imprime informações do sistema
 void PrintGPUInformation();
@@ -89,9 +91,9 @@ GLuint LoadShader_Fragment(const char* filename); // Carrega um fragment shader
 void LoadShader(const char* filename, GLuint shader_id); // Função utilizada pelas duas acima
 
 // Geração dos objetos
-void GenerateObjectModels(const std::vector<std::string>& modelPaths); // Constrói representações de objetos geométricos
+void GenerateObjectModels(const std::vector<std::tuple<std::string, int>> g_modelPathsAndIds); // Constrói representações de objetos geométricos
 void ComputeNormals(ObjModel* model); // Computa normais de um ObjModel, caso não existam.
-void BuildTrianglesAndAddToVirtualScene(ObjModel*); // Constrói representação de um ObjModel como malha de triângulos para renderização
+void BuildTrianglesAndAddToVirtualScene(ObjModel* model, int sceneObjectId); // Constrói representação de um ObjModel como malha de triângulos para renderização
 GLuint BuildTriangles(); // Constrói triângulos para renderização
 void SetupBoundingBoxVAOAndVBO();
 void LoadTextureImages(const std::vector<std::string>& texturePaths); // Carrega imagens de textura
@@ -139,7 +141,7 @@ int main(int argc, char* argv[])
     LoadTextureImages(g_texturePaths);
 
     // Construímos a representação de objetos geométricos através de malhas de triângulos
-    GenerateObjectModels(g_modelPaths);
+    GenerateObjectModels(g_modelPathsAndIds);
 
     // Configuramos o VAO das bounding boxes dos elementos
     SetupBoundingBoxVAOAndVBO();
@@ -155,7 +157,7 @@ int main(int argc, char* argv[])
     if ( argc > 1 )
     {
         ObjModel model(argv[1]);
-        BuildTrianglesAndAddToVirtualScene(&model);
+        BuildTrianglesAndAddToVirtualScene(&model, 0);
     }
 
     // Inicializamos o código para renderização de texto.
@@ -180,20 +182,6 @@ int main(int argc, char* argv[])
     float fixed_y = fixed_r*sin(g_CameraPhi);
     float fixed_z = fixed_r*cos(g_CameraPhi)*cos(g_CameraTheta);
     glm::vec4 camera_lookat_l = glm::vec4(0.0f,0.0f,0.0f,1.0f);
-
-    // Inicialização dos instâncias dos objetos
-    #define CENTRAL_SPHERE 0
-    #define SPHERE 1
-    #define SPHERE2 2
-    #define BUNNY  3
-    #define BUNNY2 4
-    #define PLANE  5
-    #define COW    6
-    #define CUBE   7
-    #define RECTANGLE 8
-    #define X_AXIS 9
-    #define Y_AXIS 10
-    #define Z_AXIS 11
 
     // Geração das instâncias de objetos alterando a model matrix
     GenerateObjectInstances(camera_lookat_l);
@@ -226,9 +214,9 @@ int main(int argc, char* argv[])
         float z = r*cos(g_CameraPhi)*cos(g_CameraTheta);
         float x = r*cos(g_CameraPhi)*sin(g_CameraTheta);
 
-        bool isMovementKeyPressed = w_key_pressed || a_key_pressed || s_key_pressed || d_key_pressed;
+        bool isMovementKeyPressed = w_key_pressed || a_key_pressed || s_key_pressed || d_key_pressed || q_key_pressed || e_key_pressed;
 
-        if (isMovementKeyPressed)
+        if (isMovementKeyPressed || g_RightMouseButtonPressed)
         {
             // Modo free camera
             SceneInformation::camera_position_c = glm::vec4(x,y,z,1.0f) + SceneInformation::camera_movement;
@@ -246,10 +234,10 @@ int main(int argc, char* argv[])
 
         // FREE CAMERA
         // Definicoes da Free Camera
-        glm::vec4 vetor_w = -SceneInformation::camera_view_vector;
-        glm::vec4 vetor_u = crossproduct(SceneInformation::camera_up_vector, vetor_w);
-        vetor_w = vetor_w / norm(vetor_w);
-        vetor_u = vetor_u / norm(vetor_u);
+        g_vetor_w = -SceneInformation::camera_view_vector;
+        g_vetor_u = crossproduct(SceneInformation::camera_up_vector, g_vetor_w);
+        g_vetor_w = g_vetor_w / norm(g_vetor_w);
+        g_vetor_u = g_vetor_u / norm(g_vetor_u);
 
         // Computamos a matriz "View" utilizando os parâmetros da câmera para
         // definir o sistema de coordenadas da câmera.  Veja slides 2-14, 184-190 e 236-242 do documento Aula_08_Sistemas_de_Coordenadas.pdf.
@@ -297,22 +285,24 @@ int main(int argc, char* argv[])
         // Gera as imagens dos objetos
         for (const auto& pair : g_ObjectInstances)
         {
-            int key = pair.first;
+            int instance_id = pair.first;
             ObjectInstance instance = pair.second;
+            int sceneObjectId = instance.sceneObject_id;
+            SceneObject sceneObject = g_idToSceneObject[sceneObjectId];
 
             // Modificação da posição da esfera
-            if (key == CENTRAL_SPHERE)
+            if (sceneObjectId == CENTRAL_SPHERE)
             {
                 instance.model_matrix = Matrix_Translate(camera_lookat_l.x,camera_lookat_l.y,camera_lookat_l.z)
                     * Matrix_Scale(0.05f,0.05f,0.05f);
             }
 
             glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(instance.model_matrix));
-            glUniform1i(g_object_id_uniform, key);
+            glUniform1i(g_object_id_uniform, sceneObjectId);
 
-            if (key == X_AXIS || key == Y_AXIS || key == Z_AXIS)
+            if (sceneObjectId == X_AXIS || sceneObjectId == Y_AXIS || sceneObjectId == Z_AXIS)
             {
-                switch (key)
+                switch (sceneObjectId)
                 {
                 case X_AXIS:
                     glBindVertexArray(VAO_X_axis);
@@ -333,8 +323,8 @@ int main(int argc, char* argv[])
             else
             {
                 glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(instance.model_matrix));
-                glUniform1i(g_object_id_uniform, key);
-                DrawVirtualObject(instance.object_name.c_str());
+                glUniform1i(g_object_id_uniform, sceneObjectId);
+                DrawVirtualObject(sceneObject.name.c_str());
             }
 
         }
@@ -344,22 +334,23 @@ int main(int argc, char* argv[])
             g_cursorRay = ComputeRayFromMouse(window, SceneInformation::projection, SceneInformation::view);
             
             bool intersectsSomething = false;
-
             int nearest_object = -1;
 
-            // Loop for each object in g_VirtualScene
-            for (auto& object : g_VirtualScene)
+            // Loop for each object in g_ObjectInstances
+            for (const auto& pair : g_ObjectInstances)
             {
-                std::string object_name = object.first;
-                SceneObject sceneObject = object.second;
-                int id = g_ObjectInstanceNameToIdMap[object_name];
-                glm::mat4 model_matrix = g_ObjectInstances[id].model_matrix;
+                int instance_id = pair.first;
+                ObjectInstance instance = pair.second;
+                std::string instance_name = instance.object_name;
+                glm::mat4 model_matrix = instance.model_matrix;
+                int sceneObjectId = instance.sceneObject_id;
+                SceneObject sceneObject = g_idToSceneObject[sceneObjectId];
+                std::string sceneObject_name = sceneObject.name;
 
                 float intersection_distance;
-                
                 float nearest_intersection_distance = std::numeric_limits<float>::max();
                 
-                if (object_name == "the_sphere")
+                if (sceneObjectId == SPHERE)
                 {
                     glm::vec4 sphere_bb_min = sceneObject.bbox_min;
                     glm::vec4 sphere_bb_max = sceneObject.bbox_max;
@@ -378,17 +369,16 @@ int main(int argc, char* argv[])
                                                              model_matrix, intersection_distance);
                 }
 
-                
-
                 if (intersectsSomething)
                 {
                     if (intersection_distance < nearest_intersection_distance)
                     {
-                        nearest_object = id;
+                        nearest_object = instance_id;
                         nearest_intersection_distance = intersection_distance;
                     }
                 }
             }
+
 
             if (nearest_object != -1)
             {
@@ -407,15 +397,13 @@ int main(int argc, char* argv[])
         // Atualiza as informações do objeto selecionado
         SetObjectInformationWindowData();
 
+        UpdateMouseButtonStatus(window);
+
         // Desenha um raio a partir do mouse
         if (g_drawMouseRay)
         {
             DrawRay(g_cursorRay.startPoint, g_cursorRay.direction);
         }
-        
-        // Imprimimos na tela os ângulos de Euler que controlam a rotação do
-        // terceiro cubo.
-        TextRendering_ShowEulerAngles(window);
 
         // Imprimimos na tela informação sobre o número de quadros renderizados
         // por segundo (frames per second).
@@ -423,40 +411,46 @@ int main(int argc, char* argv[])
 
         // Cálculo de delta logo antes do glfwSwapBuffers para tentar minimizar o atraso da geração de imagens
         // Atualiza delta de tempo
-        float current_time = (float)glfwGetTime();
-        float delta_t = current_time - prev_time;
-        prev_time = current_time;
+        g_current_time = (float)glfwGetTime();
+        g_delta_t = g_current_time - g_prev_time;
+        g_prev_time = g_current_time;
 
         // Realiza movimentação de objetos
         if (w_key_pressed)
             // Movimenta câmera para frente
-            SceneInformation::camera_movement += -vetor_w * speed * delta_t;
+            SceneInformation::camera_movement += -g_vetor_w * speed * g_delta_t;
         if (a_key_pressed)
             // Movimenta câmera para esquerda
-            SceneInformation::camera_movement += -vetor_u * speed * delta_t;
+            SceneInformation::camera_movement += -g_vetor_u * speed * g_delta_t;
         if (s_key_pressed)
             // Movimenta câmera para trás
-            SceneInformation::camera_movement += vetor_w * speed * delta_t;
+            SceneInformation::camera_movement += g_vetor_w * speed * g_delta_t;
         if (d_key_pressed)
             // Movimenta câmera para direita
-            SceneInformation::camera_movement += vetor_u * speed * delta_t;
+            SceneInformation::camera_movement += g_vetor_u * speed * g_delta_t;
+        if (q_key_pressed)
+            // Movimenta câmera para cima
+            SceneInformation::camera_movement += SceneInformation::camera_up_vector * speed * g_delta_t;
+        if (e_key_pressed)
+            // Movimenta câmera para baixo
+            SceneInformation::camera_movement += -SceneInformation::camera_up_vector * speed * g_delta_t;
 
         if (g_animateSelectedObject && g_pickAnimation)
         {
-            float elapsed_time = current_time - g_animationStartTime;
+            float elapsed_time = g_current_time - g_animationStartTime;
 
             glm::mat4 current_model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Translate(0.0f,1.0f,0.0f);
             if (elapsed_time < 0.5f)
             {
-                g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Translate(0.0f,delta_t,0.0f);
+                g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Translate(0.0f,g_delta_t,0.0f);
             }
             else if (elapsed_time < 1.0f)
             {
-                g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Rotate_Y(delta_t * M_PI * 4);
+                g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Rotate_Y(g_delta_t * M_PI * 4);
             }
             else if (elapsed_time < 1.5f)
             {
-                g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Translate(0.0f,-delta_t,0.0f);
+                g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Translate(0.0f,-g_delta_t,0.0f);
             }
             else if (elapsed_time < 1.8f)
             {
@@ -464,7 +458,6 @@ int main(int argc, char* argv[])
                 g_animateSelectedObject = false;
             }
         }
-        
 
         GenerateGUIWindows();
 
@@ -703,53 +696,26 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
             // necessariamente deve ter ocorrido um evento PRESS.
             ;
     }
-
-    if (key == GLFW_KEY_0 || key == GLFW_KEY_1 || key == GLFW_KEY_2 || key == GLFW_KEY_3 || key == GLFW_KEY_4 ||
-        key == GLFW_KEY_5 || key == GLFW_KEY_6 || key == GLFW_KEY_7 || key == GLFW_KEY_8 || key == GLFW_KEY_9)
+    if (key == GLFW_KEY_Q)
     {
-        float scale = 1.25f;
-        float descale = 1.00f/scale;
-
-        if (g_selectedObject != -1)
-        {
-            g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Scale(descale,descale,descale);
-        }
-
-        switch (key)
-        {
-        case GLFW_KEY_0:
-            g_selectedObject = 0;
-            break;
-        case GLFW_KEY_1:
-            g_selectedObject = 1;
-            break;
-        case GLFW_KEY_2:
-            g_selectedObject = 2;
-            break;
-        case GLFW_KEY_3:
-            g_selectedObject = 3;
-            break;
-        case GLFW_KEY_4:
-            g_selectedObject = 4;
-            break;
-        case GLFW_KEY_5:
-            g_selectedObject = 5;
-            break;
-        case GLFW_KEY_6:
-            g_selectedObject = 6;
-            break;
-        case GLFW_KEY_7:
-            g_selectedObject = 7;
-            break;
-        case GLFW_KEY_8:
-            g_selectedObject = 8;
-            break;
-        default:
-            break;
-        }
-
-        g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Scale(scale,scale,scale);
+        if (action == GLFW_PRESS)
+            q_key_pressed = true;
+        else if (action == GLFW_RELEASE)
+            q_key_pressed = false;
+        else if (action == GLFW_REPEAT)
+            ;
     }
+    if (key == GLFW_KEY_E)
+    {
+        if (action == GLFW_PRESS)
+            e_key_pressed = true;
+        else if (action == GLFW_RELEASE)
+            e_key_pressed = false;
+        else if (action == GLFW_REPEAT)
+            ;
+    }
+    
+
 
     if (g_selectedObject != -1)
     {
@@ -788,7 +754,83 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
     }
 }
 
+// Função callback chamada sempre que o usuário movimentar o cursor do mouse em
+// cima da janela OpenGL.
+void CursorPosCallback(GLFWwindow* window, double xpos, double ypos)
+{
+    if (g_LeftMouseButtonHold && g_selectedObject != -1)
+    {
+        // Deslocamento do cursor do mouse em x e y de coordenadas de tela!
+        float dx = xpos - g_LastCursorPosX;
+        float dy = ypos - g_LastCursorPosY;
 
+        // change the model matrix according to the mouse movement
+        g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix
+        * Matrix_Translate(dx * 0.01f, 0.0f, dy * 0.01f);
+
+        // Atualizamos as variáveis globais para armazenar a posição atual do
+        // cursor como sendo a última posição conhecida do cursor.
+        g_LastCursorPosX = xpos;
+        g_LastCursorPosY = ypos;
+    }
+
+    // Para o pan da câmera
+    if (g_RightMouseButtonPressed)
+    {
+        // Deslocamento do cursor do mouse em x e y de coordenadas de tela!
+        float dx = xpos - g_LastCursorPosX;
+        float dy = ypos - g_LastCursorPosY;
+
+        // Movimentação da câmera com o botão direito do mouse
+        SceneInformation::camera_movement += g_vetor_u * dx * g_delta_t;
+        SceneInformation::camera_movement += -SceneInformation::camera_up_vector * dy * g_delta_t;
+    
+        // Atualizamos as variáveis globais para armazenar a posição atual do
+        // cursor como sendo a última posição conhecida do cursor.
+        g_LastCursorPosX = xpos;
+        g_LastCursorPosY = ypos;
+    }
+
+    // Para o giro da câmera
+    if (g_MiddleMouseButtonPressed)
+    {
+        // Deslocamento do cursor do mouse em x e y de coordenadas de tela!
+        float dx = xpos - g_LastCursorPosX;
+        float dy = ypos - g_LastCursorPosY;
+
+        // Atualizamos parâmetros da câmera com os deslocamentos
+        g_CameraTheta -= 0.01f*dx;
+        g_CameraPhi   += 0.01f*dy;
+    
+        // Em coordenadas esféricas, o ângulo phi deve ficar entre -pi/2 e +pi/2.
+        float phimax = 3.141592f/2;
+        float phimin = -phimax;
+    
+        if (g_CameraPhi > phimax)
+            g_CameraPhi = phimax;
+    
+        if (g_CameraPhi < phimin)
+            g_CameraPhi = phimin;
+    
+        // Atualizamos as variáveis globais para armazenar a posição atual do
+        // cursor como sendo a última posição conhecida do cursor.
+        g_LastCursorPosX = xpos;
+        g_LastCursorPosY = ypos;
+    }
+}
+
+// Função para verificar se o botão esquerdo do mouse teve apenas um clique ou está pressionado
+void UpdateMouseButtonStatus(GLFWwindow* window)
+{
+    if (g_LeftMouseButtonPressed && !g_LeftMouseButtonHold)
+    {
+        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && (glfwGetTime() - g_LeftMouseButtonPressTime > 0.05f))
+        {
+            g_LeftMouseButtonHold = true;
+            g_LeftMouseButtonPressed = false;
+        }
+    }
+}
 
 // Impressão de informações ======================================================================================================
 void PrintGPUInformation()
@@ -984,13 +1026,15 @@ void LoadShader(const char* filename, GLuint shader_id)
 
 
 // Geração dos modelos ======================================================================================================
-void GenerateObjectModels(const std::vector<std::string>& modelPaths)
+void GenerateObjectModels(const std::vector<std::tuple<std::string, int>> g_modelPathsAndIds)
 {
-    for(const auto& path : modelPaths)
+    for (const auto& pathAndId : g_modelPathsAndIds)
     {
+        std::string path = std::get<0>(pathAndId);
+        int id = std::get<1>(pathAndId);
         ObjModel model(path.c_str());
         ComputeNormals(&model);
-        BuildTrianglesAndAddToVirtualScene(&model);
+        BuildTrianglesAndAddToVirtualScene(&model, id);
     }
 }
 
@@ -1113,7 +1157,7 @@ void ComputeNormals(ObjModel* model)
 }
 
 // Constrói triângulos para futura renderização a partir de um ObjModel.
-void BuildTrianglesAndAddToVirtualScene(ObjModel* model)
+void BuildTrianglesAndAddToVirtualScene(ObjModel* model, int sceneObjectId)
 {
     // Criamos um VAO para o objeto
     GLuint vertex_array_object_id;
@@ -1220,8 +1264,9 @@ void BuildTrianglesAndAddToVirtualScene(ObjModel* model)
         }
         // ======================
 
-        g_VirtualScene[model->shapes[shape].name] = theobject;
-
+        std::string object_name = model->shapes[shape].name;
+        g_VirtualScene[object_name] = theobject;
+        g_idToSceneObject[sceneObjectId] = theobject;
     }
 
     GLuint VBO_model_coefficients_id;
@@ -1270,8 +1315,6 @@ void BuildTrianglesAndAddToVirtualScene(ObjModel* model)
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_id);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), NULL, GL_STATIC_DRAW);
     glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, indices.size() * sizeof(GLuint), indices.data());
-    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); // XXX Errado!
-    //
 
     // "Desligamos" o VAO, evitando assim que operações posteriores venham a
     // alterar o mesmo. Isso evita bugs.
@@ -1397,33 +1440,32 @@ void GenerateObjectInstances(glm::vec4 camera_lookat_l)
     // For the first sphere:
     model = Matrix_Translate(camera_lookat_l.x,camera_lookat_l.y,camera_lookat_l.z)
             * Matrix_Scale(0.05f,0.05f,0.05f);
-    ObjectInstance("the_sphere", model, CENTRAL_SPHERE);
+    ObjectInstance("Central Sphere", model, CENTRAL_SPHERE);
 
     // //Desenhamos o modelo da esfera
     model = Matrix_Translate(-2.0f,0.0f,0.5f)
             * Matrix_Scale(1.0f,1.0f,1.0f);
-    ObjectInstance("the_sphere", model, SPHERE);
+    ObjectInstance("World", model, SPHERE);
 
     // Desenhamos outra instancia da esfera
     model = Matrix_Translate(-2.0f,-2.0f,0.0f)
             * Matrix_Scale(0.4f,0.4f,0.4f);
-    ObjectInstance("the_sphere", model, SPHERE2);
+    ObjectInstance("World2", model, SPHERE);
 
     // Desenhamos o modelo do coelho
     model = Matrix_Translate(1.0f,0.0f,0.0f)
-        * Matrix_Scale(0.3f,0.3f,0.3f)
-        * Matrix_Rotate_X(g_AngleX + (float)glfwGetTime() * 0.1f);
-    ObjectInstance("the_bunny", model, BUNNY);
+        * Matrix_Scale(0.3f,0.3f,0.3f);
+    ObjectInstance("Bunny1", model, BUNNY);
 
     // Desenhamos outra instancia do coelho
     model = Matrix_Translate(0.8f,-0.5f,0.5f)
             * Matrix_Scale(0.2f,0.2f,0.2f)
-            * Matrix_Rotate_X(g_AngleX + (float)glfwGetTime() * 0.1f);
-    ObjectInstance("the_bunny", model, BUNNY2);
+            * Matrix_Rotate_X(0.1f);
+    ObjectInstance("Bunny2", model, BUNNY);
 
     // Desenhamos o plano do chão
     model = Matrix_Translate(0.0f,-1.1f,0.0f);
-    ObjectInstance("the_plane", model, PLANE);
+    ObjectInstance("Plane", model, PLANE);
 
     // 90 degrees in radians
     float ninety_degrees = 1.5708f;
@@ -1432,11 +1474,11 @@ void GenerateObjectInstances(glm::vec4 camera_lookat_l)
             * Matrix_Rotate_Y(ninety_degrees)
             * Matrix_Rotate_X(1.0f)
             * Matrix_Rotate_Z(0.7f);
-    ObjectInstance("the_cow", model, COW);
+    ObjectInstance("Cow", model, COW);
 
     // Desenhamos o modelo do cubo
     model = Matrix_Translate(2.0f,0.0f,-0.7f);
-    ObjectInstance("the_cube", model, CUBE);
+    ObjectInstance("Cube", model, CUBE);
 
     // // Desenhamos o modelo do retangulo
     model = Matrix_Translate(-3.0f,0.0f,-1.5f);
@@ -1444,15 +1486,9 @@ void GenerateObjectInstances(glm::vec4 camera_lookat_l)
 
     // Desenhamos os eixos XYZ
     glm::mat4 model_origin = Matrix_Translate(0.0f,0.0f,0.0f);
-    ObjectInstance("the_x_axis", model_origin, X_AXIS);
-    ObjectInstance("the_y_axis", model_origin, Y_AXIS);
-    ObjectInstance("the_z_axis", model_origin, Z_AXIS);
-
-    // Itera por todas as instâncias de objetos na cena e faz um mapa entre o nome da instância do objeto e seu id
-    for (auto const& x : g_ObjectInstances)
-    {
-        g_ObjectInstanceNameToIdMap[x.second.object_name] = x.second.object_id;
-    }
+    ObjectInstance("X Axis", model_origin, X_AXIS);
+    ObjectInstance("Y Axis", model_origin, Y_AXIS);
+    ObjectInstance("Z Axis", model_origin, Z_AXIS);
 }
 
 void SetupXYZAxesVAOAndVBO(GLuint &VAO_X_axis, GLuint &VAO_Y_axis, GLuint &VAO_Z_axis, GLuint &VBO_X_axis, GLuint &VBO_Y_axis, GLuint &VBO_Z_axis)
@@ -1608,12 +1644,14 @@ void SetObjectInformationWindowData()
 {
     if (g_selectedObject != -1)
     {
+        ObjectInstance objectInstance = g_ObjectInstances[g_selectedObject];
+
         // Pega o nome do objeto selecionado
-        std::string object_name = g_ObjectInstances[g_selectedObject].object_name;
-        g_selectedObjectName = object_name;
+        g_selectedObjectName = objectInstance.object_name;
 
         // Pega o centro do objeto selecionado
-        SceneObject sceneObject = g_VirtualScene[object_name];
+
+        SceneObject sceneObject = g_idToSceneObject[objectInstance.sceneObject_id];
         glm::vec4 sceneObject_bb_min = sceneObject.bbox_min;
         glm::vec4 sceneObject_bb_max = sceneObject.bbox_max;
         glm::vec4 sceneObject_center = (sceneObject_bb_min + sceneObject_bb_max) / 2.0f;

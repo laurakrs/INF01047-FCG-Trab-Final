@@ -11,14 +11,20 @@ float g_AngleZ = 0.0f;
 // "g_LeftMouseButtonPressed = true" se o usuário está com o botão esquerdo do mouse
 // pressionado no momento atual. Veja função MouseButtonCallback().
 bool g_LeftMouseButtonPressed = false;
+bool g_LeftMouseButtonHold = false;
+bool g_LeftMouseButtonClicked = false;
 bool g_RightMouseButtonPressed = false; // Análogo para botão direito do mouse
 bool g_MiddleMouseButtonPressed = false; // Análogo para botão do meio do mouse
+float g_LeftMouseButtonPressTime;
 
 // Variaveis para as teclas que movimentam a camera. " = true" se pressionada
 bool w_key_pressed = false;
 bool a_key_pressed = false;
 bool s_key_pressed = false;
 bool d_key_pressed = false;
+bool q_key_pressed = false;
+bool e_key_pressed = false;
+bool left_shift_key_pressed_repeat = false;
 
 // Variáveis que definem a câmera em coordenadas esféricas, controladas pelo
 // usuário através do mouse (veja função CursorPosCallback()). A posição
@@ -83,18 +89,16 @@ int g_startWindowHeight = 600;
 float g_actualWindowWidth;
 float g_actualWindowHeight;
 
-// Map de instâncias para seu id
-std::map<std::string, int> g_ObjectInstanceNameToIdMap;
-
-// Paths de arquivos externos a serem carregados
-std::vector<std::string> g_modelPaths = 
+// Map de objetos para seu id
+std::vector<std::tuple<std::string, int>> g_modelPathsAndIds = 
 {
-    "../../data/sphere.obj",
-    "../../data/bunny.obj",
-    "../../data/plane.obj",
-    "../../data/cow.obj",
-    "../../data/cube.obj",
-    "../../data/rectangle.obj"
+    std::make_tuple("../../data/sphere.obj", CENTRAL_SPHERE),
+    std::make_tuple("../../data/sphere.obj", SPHERE),
+    std::make_tuple("../../data/bunny.obj", BUNNY),
+    std::make_tuple("../../data/plane.obj", PLANE),
+    std::make_tuple("../../data/cow.obj", COW),
+    std::make_tuple("../../data/cube.obj", CUBE),
+    std::make_tuple("../../data/rectangle.obj", RECTANGLE)
 };
 
 std::vector<std::string> g_texturePaths = 
@@ -111,11 +115,20 @@ float g_rayLength = 1000.0f;
 GLuint VBO_ray_id;
 GLuint VAO_ray_id;
 
+// Variáveis do movimento da câmera
+float g_current_time;
+float g_delta_t;
+float g_prev_time;
+glm::vec4 g_vetor_w;
+glm::vec4 g_vetor_u;
+
+
 // DEBUG
 float g_distSquared, g_radiusSquared, g_t1, g_t2, g_t;
 glm::vec3 g_toSphere, g_closestPoint, g_centerToPoint;
 bool g_isScaleEqualOnAllDirections;
 glm::vec3 g_rayOrigin, g_rayDirection;
+float g_dx, g_dy;
 
 
 

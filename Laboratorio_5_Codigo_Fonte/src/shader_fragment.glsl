@@ -25,17 +25,16 @@ uniform bool isBoundingBoxFragment;  // Verdadeiro para fragmentos de bounding b
 
 // Identificador que define qual objeto está sendo desenhado no momento
 #define CENTRAL_SPHERE 0
-#define SPHERE 1
-#define SPHERE2 2
-#define BUNNY  3
-#define BUNNY2 4
-#define PLANE  5
-#define COW    6
-#define CUBE   7
-#define RECTANGLE 8
-#define X_AXIS 9
-#define Y_AXIS 10
-#define Z_AXIS 11
+#define X_AXIS 1
+#define Y_AXIS 2
+#define Z_AXIS 3
+// Objetos selecionáveis:
+#define SPHERE 4
+#define BUNNY  5
+#define PLANE  6
+#define COW    7
+#define CUBE   8
+#define RECTANGLE 9
 
 uniform int object_id;
 
@@ -118,7 +117,7 @@ void main()
     float V = 0.0;
 
 
-    if ( object_id == SPHERE || object_id == CENTRAL_SPHERE || object_id == SPHERE2 ) // BLINN-PHONG
+    if ( object_id == SPHERE || object_id == CENTRAL_SPHERE) // BLINN-PHONG
     {
         // PREENCHA AQUI as coordenadas de textura da esfera, computadas com
         // projeção esférica EM COORDENADAS DO MODELO. Utilize como referência
@@ -208,7 +207,7 @@ void main()
         color.rgb = pow(color.rgb, vec3(1.0,1.0,1.0)/2.2);
         return;
     }
-    else if (object_id == BUNNY || object_id == BUNNY2 ){ // INTERPOLACAO DE GOURAUD
+    else if (object_id == BUNNY){ // INTERPOLACAO DE GOURAUD
         color = color_bunny; // cor calculada no shader vertex com interpolacao de gouraud
         return;
     }
