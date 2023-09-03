@@ -111,7 +111,7 @@ std::vector<std::string> g_texturePaths =
     "../../data/aerial_asphalt_01_diff_4k.jpg",
     "../../data/fabric_leather_02_diff_4k.jpg",
     "../../data/leather_white_diff_4k.jpg",
-    "../../data/room-light.jpg",
+    "../../data/room-light.jpg"
 };
 
 // Variáveis para o raio
