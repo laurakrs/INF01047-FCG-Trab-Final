@@ -41,31 +41,33 @@ Matheus Henrique Sabadin - 228729<br/>
 
 ~Parágrafo curto indicando se a dupla fez uso do ChatGPT (ou alguma outra ferramenta similar, como Github Copilot, OpenAI Codex, etc.) para desenvolvimento do trabalho, descrevendo como a ferramenta foi utilizada e para quais partes do trabalho. O parágrafo deve também incluir uma análise crítica descrevendo quão útil a dupla achou a ferramenta, onde ela auxiliou e onde ela não auxiliou adequadamente;~ <br/>
 
-COPILOT:<br/>
+**COPILOT:** <br/>
 Foi feito uso do Copilot principalmente para ajudar no debug do código. Diversas vezes a úncia maneira de exibir as variáveis que estavam sendo executadas era mostrar seus valores no console ou em uma interface gráfica criada com essa intenção. O copilot ajudava muito ao transformar vetores em string ou exibir matrizes de vários elementos em loop, como por exemplo:<br/>
-Se digitava em uma função da GUI "// show SceneInformation::camera_movement" e o copilot automaticamente preenchia uma linha de código que mostrava todos os dados da variável: <br/>
-ImGui::Text("camera_movement: x=%.3f, y=%.3f, z=%.3f", SceneInformation::camera_movement.x, SceneInformation::camera_movement.y, SceneInformation::camera_movement.z);<br/>
-Esta interação ajudava muito para a criação de código repeptitivo e de fácil erro na digitação.<br/>
-O copilot algumas vezes também ajudou na documentação em português do código.<br/>
+<br/>
+Se digitava em uma função da GUI _**"// show SceneInformation::camera_movement"**_ e o copilot automaticamente preenchia uma linha de código que mostrava todos os dados da variável: <br/>
+_**ImGui::Text("camera_movement: x=%.3f, y=%.3f, z=%.3f", SceneInformation::camera_movement.x, SceneInformation::camera_movement.y, SceneInformation::camera_movement.z);**_ <br/>
+Esta interação ajudava muito para a criação de código repetitivo e de fácil erro na digitação. O copilot algumas vezes também ajudou na documentação em português do código.<br/>
 <br/>
 <br/>
-CHATGPT:<br/>
-Fizemos uso do ChatGPT e percebemos que sua melhor contribuição foi para resolver questões pontuais de problemas no código, mas mesmo assim com alguns equívocos iniciais.
-Exemplos de pontos em que o ChatGPT foi útil: 
+**CHATGPT:** <br/>
+Fizemos uso do ChatGPT e percebemos que sua melhor contribuição foi para resolver questões pontuais de problemas no código, mas mesmo assim com alguns equívocos iniciais. <br/>
+<br/>
+**Exemplos de pontos em que o ChatGPT foi útil:** <br/>
 - Ajudou na implementação da curva de Bézier, após fornecermos explicações detalhadas e exemplo do nosso código. ChatGPT forneceu coordenadas para os pontos de forma a gerar a curva que desejávamos.
 - Quando tentamos atualizar a fonte de iluminação a partir de um "in" no shader fragment, o ChatGPT respondeu que iria funcionar, mas não funcionou. Após, ele sugeriu a utilização de uma variável "uniform", que deu certo.
 - Ajudou na implementação dos códigos de intersecção, explicando as equações utilziadas matematicamente, demonstrando o passo a passo do algoritmo e ajudando a adaptar interativamente as mesmas para exigências pontuais do progrmaa construído.
 - Ajudou a bebugar problemas de alocação de memória relacionados aos VAOs e VBOs.<br/>
 <br/>
-Exemplos de pontos em que o ChatGPT não foi útil: 
+
+**Exemplos de pontos em que o ChatGPT não foi útil:** <br/> 
 - Não conseguiu ajudar a consertar o problema do cálculo das normais dos cuboides;
 - Não conseguiu solucionar a implementação de iluminação junto com mapeamento de textura;
 (Estes problemas foram solucionados com a ajuda do professor)
 - Tinha muita dificuldade de encontrar problemas relacionados aos shaders, visto que precisava ver o contexto do código em c++ e o glsl
 <br/>
 <br/>
-- Descrição do processo de desenvolvimento e do uso em sua aplicação dos conceitos de Computação Gráfica estudados e listados nos requisitos acima;<br/><br/>
-
+~Descrição do processo de desenvolvimento e do uso em sua aplicação dos conceitos de Computação Gráfica estudados e listados nos requisitos acima;~ <br/>
+**Descrição do processo de desenvolvimento e do uso em sua aplicação dos conceitos de Computação Gráfica estudados:** <br/>
 Iniciamos o desenvolvimento do trabalho a partir do código fonte do Laboratório 5. Além disso, consultamos os laboratórios anteriores e adaptamos os códigos para servir aos propósitos de nossa aplicação. Durante a elaboração, foi possível entender melhor os conceitos estudados na disciplina, em especial os requisitos que implementamos. Constantemente revisitamos os slides e as vídeo aulas para solucionar dúvidas e relembrar explicações. Muito do que foi visto de forma teórica passou a fazer mais sentido no momento da aplicação. Os próprios laboratórios foram ressignificados no contexto de uma aplicação que unia tudo o que havia sido implementado de forma isolada.<br/>
 <br/>
 Como já mencionamos anteriormente, na seção sobre as contribuições dos integrantes, os conceitos listados nos requisitos foram utilizados da forma que julgamos fazer mais sentido para o propósito da aplicação.
