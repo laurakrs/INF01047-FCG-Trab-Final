@@ -39,6 +39,8 @@ uniform bool isBoundingBoxFragment;  // Verdadeiro para fragmentos de bounding b
 #define COW    7
 #define CUBE   8
 #define RECTANGLE 9
+#define ILLUMINATION_SPHERE 10
+  
 
 uniform int object_id;
 
@@ -212,6 +214,66 @@ void main()
         // Veja https://en.wikipedia.org/w/index.php?title=Gamma_correction&oldid=751281772#Windows.2C_Mac.2C_sRGB_and_TV.2Fvideo_standard_gammas
         color.rgb = pow(color.rgb, vec3(1.0,1.0,1.0)/2.2);
         return;
+    }
+    else if(object_id == ILLUMINATION_SPHERE){ // BLINN-PHONG
+    
+        // TEXTURA
+        vec4 bbox_center = (bbox_min + bbox_max) / 2.0;
+
+        // Slide 150 da Aula 20 - Mapeamento de Texturas
+        vec4 p = position_model - bbox_center;
+        float theta = atan(p.x, p.z);       // Range: [-PI, PI)
+        float phi = asin(p.y / length(p));  // Range: [-PI/2, PI/2)
+
+        U = (theta + M_PI) / (2 * M_PI);    // Range: [0,1)
+        V = (phi + M_PI / 2) / M_PI;        // Range: [0, 1)
+
+        Kd0 = texture(TextureImage0, vec2(U,V)).rgb; // planet
+
+        // ILUMINACAO DIFUSA
+        // Propriedades espectrais da esfera
+        Ks = vec3(0.0,0.0,0.0);         // Superfície 100% difusa
+        Ka = Kd0 / 2;                    // Refletância ambiente no modelo RGB = metade da refletância difusa
+        q = 1.0;                        // Expoente especular de Phong não especificado
+        q_linha = 1.0;
+
+        // Espectro da fonte de iluminação
+        vec3 I = vec3(1.0,1.0,1.0); // PREENCHA AQUI o espectro da fonte de luz
+
+        // Espectro da luz ambiente
+        vec3 Ia = vec3(0.2,0.2,0.2); // PREENCHA AQUI o espectro da luz ambiente
+
+        // Termo difuso utilizando a lei dos cossenos de Lambert
+        // Aula 17 e 18 - Modelos de Iluminação - Slide 103
+        // SUBSTITUI O Kd pelo Kd0 da textura
+        vec3 lambert_diffuse_term = Kd0*I*max(0,dot(n,l)); // PREENCHA AQUI o termo difuso de Lambert
+
+        // Termo ambiente
+        // Slide 103
+        vec3 ambient_term = Ka*Ia; // PREENCHA AQUI o termo ambiente
+
+        // Termo especular utilizando o modelo de iluminação de Phong
+        // Slide 128
+        vec3 phong_specular_term  = Ks*I*pow(max(0,dot(r,v)),q); // PREENCHA AQUI o termo especular de Phong
+
+        // MODELO DE BLINN-PHONG - DIFERENTE:
+        // Termo especular utilizando o modelo de iluminacao de Blinn-Phong:
+        // Slide 150
+        vec3 blinn_phong_specular_term  = Ks*I*pow(max(0,dot(n,h)),q_linha);
+        
+
+        // Alpha default = 1 = 100% opaco = 0% transparente
+        color.a = 1;
+
+
+        // PARA BLINN-PHONG:
+        color.rgb = lambert_diffuse_term + ambient_term + blinn_phong_specular_term;
+
+
+        // Cor final com correção gamma, considerando monitor sRGB.
+        // Veja https://en.wikipedia.org/w/index.php?title=Gamma_correction&oldid=751281772#Windows.2C_Mac.2C_sRGB_and_TV.2Fvideo_standard_gammas
+        color.rgb = pow(color.rgb, vec3(1.0,1.0,1.0)/2.2);
+
     }
     else if (object_id == BUNNY){ // INTERPOLACAO DE GOURAUD
         color = color_bunny; // cor calculada no shader vertex com interpolacao de gouraud
