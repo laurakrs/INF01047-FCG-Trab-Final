@@ -309,7 +309,7 @@ int main(int argc, char* argv[])
 
     
         //time_Bezier = (time_Bezier/10.0f) - floor(time_Bezier/10.0f);
-        time_Bezier = fmod(time_Bezier, 10.0f) / 10.0f; // Normalized time between 0 and 1
+        //time_Bezier = fmod(time_Bezier, 10.0f) / 10.0f; // Normalized time between 0 and 1
 
         glm::vec4 currentLightPosition = bezierCurve(time_Bezier,startPoint, control1, control2, endPoint);
 
