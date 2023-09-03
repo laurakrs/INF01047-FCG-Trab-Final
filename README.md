@@ -106,7 +106,11 @@ Como já mencionamos anteriormente, na seção sobre as contribuições dos inte
 
 
 
-~Explicação de todos os passos necessários para compilação e execução da aplicação;~
+~Explicação de todos os passos necessários para compilação e execução da aplicação;~ <br/>
+**Passo a passo para execução do programa:**
+- Abra o arquivo Laboratorio_5.cbp no diretório "INF01047-FCG-Trab-Final\Laboratorio_5_Codigo_Fonte" com o programa CodeBlocks;
+- Limpe possíveis arquivos de uma última execução no CodeBlocks em Build > Clean;
+- Compile e execute o código em Build > Build and Run;
 
 <br/>
 <br/>
