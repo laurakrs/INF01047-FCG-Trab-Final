@@ -40,7 +40,7 @@ Relatório em formato de README.md colocado no Github, contendo uma descrição 
     Exemplos de inutilidade: 
     - Não conseguiu ajudar a consertar o problema do cálculo das normais dos cuboides;
     - Não conseguiu solucionar a implementação de iluminação junto com mapeamento de textura;
-    -  
+    (Estes problemas foram solucionados com a ajuda do professor)
     
 
 
