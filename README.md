@@ -29,6 +29,7 @@ Relatório em formato de README.md colocado no Github, contendo uma descrição 
     - Seleção de objetos virtuais com o mouse (picking);
     - Interface: alterar o tipo de projeção, inserir instâncias novas dos objetos.
     - Refatoração do código, modificação de estruturas de dados. 
+    - Desenho de eixos e raio;
 
 
 
