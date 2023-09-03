@@ -7,6 +7,7 @@ Proposta: Será criado um programa no estilo do SketchUp em que será possível 
 Relatório em formato de README.md colocado no Github, contendo uma descrição simples sobre o desenvolvimento do trabalho, o qual deve obrigatoriamente incluir:
     O objetivo inicial do trabalho era criar um programa no estilo do SketchUp em que será possível visualizar modelos, lançar algumas geometrias específicas em 2D a partir de linhas e pontos e extrudá-las ortogonalmente ao seu plano para formar uma geometria 3D.
     O trabalho foi desenvolvido de forma colaborativa, em constante diálogo. Para facilitar a elaboração, dividimos as tarefas na etapa de planejamento, de acordo com os interesses e habilidades de cada integrante, mas mantivemos constante troca de informações e atualizações, assim como discussões sobre os passos seguintes. 
+    Separamos os requisitos em metas, definimos prioridades de entrega (dividindo entre apresentação parcial e apresentação final), e fomos atualizando o progresso em cada item. 
 - Parágrafo listando as contribuição de cada membro da dupla para o trabalho:
     Laura ficou responsável por implementar os seguintes requisitos: 
     - Objetos da cena virtual (cow, bunny, plane, spheres, cube, e "rectangle");
