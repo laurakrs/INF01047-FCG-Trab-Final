@@ -189,20 +189,6 @@ int main(int argc, char* argv[])
     float time_Bezier = 0.0f;
     float prev_time_bezier = 0.0f;
 
-    // Inicialização dos instâncias dos objetos
-    #define CENTRAL_SPHERE 0
-    #define SPHERE 1
-    #define SPHERE2 2
-    #define BUNNY  3
-    #define BUNNY2 4
-    #define PLANE  5
-    #define COW    6
-    #define CUBE   7
-    #define RECTANGLE 8
-    #define X_AXIS 9
-    #define Y_AXIS 10
-    #define Z_AXIS 11
-
     // Geração das instâncias de objetos alterando a model matrix
     GenerateObjectInstances(camera_lookat_l);
 
