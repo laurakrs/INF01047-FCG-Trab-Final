@@ -319,7 +319,7 @@ int main(int argc, char* argv[])
            // time_Bezier = 0.0f; // Reset to the beginning of the curve
         //}
 
-        glm::vec3 currentPointLight = bezierCurve(time_Bezier,10.0f,startPoint, control1, control2, endPoint);
+        glm::vec3 currentPointLight = bezierCurve(time_Bezier,startPoint, control1, control2, endPoint);
 
         glm::vec3 sentidoL = currentPointLight;
 
@@ -332,7 +332,7 @@ int main(int argc, char* argv[])
             if (key == CENTRAL_SPHERE)
             {
                 //time_Bezier += 0.5;
-                glm::vec3 currentPoint = bezierCurve(time_Bezier,10.0f,startPoint, control1, control2, endPoint);
+                glm::vec3 currentPoint = bezierCurve(time_Bezier,startPoint, control1, control2, endPoint);
                 instance.model_matrix = Matrix_Translate(currentPoint.x, currentPoint.y, currentPoint.z)
                     * Matrix_Scale(0.5f,0.5f,0.5f);
             }
