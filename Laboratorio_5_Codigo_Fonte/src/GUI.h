@@ -15,4 +15,5 @@ void CreateProjectionSettingsWindow(ImVec2 projectionWindowSize, ImVec2 projecti
 void CreateShowBoundingBoxesWindow(ImVec2 projectionWindowSize, ImVec2 projectionWindowPosition);
 void CreateDrawMouseRayWindow(ImVec2 windowSize, ImVec2 windowPosition);
 void CreatePickAnimationWindow(ImVec2 windowSize, ImVec2 windowPosition);
+void CreateMoveIlluminationWindow(ImVec2 windowSize, ImVec2 windowPosition);
 void DisposeGUI();

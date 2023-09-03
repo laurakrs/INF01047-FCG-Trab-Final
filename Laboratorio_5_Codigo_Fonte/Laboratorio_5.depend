@@ -743,7 +743,7 @@
 
 1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\simd\integer.h
 
-1693761971 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\main.cpp
+1693772588 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\main.cpp
 	<cmath>
 	<cstdio>
 	<cstdlib>
@@ -778,6 +778,7 @@
 	"GUI.h"
 	"collisions.h"
 	"Triangle.h"
+	"bezier.h"
 
 1693666224 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\include\glm\gtc\type_ptr.hpp
 	"../gtc/quaternion.hpp"
@@ -1032,12 +1033,12 @@
 	<glm/vec4.hpp>
 	<glm/gtc/matrix_transform.hpp>
 
-1693724533 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\objmodel.h
+1693772579 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\objmodel.h
 	<vector>
 	<tiny_obj_loader.h>
 	"Triangle.h"
 
-1693763526 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\objmodel.cpp
+1693772579 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\objmodel.cpp
 	"ObjModel.h"
 	<stdexcept>
 	<string>
@@ -1056,10 +1057,10 @@
 	<glm/vec4.hpp>
 	"globals.h"
 
-1693765075 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\globals.cpp
+1693772588 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\globals.cpp
 	"globals.h"
 
-1693765075 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\globals.h
+1693772588 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\globals.h
 	<map>
 	<stack>
 	<string>
@@ -1081,7 +1082,7 @@
 
 1692417644 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\geometryfunctions.h
 
-1693724810 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\sceneobject.h
+1693772579 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\sceneobject.h
 	<string>
 	<map>
 	<GLFW/glfw3.h>
@@ -3496,28 +3497,36 @@
 1693722849 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\cursorray.cpp
 	"CursorRay.h"
 
-1693765075 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\gui.cpp
+1693772588 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\gui.cpp
 	"GUI.h"
 	"globals.h"
 	"SceneInformation.h"
 	"ObjectInstance.h"
 
-1693696240 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\gui.h
+1693772588 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\gui.h
 	"imgui/imgui.h"
 	"imgui/imgui_impl_glfw.h"
 	"imgui/imgui_impl_opengl3.h"
 
-1693765712 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\collisions.cpp
+1693772579 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\collisions.cpp
 	"collisions.h"
 
-1693725465 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\collisions.h
+1693772579 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\collisions.h
 	"globals.h"
 	"SceneInformation.h"
 	"Triangle.h"
 
-1693763852 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\triangle.h
+1693772579 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\triangle.h
 	<glm/glm.hpp>
 
-1693763851 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\triangle.cpp
+1693772579 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\triangle.cpp
 	"Triangle.h"
+
+1693772588 source:c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\bezier.cpp
+	"bezier.h"
+
+1693772588 c:\projetos_visual_studio_code\inf01047-fcg-trab-final\laboratorio_5_codigo_fonte\src\bezier.h
+	<cmath>
+	<glm/glm.hpp>
+	<glm/vec3.hpp>
 

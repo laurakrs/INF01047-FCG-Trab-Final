@@ -62,6 +62,7 @@
 #include "GUI.h"
 #include "collisions.h"
 #include "Triangle.h"
+#include "bezier.h"
 
 // Definição de constantes
 #define M_PI   3.14159265358979323846
@@ -186,6 +187,14 @@ int main(int argc, char* argv[])
     float fixed_z = fixed_r*cos(g_CameraPhi)*cos(g_CameraTheta);
     glm::vec4 camera_lookat_l = glm::vec4(0.0f,0.0f,0.0f,1.0f);
 
+    // VARIAVEIS PARA A CURVA DE BEZIER:
+    float time_Bezier = 0.0f;
+    glm::vec4 startPoint = glm::vec4(-15.0f, 0.0f, 0.0f, 1.0f);
+    glm::vec4 endPoint = glm::vec4(15.0f, 0.0f, 0.0f, 1.0f);
+    glm::vec4 control1 = glm::vec4(0.0f, -20.0f, 0.0f, 1.0f);
+    glm::vec4 control2 = glm::vec4(0.0f, -20.0f, 0.0f, 1.0f);
+    glm::vec4 currentLightPosition = bezierCurve(time_Bezier,startPoint, control1, control2, endPoint);
+
     // Geração das instâncias de objetos alterando a model matrix
     GenerateObjectInstances(camera_lookat_l);
 
@@ -280,6 +289,20 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(g_view_uniform       , 1 , GL_FALSE , glm::value_ptr(SceneInformation::view));
         glUniformMatrix4fv(g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(SceneInformation::projection));
 
+        // BEZIER CURVE DENTRO DO LOOP:
+        if (g_moveIllumination)
+        {
+            float current_time_Bezier = (float)glfwGetTime();
+            float delta_t_Bezier = current_time_Bezier - prev_time;
+            prev_time = current_time_Bezier;
+
+            time_Bezier += delta_t_Bezier;
+
+            currentLightPosition = bezierCurve(time_Bezier,startPoint, control1, control2, endPoint);
+            glUniform4f(g_light_uniformLocation, currentLightPosition.x, currentLightPosition.y, currentLightPosition.z, currentLightPosition.w);
+        }
+
+
         // parece estar dando algum erro nesse loop quando debuga com
         // GLenum error = glGetError();
         // if(error != GL_NO_ERROR) {
@@ -290,14 +313,21 @@ int main(int argc, char* argv[])
         {
             int instance_id = pair.first;
             ObjectInstance instance = pair.second;
+            std::string instanceName = instance.object_name;
             int sceneObjectId = instance.sceneObject_id;
             SceneObject sceneObject = g_idToSceneObject[sceneObjectId];
 
-            // Modificação da posição da esfera
-            if (sceneObjectId == CENTRAL_SPHERE)
+            if (instanceName == "Central Sphere")
             {
-                instance.model_matrix = Matrix_Translate(camera_lookat_l.x,camera_lookat_l.y,camera_lookat_l.z)
-                    * Matrix_Scale(0.05f,0.05f,0.05f);
+                g_ObjectInstances[instance_id].model_matrix = Matrix_Translate(camera_lookat_l.x,camera_lookat_l.y,camera_lookat_l.z)
+                                                                * Matrix_Scale(0.05f,0.05f,0.05f);
+            }
+            
+            // Modificação da posição da esfera
+            if (instanceName == "Illumination Sphere" && g_moveIllumination)
+            {
+                g_ObjectInstances[instance_id].model_matrix = Matrix_Translate(-currentLightPosition.x,-currentLightPosition.y,currentLightPosition.z)
+                                                            * Matrix_Scale(0.05f,0.05f,0.05f);
             }
 
             glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(instance.model_matrix));
@@ -872,6 +902,8 @@ void LoadShadersFromFiles()
     g_bbox_min_uniform   = glGetUniformLocation(g_GpuProgramID, "bbox_min");
     g_bbox_max_uniform   = glGetUniformLocation(g_GpuProgramID, "bbox_max");
 
+    g_light_uniformLocation = glGetUniformLocation(g_GpuProgramID, "lightPosition");
+
     g_is_bounding_box_vertex_uniform = glGetUniformLocation(g_GpuProgramID, "isBoundingBoxVertex");
     g_is_bounding_box_fragment_uniform = glGetUniformLocation(g_GpuProgramID, "isBoundingBoxFragment");
 
@@ -1422,12 +1454,17 @@ void GenerateObjectInstances(glm::vec4 camera_lookat_l)
     // Inicialização de um objeto
     glm::mat4 model = Matrix_Identity(); // Transformação identidade de modelagem
 
-    // For the first sphere:
+    // Instância da esfera central
     model = Matrix_Translate(camera_lookat_l.x,camera_lookat_l.y,camera_lookat_l.z)
             * Matrix_Scale(0.05f,0.05f,0.05f);
     ObjectInstance("Central Sphere", model, CENTRAL_SPHERE);
 
-    // //Desenhamos o modelo da esfera
+    // Instância da esfera de iluminação
+    model = Matrix_Translate(-15.0f,0.0f,0.0f)
+            * Matrix_Scale(0.1f,0.1f,0.1f);
+    ObjectInstance("Illumination Sphere", model, ILLUMINATION_SPHERE);
+
+    // Desenhamos o modelo da esfera
     model = Matrix_Translate(-2.0f,0.0f,0.5f)
             * Matrix_Scale(1.0f,1.0f,1.0f);
     ObjectInstance("World", model, SPHERE);

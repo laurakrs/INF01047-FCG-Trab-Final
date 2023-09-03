@@ -55,6 +55,7 @@ double g_LastCursorPosX, g_LastCursorPosY;
 bool g_drawBoundingBox = true;
 bool g_drawMouseRay = true;
 bool g_pickAnimation = false;
+bool g_moveIllumination = false;
 
 
 // Pilha que guardará as matrizes de modelagem.
@@ -70,6 +71,7 @@ GLint g_bbox_min_uniform;
 GLint g_bbox_max_uniform;
 GLint g_is_bounding_box_vertex_uniform;
 GLint g_is_bounding_box_fragment_uniform;
+GLint g_light_uniformLocation;
 
 // Número de texturas carregadas pela função LoadTextureImage()
 GLuint g_NumLoadedTextures = 0;
@@ -93,6 +95,7 @@ float g_actualWindowHeight;
 std::vector<std::tuple<std::string, int>> g_modelPathsAndIds = 
 {
     std::make_tuple("../../data/sphere.obj", CENTRAL_SPHERE),
+    std::make_tuple("../../data/sphere.obj", ILLUMINATION_SPHERE),
     std::make_tuple("../../data/sphere.obj", SPHERE),
     std::make_tuple("../../data/bunny.obj", BUNNY),
     std::make_tuple("../../data/plane.obj", PLANE),
