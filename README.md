@@ -5,8 +5,9 @@ Alunos:<br/>
 Laura Keidann Rodrigues da Silva - 217870<br/>
 Matheus Henrique Sabadin - 228729<br/>
 
-Proposta: Será criado um programa no estilo do SketchUp em que será possível visualizar modelos, lançar algumas geometrias específicas em 2D a partir de linhas e pontos e extrudá-las ortogonalmente ao seu plano para formar uma geometria 3D.
+Proposta inicial: Será criado um programa no estilo do SketchUp em que será possível visualizar modelos, lançar algumas geometrias específicas em 2D a partir de linhas e pontos e extrudá-las ortogonalmente ao seu plano para formar uma geometria 3D.
 
+Proposta executada: Programa em que é possível selecionar objetos, movimentá-los, inserir nova sinstâncias e analisar dados de seu centro e escala. Também é possível visualizar animações de luz e de objetos selecionados.
 
 Relatório em formato de README.md colocado no Github, contendo uma descrição simples sobre o desenvolvimento do trabalho, o qual deve obrigatoriamente incluir:<br/>
     O objetivo inicial do trabalho era criar um programa no estilo do SketchUp em que será possível visualizar modelos, lançar algumas geometrias específicas em 2D a partir de linhas e pontos e extrudá-las ortogonalmente ao seu plano para formar uma geometria 3D.<br/>
@@ -16,35 +17,44 @@ Relatório em formato de README.md colocado no Github, contendo uma descrição 
 - E Descrição de onde em sua aplicação você utilizou os conceitos de Computação Gráfica listado nos requisitos<br/>
     Laura ficou responsável por implementar os seguintes requisitos: <br/>
     - Objetos da cena virtual (cow, bunny, plane, spheres, cube, e "rectangle");
-    - Modelos de Iluminacao Difusa (cuoboides e plane) e Blinn-Phong (cow, bunny, spheres);
+    - Modelos de Iluminacao Difusa (cubóides e plane) e Blinn-Phong (cow, bunny, spheres);
     - Modelos de Interpolação de Phong (sphere, plane, cuboides, cow) e Gouraud (bunny);
-    - Mpeamento de texturas (5 images) em todos os objetos;
+    - Mapeamento de texturas (5 images) em todos os objetos;
     - Movimentação com curva Bézier cúbica para uma esfera e a fonte de luz;<br/>
     Matheus ficou responsável pelos seguintes requisitos:<br/>
-    - Transformações geométrica controladas pelo usuário: movimentação dos objetos ????
+    - Transformações geométrica controladas pelo usuário: movimentação dos objetos;
     - Câmera Livre e Câmera Look-at, possibilitando ao usuário alterar o tipo;
     - Três tipos de testes de intersecção: testes raio-esfera, raio-bounding box e raio-triângulo;
     - Animações baseadas no tempo: ao clicar em objeto com a funcionalidade de animação ativada, o usuário observa a animação na tela.
     Além disso, Matheus implementou as seguintes funcionalidades extras, que faziam sentido para a aplicação desenvolvidas, assim como outras mudanças:
     - Seleção de objetos virtuais com o mouse (picking);
-    - Interface: alterar o tipo de projeção, inserir instâncias novas dos objetos.
-    - Refatoração do código, modificação de estruturas de dados. 
+    - Interface: janela para inserir instâncias novas dos objetos, janela com informações do objeto, checkboxes para alterar o tipo de projeção, desenhar raios do mouse ao clicar, exibir animações no clique de objetos selecionados e exibir animação na iluminação do modelo;
+    - Refatoração do código, modificação de estruturas de dados, criação de diversas classes, structs e arquivos novos. 
 
 
 
 - Parágrafo curto indicando se a dupla fez uso do ChatGPT (ou alguma outra ferramenta similar, como Github Copilot, OpenAI Codex, etc.) para desenvolvimento do trabalho, descrevendo como a ferramenta foi utilizada e para quais partes do trabalho. O parágrafo deve também incluir uma análise crítica descrevendo quão útil a dupla achou a ferramenta, onde ela auxiliou e onde ela não auxiliou adequadamente;<br/>
-    Fizemos uso do ChatGPT e percebemos que sua melhor contribuição foi para resolver questões pontuais de problemas no código, mas mesmo assim com alguns equívocos iniciais.
-    Exemplos de utilidade: 
-    - Ajudou na implementação da curva de Bézier, após fornecermos explicações detalhadas e exemplo do nosso código. ChatGPT forneceu coordenadas para os pontos de forma a gerar a curva que desejávamos.
-    - Quando tentamos atualizar a fonte de iluminação a partir de um "in" no shader fragment, o ChatGPT respondeu que iria funcionar, mas não funcionou. Após, ele sugeriu a utilização de uma variável "uniform", que deu certo.
-  
-    Exemplos de inutilidade: 
-    - Não conseguiu ajudar a consertar o problema do cálculo das normais dos cuboides;
-    - Não conseguiu solucionar a implementação de iluminação junto com mapeamento de textura;
-    (Estes problemas foram solucionados com a ajuda do professor)
+
+COPILOT:
+Foi feito uso do Copilot principalmente para ajudar no debug do código. Diversas vezes a úncia maneira de exibir as variáveis que estavam sendo executadas era mostrar seus valores no console ou em uma interface gráfica criada com essa intenção. O copilot ajudava muito ao transformar vetores em string ou exibir matrizes de vários elementos em loop, como por exemplo:
+Se digitava em uma função da GUI "// show SceneInformation::camera_movement" e o copilot automaticamente preenchia uma linha de código que mostrava todos os dados da variável: ImGui::Text("camera_movement: x=%.3f, y=%.3f, z=%.3f", SceneInformation::camera_movement.x, SceneInformation::camera_movement.y, SceneInformation::camera_movement.z);
+Esta interação ajudava muito para a criação de código repeptitivo e de fácil erro na digitação.
+O copilot algumas vezes também ajudou na documentação em português do código.
+
+CHATGPT:
+Fizemos uso do ChatGPT e percebemos que sua melhor contribuição foi para resolver questões pontuais de problemas no código, mas mesmo assim com alguns equívocos iniciais.
+Exemplos de pontos em que o ChatGPT foi útil: 
+- Ajudou na implementação da curva de Bézier, após fornecermos explicações detalhadas e exemplo do nosso código. ChatGPT forneceu coordenadas para os pontos de forma a gerar a curva que desejávamos.
+- Quando tentamos atualizar a fonte de iluminação a partir de um "in" no shader fragment, o ChatGPT respondeu que iria funcionar, mas não funcionou. Após, ele sugeriu a utilização de uma variável "uniform", que deu certo.
+- Ajudou na implementação dos códigos de intersecção, explicando as equações utilziadas matematicamente, demonstrando o passo a passo do algoritmo e ajudando a adaptar interativamente as mesmas para exigências pontuais do progrmaa construído.
+- Ajudou a bebugar problemas de alocação de memória relacionados aos VAOs e VBOs.  
+
+Exemplos de pontos em que o ChatGPT não foi útil: 
+- Não conseguiu ajudar a consertar o problema do cálculo das normais dos cuboides;
+- Não conseguiu solucionar a implementação de iluminação junto com mapeamento de textura;
+(Estes problemas foram solucionados com a ajuda do professor)
+- Tinha muita dificuldade de encontrar problemas relacionados aos shaders, visto que precisava ver o contexto do código em c++ e o glsl
     
-
-
 - Descrição do processo de desenvolvimento e do uso em sua aplicação dos conceitos de Computação Gráfica estudados e listados nos requisitos acima;<br/>
     Iniciamos o desenvolvimento do trabalho a partir do código fonte do Laboratório 5. Além disso, consultamos os laboratórios anteriores e adaptamos os códigos para servir aos propósitos de nossa aplicação. Durante a elaboração, foi possível entender melhor os conceitos estudados na disciplina, em especial os requisitos que implementamos. Constantemente revisitamos os slides e as vídeo aulas para solucionar dúvidas e relembrar explicações. Muito do que foi visto de forma teórica passou a fazer mais sentido no momento da aplicação. Os próprios laboratórios foram ressignificados no contexto de uma aplicação que unia tudo o que havia sido implementado de forma isolada. 
     Como já mencionamos anteriormente, na seção sobre as contribuições dos integrantes, os conceitos listados nos requisitos foram utilizados da forma que julgamos fazer mais sentido para o propósito da aplicação.
