@@ -83,8 +83,8 @@ Como já mencionamos anteriormente, na seção sobre as contribuições dos inte
 **Atalhos de teclado:**
 - Teclas W, A, S, D: movimentação da câmera para frente (W), esquerda (A), trás (S), direita (D), respectivamente;
 - Teclas Q e E: movimentação da câmera para cima (Q) e para baixo (E), respectivamente;
-- Teclas E e Q: movimentação dos objetos ??? para cima e para baixo, respectivamente;
-- Setas para direita, esquerda, cima e baixo: movimentação de objetos selecionados;
+- Teclas + e - do teclado numérico: escalamento o objeto aumentando e diminuindo seu tamanho, respectivamente;
+- Setas para direita, esquerda, cima, baixo, page up e page down: movimentação de objetos selecionados;
 - ESC: fecha a janela;
 
 
@@ -106,7 +106,6 @@ Como já mencionamos anteriormente, na seção sobre as contribuições dos inte
 
 
 
-~Explicação de todos os passos necessários para compilação e execução da aplicação;~ <br/>
 **Passo a passo para execução do programa:**
 - Abra o arquivo Laboratorio_5.cbp no diretório "INF01047-FCG-Trab-Final\Laboratorio_5_Codigo_Fonte" com o programa CodeBlocks;
 - Limpe possíveis arquivos de uma última execução no CodeBlocks em Build > Clean;
