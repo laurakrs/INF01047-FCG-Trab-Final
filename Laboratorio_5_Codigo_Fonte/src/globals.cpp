@@ -55,7 +55,7 @@ double g_LastCursorPosX, g_LastCursorPosY;
 bool g_drawBoundingBox = true;
 bool g_drawMouseRay = true;
 bool g_pickAnimation = false;
-bool g_moveIllumination = false;
+bool g_moveIllumination = true;
 
 
 // Pilha que guardará as matrizes de modelagem.

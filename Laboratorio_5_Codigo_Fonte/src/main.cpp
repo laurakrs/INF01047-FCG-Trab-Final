@@ -604,13 +604,7 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
         fprintf(stdout,"Shaders recarregados!\n");
         fflush(stdout);
     }
-
-    // Tarefa 4 - LAB 2 0 FREE CAMERA
-    // A tecla 'W' deve movimentar a câmera para FRENTE (em relação ao sistema de coordenadas da câmera);
-    // A tecla 'S' deve movimentar a câmera para TRÁS (em relação ao sistema de coordenadas da câmera);
-    // A tecla 'D' deve movimentar a câmera para DIREITA (em relação ao sistema de coordenadas da câmera);
-    // A tecla 'A' deve movimentar a câmera para ESQUERDA (em relação ao sistema de coordenadas da câmera);
-
+    
     if (key == GLFW_KEY_W)
     {
         if (action == GLFW_PRESS)
@@ -697,34 +691,70 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
         float translation_x = 0.0f;
         float translation_y = 0.0f;
         float translation_z = 0.0f;
+        float scale = 0.0f;
 
-        switch (key)
+        if (key == GLFW_KEY_DOWN || key == GLFW_KEY_UP || key == GLFW_KEY_RIGHT || key == GLFW_KEY_LEFT || key == GLFW_KEY_PAGE_UP || key == GLFW_KEY_PAGE_DOWN)
         {
-        case GLFW_KEY_DOWN:
-            translation_z = 1.1f;
-            break;
-        case GLFW_KEY_UP:
-            translation_z = -1.1f;
-            break;
-        case GLFW_KEY_RIGHT:
-            translation_x = 1.1f;
-            break;
-        case GLFW_KEY_LEFT:
-            translation_x = -1.1f;
-            break;
-        default:
-            break;
-        }
+            switch (key)
+            {
+            case GLFW_KEY_DOWN:
+                translation_z = 1.1f;
+                break;
+            case GLFW_KEY_UP:
+                translation_z = -1.1f;
+                break;
+            case GLFW_KEY_RIGHT:
+                translation_x = 1.1f;
+                break;
+            case GLFW_KEY_LEFT:
+                translation_x = -1.1f;
+                break;
+            case GLFW_KEY_PAGE_UP:
+                translation_y = 1.1f;
+                break;
+            case GLFW_KEY_PAGE_DOWN:
+                translation_y = -1.1f;
+                break;
+            default:
+                break;
+            }
 
-        if (action == GLFW_PRESS)
-        {
-            g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Translate(translation_x,translation_y,translation_z);
+            if (action == GLFW_PRESS)
+            {
+                g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Translate(translation_x,translation_y,translation_z);
+            }
+            else if (action == GLFW_RELEASE)
+                ;
+            else if (action == GLFW_REPEAT)
+            {
+                g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Translate(translation_x,translation_y,translation_z);
+            }
         }
-        else if (action == GLFW_RELEASE)
-            ;
-        else if (action == GLFW_REPEAT)
+        
+        if (key == GLFW_KEY_KP_ADD || key == GLFW_KEY_KP_SUBTRACT)
         {
-            g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Translate(translation_x,translation_y,translation_z);
+            switch (key)
+            {
+            case GLFW_KEY_KP_ADD:
+                scale = 1.1f;
+                break;
+            case GLFW_KEY_KP_SUBTRACT:
+                scale = 0.9f;
+                break;
+            default:
+                break;
+            }
+
+            if (action == GLFW_PRESS)
+            {
+                g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Scale(scale,scale,scale);
+            }
+            else if (action == GLFW_RELEASE)
+                ;
+            else if (action == GLFW_REPEAT)
+            {
+                g_ObjectInstances[g_selectedObject].model_matrix = g_ObjectInstances[g_selectedObject].model_matrix * Matrix_Scale(scale,scale,scale);
+            }
         }
     }
 }
