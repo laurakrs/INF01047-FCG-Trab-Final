@@ -9,15 +9,12 @@ Matheus Henrique Sabadin - 228729<br/>
 
 **Proposta executada:** Programa em que é possível selecionar objetos, movimentá-los, inserir novas instâncias e analisar dados de seu centro e escala. Este programa também possui animações de luz e de objetos selecionados.
 
-~Relatório em formato de README.md colocado no Github, contendo uma descrição simples sobre o desenvolvimento do trabalho, o qual deve obrigatoriamente incluir:<br/>~
 **Descrição:**
     O objetivo inicial do trabalho era criar um programa no estilo do SketchUp em que será possível visualizar modelos, lançar algumas geometrias específicas em 2D a partir de linhas e pontos e extrudá-las ortogonalmente ao seu plano para formar uma geometria 3D.<br/>
     O trabalho foi desenvolvido de forma colaborativa, em constante diálogo. Para facilitar a elaboração, dividimos as tarefas na etapa de planejamento, de acordo com os interesses e habilidades de cada integrante, mas mantivemos constante troca de informações e atualizações, assim como discussões sobre os passos seguintes. <br/>
     Separamos os requisitos em metas, definimos prioridades de entrega (dividindo entre apresentação parcial e apresentação final), e fomos atualizando o progresso em cada item. <br/>
 <br/>
 
-~Parágrafo listando as contribuição de cada membro da dupla para o trabalho:<br/>~
-~E Descrição de onde em sua aplicação você utilizou os conceitos de Computação Gráfica listado nos requisitos<br/>~
 **Laura ficou responsável por implementar os seguintes requisitos:** <br/>
 - Objetos da cena virtual (cow, bunny, plane, spheres, cube, e "rectangle");
 - Modelos de Iluminacao Difusa (cuboides e plane) e Blinn-Phong (cow, bunny, spheres);
@@ -38,8 +35,6 @@ Matheus Henrique Sabadin - 228729<br/>
 - Interface: janela para inserir instâncias novas dos objetos, janela com informações do objeto, checkboxes para alterar o tipo de projeção, desenhar raios do mouse ao clicar, exibir animações no clique de objetos selecionados e exibir animação na iluminação do modelo;
 - Refatoração do código, modificação de estruturas de dados, criação de diversas classes, structs e arquivos novos. <br/>
 <br/>
-
-~Parágrafo curto indicando se a dupla fez uso do ChatGPT (ou alguma outra ferramenta similar, como Github Copilot, OpenAI Codex, etc.) para desenvolvimento do trabalho, descrevendo como a ferramenta foi utilizada e para quais partes do trabalho. O parágrafo deve também incluir uma análise crítica descrevendo quão útil a dupla achou a ferramenta, onde ela auxiliou e onde ela não auxiliou adequadamente;~ <br/>
 
 **COPILOT:** <br/>
 Foi feito uso do Copilot principalmente para ajudar no debug do código. Diversas vezes a úncia maneira de exibir as variáveis que estavam sendo executadas era mostrar seus valores no console ou em uma interface gráfica criada com essa intenção. O copilot ajudava muito ao transformar vetores em string ou exibir matrizes de vários elementos em loop, como por exemplo:<br/>
@@ -66,25 +61,18 @@ Fizemos uso do ChatGPT e percebemos que sua melhor contribuição foi para resol
 - Tinha muita dificuldade de encontrar problemas relacionados aos shaders, visto que precisava ver o contexto do código em c++ e o glsl <br/>
 <br/>
 
-~Descrição do processo de desenvolvimento e do uso em sua aplicação dos conceitos de Computação Gráfica estudados e listados nos requisitos acima;~ <br/> 
-
 **Descrição do processo de desenvolvimento e do uso em sua aplicação dos conceitos de Computação Gráfica estudados:** <br/>
 Iniciamos o desenvolvimento do trabalho a partir do código fonte do Laboratório 5. Além disso, consultamos os laboratórios anteriores e adaptamos os códigos para servir aos propósitos de nossa aplicação. Durante a elaboração, foi possível entender melhor os conceitos estudados na disciplina, em especial os requisitos que implementamos. Constantemente revisitamos os slides e as vídeo aulas para solucionar dúvidas e relembrar explicações. Muito do que foi visto de forma teórica passou a fazer mais sentido no momento da aplicação. Os próprios laboratórios foram ressignificados no contexto de uma aplicação que unia tudo o que havia sido implementado de forma isolada.<br/>
 <br/>
 Como já mencionamos anteriormente, na seção sobre as contribuições dos integrantes, os conceitos listados nos requisitos foram utilizados da forma que julgamos fazer mais sentido para o propósito da aplicação.
 
-~No mínimo duas imagens mostrando o funcionamento da aplicação;~
-
-~Um manual descrevendo a utilização da aplicação (atalhos de teclado, etc.);
-    Ao abrir a aplicação, o usuário vê a cena virtual com os objetos.~
-  
 **Manual:**
   
 **Atalhos de teclado:**
 - Teclas W, A, S, D: movimentação da câmera para frente (W), esquerda (A), trás (S), direita (D), respectivamente;
 - Teclas Q e E: movimentação da câmera para cima (Q) e para baixo (E), respectivamente;
-- Teclas E e Q: movimentação dos objetos ??? para cima e para baixo, respectivamente;
-- Setas para direita, esquerda, cima e baixo: movimentação de objetos selecionados;
+- Teclas + e - do teclado numérico: escalamento o objeto aumentando e diminuindo seu tamanho, respectivamente;
+- Setas para direita, esquerda, cima, baixo, page up e page down: movimentação de objetos selecionados;
 - ESC: fecha a janela;
 
 
@@ -106,59 +94,7 @@ Como já mencionamos anteriormente, na seção sobre as contribuições dos inte
 
 
 
-~Explicação de todos os passos necessários para compilação e execução da aplicação;~ <br/>
 **Passo a passo para execução do programa:**
 - Abra o arquivo Laboratorio_5.cbp no diretório "INF01047-FCG-Trab-Final\Laboratorio_5_Codigo_Fonte" com o programa CodeBlocks;
 - Limpe possíveis arquivos de uma última execução no CodeBlocks em Build > Clean;
 - Compile e execute o código em Build > Build and Run;
-
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-
-CRITERIOS TECNICOS (RESUMO):
-
-- Malhas poligonais complexas - ok
-- Transformacoes geometricas controladas pelo usuario - ok
-- Camera Livre e Camera Look-at - ok 
-- Instancias de objetos - ok
-- Tres tipos de testes de interseccao
-- Modelos de Iluminacao Difusa e Blinn-Phong - ok 
-- Modelos de Interpolacao de Phong e Gouraud - ok
-- Mapeamento de texturas em todos os objetos - ok 
-- Movimentacao com curva Bezier cubica - ok
-- Animacoes baseadas no tempo ($\Delta t$) - ok
-
-Requisitos minimos - explicacao:
-
-- interacao em tempo real
-- objetivo e logica de controle nao-trivial
-- Model matrix, projection matrix, view matrix
-- Mouse e Teclado
-- Objetos virtuais representados atraves de malhas poligonais complexas (malhas de triangulo):
-    - no minimo de complexidade igual ou maior que o modelo cow.obj
-    - carregar este e outros modelos geometricos no formato obj - utilizar bibliotecas existentes (por exemplo: tinyobjloader (C++) e tinyobjloader (C)).
-    - maior variedade de modelos geometricos -> melhor
-- Transformacoes geometricas:
-    - Interacao com teclado e/ou mouse - controlar transformacoes geometricas aplicadas f OBJETOS VIRTUAIS
-- Controle de Cameras virtuais:
-    - no minimo uma camera look-ate uma camera livre (Lab2)
-- UM (min) objeto virtual deve ser copiado com duas ou mais instâncias - utilizando duas ou mais Model matrix aplicadas ao mesmo conjunto de vértices
-    - Ex. Lab 2 e Lab 3, onde o mesmo modelo geométrico (cubo) é utilizado para desenhar todas as partes do boneco, e somente as matrizes de modelagem (Model matrix) são alteradas para desenhar cada cópia do cubo.
-- Testes de intersecção entre objetos virtuais - "collisions.cpp"
-    - Três (min) tipos de teste de intersecção (por exemplo, um teste cubo-cubo, um teste cubo-plano, e um teste ponto-esfera).
-    - com propósito 
-- Modelos de iluminação de objetos geométricos:
-    - Modelos de iluminação: difusa (Lambert) (cube, rectangle, plane) e Blinn-Phong (spheres, bunny, cow).
-    - Modelos de interpolação para iluminação:
-        - Modelo de Gouraud: o modelo de iluminação é avaliado para cada vértice usando suas normais, gerando uma cor, a qual é interpolada para cada pixel durante a rasterização.
-        - Modelo de Phong: as normais de cada vértice são interpoladas para cada pixel durante a rasterização, e o modelo de iluminação é avaliado para cada pixel, utilizando estas normais interpoladas.
-- Mapeamento de texturas.
-    - TODOS objetos virtuais de sua aplicação devem ter suas cores definidas através de texturas representadas por imagens (no mínimo três imagens distintas).
-    - Imagens de texturas "esticadas" de maneira não natural receberão desconto de pontuação.
-Curvas de Bézier:
-    - Um objeto virtual de sua aplicação deve ter sua movimentação definida através de uma curva de Bézier cúbica. O objeto deve se movimentar de forma suave ao longo do espaço em um caminho curvo (não reto).
-- Animação de Movimento baseada no tempo:
-    - Todas as movimentações de objetos (incluindo da câmera) devem ser computadas baseado no tempo (isto é, movimentações devem ocorrer sempre na mesma velocidade independente da velocidade da CPU onde o programa está sendo executado).
